@@ -12,8 +12,9 @@ const props = defineProps<{
 }>();
 
 interface Transaction {
-  id: number;
-  refId: number | undefined;
+  id: string;
+  rowIdx: number;
+  refId: string | undefined;
   category: string;
   insertTimestamp: Date;
   effectiveTimestamp: Date;
@@ -95,14 +96,14 @@ onMounted(() => {
           <tbody>
           <tr v-for="transaction in transactions.data" :key="transaction.id" @click="displayTransaction(transaction.id)">
             <template v-if="transaction.pending">
-              <th class="text-muted" scope="row">{{ transaction.id }}</th>
+              <th class="text-muted" scope="row">{{ transaction.rowIdx }}</th>
               <td class="text-muted">{{ dateToString(transaction.effectiveTimestamp) }}</td>
               <td class="text-muted">{{ moneyToString(transaction.value) }}</td>
             </template>
             <template v-else>
               <th :class="{'positive-value': transaction.isPositive, 'negative-value': !transaction.isPositive}"
                   scope="row">
-                {{ transaction.id }}
+                {{ transaction.rowIdx }}
               </th>
               <td>{{ dateToString(transaction.effectiveTimestamp) }}</td>
               <td :class="{'positive-value': transaction.isPositive, 'negative-value': !transaction.isPositive}">
