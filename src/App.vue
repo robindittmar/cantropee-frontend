@@ -16,6 +16,7 @@ let effectiveSpan = ref({
 });
 let categories: Ref<[{id: number, name: string}]> = ref([{id: 0, name: ''}]);
 let showPending = ref(false);
+let sortingOrder = ref('desc');
 
 const requestDeposit = () => {
   // TODO: not a fan at all of this
@@ -44,8 +45,12 @@ const moveEffectiveSpan = (monthOffset: number) => {
 const nextMonth = () => moveEffectiveSpan(1);
 const prevMonth = () => moveEffectiveSpan(-1);
 
-const setShowPending = (show: boolean) => {
-  showPending.value = show;
+const toggleShowPending = () => {
+  showPending.value = !showPending.value;
+}
+
+const toggleSortingOrder = () => {
+  sortingOrder.value = sortingOrder.value === 'asc' ? 'desc' : 'asc';
 }
 
 const forceReload = () => {
@@ -72,13 +77,14 @@ onMounted(() => {
         <div class="row mt-2">
           <div class="col">
             <BalanceComponent :effective-span="effectiveSpan" :show-pending="showPending"
-                     @request-deposit="requestDeposit" @request-withdrawal="requestWithdrawal"/>
+                              @request-deposit="requestDeposit" @request-withdrawal="requestWithdrawal"/>
           </div>
         </div>
       <div class="row mt-2">
         <div class="col">
           <FilterComponent :effective-span="effectiveSpan" @next-month="nextMonth" @prev-month="prevMonth"
-                  :show-pending="showPending" @set-show-pending="setShowPending"/>
+                           :show-pending="showPending" @toggle-show-pending="toggleShowPending"
+                           :sorting-order="sortingOrder" @toggle-sorting-order="toggleSortingOrder"/>
         </div>
       </div>
     </header>
@@ -86,7 +92,8 @@ onMounted(() => {
     <main>
       <div class="row mt-2">
         <div class="col">
-          <TransactionsComponent :effective-span="effectiveSpan" :show-pending="showPending"/>
+          <TransactionsComponent :effective-span="effectiveSpan" :show-pending="showPending"
+                                 :sorting-order="sortingOrder"/>
         </div>
       </div>
     </main>

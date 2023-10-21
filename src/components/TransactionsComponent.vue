@@ -9,6 +9,7 @@ const props = defineProps<{
     to: Date,
   },
   showPending: boolean,
+  sortingOrder: string,
 }>();
 
 interface Transaction {
@@ -36,6 +37,10 @@ watch(() => props.showPending, () => {
   fetchTransactions();
 });
 
+watch(() => props.sortingOrder, () => {
+  fetchTransactions();
+})
+
 const navigationStep = 10;
 // let showPending = ref(true);
 let transactions: any = ref({
@@ -46,7 +51,7 @@ let transactions: any = ref({
 });
 
 const fetchTransactions = async () => {
-  const res = await fetch(`/api/transactions?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}&pending=${props.showPending}&start=${transactions.value.start}&count=${navigationStep}`);
+  const res = await fetch(`/api/transactions?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}&pending=${props.showPending}&start=${transactions.value.start}&count=${navigationStep}&order=${props.sortingOrder}`);
   let paginatedResult = await res.json();
 
   paginatedResult.data = paginatedResult.data.map((t: Transaction) => {

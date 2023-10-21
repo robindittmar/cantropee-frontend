@@ -7,7 +7,10 @@ const props = defineProps<{
     to: Date,
   },
   showPending: boolean,
+  sortingOrder: string,
 }>();
+
+defineEmits(['next-month', 'prev-month', 'toggle-show-pending', 'toggle-sorting-order'])
 
 const yearMonthString = computed(() => {
   return props.effectiveSpan.from.toLocaleString('de-DE', {
@@ -30,8 +33,12 @@ const previewAvailable = computed(() => {
     <button class="btn btn-secondary" @click="$emit('next-month')">
       <i class="fa-solid fa-arrow-right"></i>
     </button>
+    <button class="btn btn-primary ms-3" @click="$emit('toggle-sorting-order')">
+      <i v-if="sortingOrder === 'asc'" class="fa-solid fa-arrow-up"></i>
+      <i v-else class="fa-solid fa-arrow-down"></i>
+    </button>
     <div class="ps-3">
-      <input id="showPendingCheckbox" class="btn-check" type="checkbox" :checked="showPending" @click="$emit('set-show-pending', !showPending)" :disabled="!previewAvailable"/>
+      <input id="showPendingCheckbox" class="btn-check" type="checkbox" :checked="showPending" @click="$emit('toggle-show-pending')" :disabled="!previewAvailable"/>
       <label for="showPendingCheckbox" class="btn w-100" :class="{'btn-outline-primary': previewAvailable}">Vorschau</label>
     </div>
 <!--    Pro view -->
