@@ -2,12 +2,11 @@
 
 > Web frontend for cantropee, utilizing [Vue.js](https://vuejs.org/)
 
-
+6
 ## Dependencies
 To create a production build, install
-- `Bootstrap 5.3+` => `./public/public/css/bootstrap` and `./public/public/js/bootstrap`
 - `FontAwesome v6+` => `./public/public/css/fontawesome` and `./public/public/css/webfonts`
-
+- any required image files to `./public/public/img`
 
 ## Project Setup
 

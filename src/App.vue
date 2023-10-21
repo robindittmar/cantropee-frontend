@@ -1,21 +1,107 @@
 <script setup lang="ts">
-import Balance from './components/Balance.vue';
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import type {Ref} from "vue";
+import Balance from '@/components/Balance.vue';
+import Filter from "@/components/Filter.vue";
+import Transactions from "@/components/Transactions.vue";
+import DepositTransaction from "@/components/DepositTransaction.vue";
+import {Modal} from "bootstrap";
+import WithdrawalTransaction from "@/components/WithdrawalTransaction.vue";
 
-let effectiveFrom = ref(new Date(0));
-let effectiveTo = ref(new Date());
+
+const now = new Date();
+let effectiveSpan = ref({
+  from: new Date(now.getFullYear(), now.getMonth()),
+  to: new Date(now.getFullYear(), now.getMonth() + 1),
+});
+let categories: Ref<[{id: number, name: string}]> = ref([{id: 0, name: ''}]);
+let showPending = ref(false);
+
+const requestDeposit = () => {
+  // TODO: not a fan at all of this
+  const modal = Modal.getOrCreateInstance('#depositModal');
+  modal.show();
+};
+
+const requestWithdrawal = () => {
+  // TODO: not a fan at all of this
+  const modal = Modal.getOrCreateInstance('#withdrawModal');
+  modal.show();
+};
+
+const nextMonth = () => {
+  let newFrom = new Date(effectiveSpan.value.from);
+  let newTo = new Date(effectiveSpan.value.to);
+  newFrom.setMonth(newFrom.getMonth() + 1);
+  newTo.setMonth(newTo.getMonth() + 1);
+
+  effectiveSpan.value = {
+    from: newFrom,
+    to: newTo,
+  };
+};
+const prevMonth = () => {
+  let newFrom = new Date(effectiveSpan.value.from);
+  let newTo = new Date(effectiveSpan.value.to);
+  newFrom.setMonth(newFrom.getMonth() - 1);
+  newTo.setMonth(newTo.getMonth() - 1);
+
+  effectiveSpan.value = {
+    from: newFrom,
+    to: newTo,
+  };
+};
+
+const setShowPending = (show: boolean) => {
+  showPending.value = show;
+}
+
+const forceReload = () => {
+  effectiveSpan.value = {
+    from: new Date(effectiveSpan.value.from),
+    to: new Date(effectiveSpan.value.to)
+  };
+};
+
+const fetchCategories = async () => {
+  const res = await fetch('/api/categories');
+  categories.value = await res.json();
+  // categories.value = JSON.parse("[{\"id\":1,\"name\":\"Nicht spezifiziert\"},{\"id\":2,\"name\":\"Einkauf\"},{\"id\":3,\"name\":\"Kassenabschöpfung\"},{\"id\":4,\"name\":\"Lohnzahlung\"}]");
+};
+
+onMounted(() => {
+  fetchCategories();
+});
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <!-- Timespan picker? -->
-    </div>
-  </header>
+  <div class="container">
+    <header>
+        <div class="row mt-2">
+          <div class="col">
+            <Balance :effective-span="effectiveSpan" :show-pending="showPending"
+                     @request-deposit="requestDeposit" @request-withdrawal="requestWithdrawal"/>
+          </div>
+        </div>
+      <div class="row mt-2">
+        <div class="col">
+          <Filter :effective-span="effectiveSpan" @next-month="nextMonth" @prev-month="prevMonth"
+                  :show-pending="showPending" @set-show-pending="setShowPending"/>
+        </div>
+      </div>
+    </header>
 
-  <main>
-    <Balance />
-  </main>
+    <main>
+      <div class="row mt-2">
+        <div class="col">
+          <Transactions :effective-span="effectiveSpan" :show-pending="showPending"/>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <DepositTransaction :categories="categories" @submit-deposit="forceReload"/>
+  <WithdrawalTransaction :categories="categories" @submit-withdrawal="forceReload"/>
 </template>
 
 <style scoped></style>
