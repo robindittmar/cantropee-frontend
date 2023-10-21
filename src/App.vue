@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import type {Ref} from "vue";
-import Balance from '@/components/Balance.vue';
-import Filter from "@/components/Filter.vue";
-import Transactions from "@/components/Transactions.vue";
+import BalanceComponent from '@/components/BalanceComponent.vue';
+import FilterComponent from "@/components/FilterComponent.vue";
+import TransactionsComponent from "@/components/TransactionsComponent.vue";
 import DepositTransaction from "@/components/DepositTransaction.vue";
 import {Modal} from "bootstrap";
 import WithdrawalTransaction from "@/components/WithdrawalTransaction.vue";
@@ -79,13 +79,13 @@ onMounted(() => {
     <header>
         <div class="row mt-2">
           <div class="col">
-            <Balance :effective-span="effectiveSpan" :show-pending="showPending"
+            <BalanceComponent :effective-span="effectiveSpan" :show-pending="showPending"
                      @request-deposit="requestDeposit" @request-withdrawal="requestWithdrawal"/>
           </div>
         </div>
       <div class="row mt-2">
         <div class="col">
-          <Filter :effective-span="effectiveSpan" @next-month="nextMonth" @prev-month="prevMonth"
+          <FilterComponent :effective-span="effectiveSpan" @next-month="nextMonth" @prev-month="prevMonth"
                   :show-pending="showPending" @set-show-pending="setShowPending"/>
         </div>
       </div>
@@ -94,7 +94,7 @@ onMounted(() => {
     <main>
       <div class="row mt-2">
         <div class="col">
-          <Transactions :effective-span="effectiveSpan" :show-pending="showPending"/>
+          <TransactionsComponent :effective-span="effectiveSpan" :show-pending="showPending"/>
         </div>
       </div>
     </main>
