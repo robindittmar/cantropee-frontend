@@ -63,11 +63,11 @@ const submitWithdrawal = async () => {
   const payload = {
     effectiveTimestamp: effectiveTimestamp.value,
     category: selectedCategory.value,
-    value: -value.value * 100,
-    value19: -value19.value * 100,
-    value7: -value7.value * 100,
-    vat19: -vat19.value * 100,
-    vat7: -vat7.value * 100,
+    value: -(value.value * 100),
+    value19: -(value19.value * 100),
+    value7: -(value7.value * 100),
+    vat19: -(vat19.value * 100),
+    vat7: -(vat7.value * 100),
   };
 
   const res = await fetch('/api/transactions', {
