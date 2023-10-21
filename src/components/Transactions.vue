@@ -87,7 +87,7 @@ onMounted(() => {
         <table class="table table-hover">
           <thead>
           <tr>
-            <th scope="col" @click="displayTransaction(0)">#</th>
+            <th scope="col">#</th>
             <th scope="col">Buchungsdatum</th>
             <th scope="col">Betrag</th>
           </tr>
