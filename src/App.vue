@@ -29,28 +29,20 @@ const requestWithdrawal = () => {
   modal.show();
 };
 
-const nextMonth = () => {
+const moveEffectiveSpan = (monthOffset: number) => {
   let newFrom = new Date(effectiveSpan.value.from);
   let newTo = new Date(effectiveSpan.value.to);
-  newFrom.setMonth(newFrom.getMonth() + 1);
-  newTo.setMonth(newTo.getMonth() + 1);
+  newFrom.setMonth(newFrom.getMonth() + monthOffset);
+  newTo.setMonth(newTo.getMonth() + monthOffset);
 
   effectiveSpan.value = {
     from: newFrom,
     to: newTo,
   };
 };
-const prevMonth = () => {
-  let newFrom = new Date(effectiveSpan.value.from);
-  let newTo = new Date(effectiveSpan.value.to);
-  newFrom.setMonth(newFrom.getMonth() - 1);
-  newTo.setMonth(newTo.getMonth() - 1);
 
-  effectiveSpan.value = {
-    from: newFrom,
-    to: newTo,
-  };
-};
+const nextMonth = () => moveEffectiveSpan(1);
+const prevMonth = () => moveEffectiveSpan(-1);
 
 const setShowPending = (show: boolean) => {
   showPending.value = show;

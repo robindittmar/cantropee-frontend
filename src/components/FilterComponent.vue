@@ -31,7 +31,7 @@ const previewAvailable = computed(() => {
       <i class="fa-solid fa-arrow-right"></i>
     </button>
     <div class="ps-3">
-      <input id="showPendingCheckbox" class="btn-check" type="checkbox" @click="$emit('set-show-pending', !showPending)" :disabled="!previewAvailable"/>
+      <input id="showPendingCheckbox" class="btn-check" type="checkbox" :checked="showPending" @click="$emit('set-show-pending', !showPending)" :disabled="!previewAvailable"/>
       <label for="showPendingCheckbox" class="btn w-100" :class="{'btn-outline-primary': previewAvailable}">Vorschau</label>
     </div>
 <!--    Pro view -->
