@@ -16,7 +16,7 @@ let effectiveSpan = ref({
 });
 let categories: Ref<[{id: number, name: string}]> = ref([{id: 0, name: ''}]);
 let showPending = ref(false);
-let displayValues = ref(false);
+let displayValues = ref(true);
 let sortingOrder = ref('desc');
 
 const requestDeposit = () => {

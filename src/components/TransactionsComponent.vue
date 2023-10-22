@@ -99,7 +99,7 @@ onMounted(() => {
             <template v-if="transaction.pending">
               <th class="text-muted" scope="row">{{ transaction.rowIdx }}</th>
               <td class="text-muted">{{ dateToString(transaction.effectiveTimestamp) }}</td>
-              <td class="text-muted">{{ moneyToString(transaction.value) }}</td>
+              <td class="text-muted">{{ displayValues ? moneyToString(transaction.value) : '***' }}</td>
             </template>
             <template v-else>
               <th :class="{'positive-value': transaction.isPositive && displayValues, 'negative-value': !transaction.isPositive && displayValues}"
