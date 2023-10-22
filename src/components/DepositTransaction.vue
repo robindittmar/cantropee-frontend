@@ -13,6 +13,7 @@ const emit = defineEmits(['submit-deposit']);
 
 const value = ref(0);
 const selectedCategory = ref('');
+const note = ref('');
 const effectiveTimestamp = ref(new Date());
 
 const resetValues = () => {
@@ -30,6 +31,7 @@ const submitDeposit = async () => {
     value7: 0,
     vat19: 0,
     vat7: 0,
+    note: note.value.length > 0 ? note.value : undefined,
   };
 
   const res = await fetch('/api/transactions', {
@@ -85,6 +87,10 @@ onMounted(() => {
                   {{ category.name }}
                 </option>
               </select>
+            </div>
+            <div class="mb-3">
+              <label for="depositNote" class="form-label">Notiz</label>
+              <input id="depositNote" class="form-control" type="text" maxlength="128" v-model="note"/>
             </div>
             <div class="mb-3">
               <label for="depositDateTime" class="form-label">Buchungsdatum</label>

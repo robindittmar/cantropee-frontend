@@ -18,6 +18,7 @@ const value7 = ref(0);
 const vat19 = ref(0);
 const vat7 = ref(0);
 const selectedCategory = ref('');
+const note = ref('');
 const effectiveTimestamp = ref(new Date());
 
 const resetValues = () => {
@@ -64,6 +65,7 @@ const submitWithdrawal = async () => {
     value7: -(value7.value * 100),
     vat19: -(vat19.value * 100),
     vat7: -(vat7.value * 100),
+    note: note.value.length > 0 ? note.value : undefined,
   };
 
   const res = await fetch('/api/transactions', {
@@ -145,6 +147,10 @@ onMounted(() => {
                   {{ category.name }}
                 </option>
               </select>
+            </div>
+            <div class="mb-3">
+              <label for="depositNote" class="form-label">Notiz</label>
+              <input id="depositNote" class="form-control" type="text" maxlength="128" v-model="note"/>
             </div>
             <div class="mb-3">
               <label for="withdrawDateTime" class="form-label">Buchungsdatum</label>

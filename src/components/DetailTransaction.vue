@@ -73,6 +73,11 @@ const props = defineProps<{
                      :value="transaction.category" disabled/>
             </div>
             <div class="mb-3">
+              <label for="detailNote" class="form-label">Notiz</label>
+              <input id="detailNote" class="form-control" type="text"
+                     :value="transaction.note" disabled/>
+            </div>
+            <div class="mb-3">
               <label for="detailDateTime" class="form-label">Buchungsdatum</label>
               <input id="detailDateTime" class="form-control" type="datetime-local"
                      :value="transaction.effectiveTimestamp && convertLocalDateForInput(transaction.effectiveTimestamp)"

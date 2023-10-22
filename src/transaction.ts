@@ -14,4 +14,5 @@ export interface Transaction {
     value19: Money;
     vat7: Money;
     vat19: Money;
+    note: string | undefined;
 }
