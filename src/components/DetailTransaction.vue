@@ -6,6 +6,7 @@ import {Collapse} from "bootstrap";
 
 const props = defineProps<{
   transaction: Transaction,
+  displayValues: boolean,
 }>();
 
 onMounted(() => {
@@ -36,7 +37,7 @@ onBeforeUnmount(() => {
           <div id="detailGroupValue" class="input-group mb-3">
             <span class="input-group-text" id="detailValueAddon">EUR</span>
             <input id="detailValue" class="form-control"
-                   aria-describedby="detailValueAddon" type="text" :value="transaction.value.toString()"
+                   aria-describedby="detailValueAddon" type="text" :value="displayValues ? transaction.value.toString() : '***'"
                    disabled/>
           </div>
         </div>
@@ -46,11 +47,11 @@ onBeforeUnmount(() => {
             <span class="input-group-text" id="detailValue19addon">EUR</span>
             <input id="detailValue19" class="form-control"
                    aria-describedby="detailValue19addon" type="text"
-                   :value="transaction.value19.toString()"
+                   :value="displayValues ? transaction.value19.toString() : '***'"
                    disabled/>
             <span class="input-group-text" id="detailVat19addon">EUR</span>
             <input id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
-                   type="text" :value="transaction.vat19.toString()"
+                   type="text" :value="displayValues ? transaction.vat19.toString() : '***'"
                    disabled/>
           </div>
         </div>
@@ -60,11 +61,11 @@ onBeforeUnmount(() => {
             <span class="input-group-text" id="detailValue7addon">EUR</span>
             <input id="detailValue7" class="form-control"
                    aria-describedby="detailValue7addon" type="text"
-                   :value="transaction.value7.toString()"
+                   :value="displayValues ? transaction.value7.toString() : '***'"
                    disabled/>
             <span class="input-group-text" id="detailVat7addon">EUR</span>
             <input id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
-                   type="text" :value="transaction.vat7.toString()"
+                   type="text" :value="displayValues ? transaction.vat7.toString() : '***'"
                    disabled/>
           </div>
         </div>

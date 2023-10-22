@@ -12,6 +12,7 @@ const props = defineProps<{
     to: Date,
   },
   showPending: boolean,
+  displayValues: boolean,
   sortingOrder: string,
 }>();
 
@@ -44,7 +45,7 @@ const fetchTransactions = async () => {
   let paginatedResult = await res.json();
 
   paginatedResult.data = paginatedResult.data.map((t: Transaction) => {
-    t.insertTimestamp = new Date(t.insertTimestamp),
+    t.insertTimestamp = new Date(t.insertTimestamp);
     t.effectiveTimestamp = new Date(t.effectiveTimestamp);
     t.value = new Money(t.value.amount, t.value.currency);
     t.value19 = new Money(t.value19.amount, t.value19.currency);
@@ -101,19 +102,19 @@ onMounted(() => {
               <td class="text-muted">{{ moneyToString(transaction.value) }}</td>
             </template>
             <template v-else>
-              <th :class="{'positive-value': transaction.isPositive, 'negative-value': !transaction.isPositive}"
+              <th :class="{'positive-value': transaction.isPositive && displayValues, 'negative-value': !transaction.isPositive && displayValues}"
                   scope="row">
                 {{ transaction.rowIdx }}
               </th>
               <td>{{ dateToString(transaction.effectiveTimestamp) }}</td>
-              <td :class="{'positive-value': transaction.isPositive, 'negative-value': !transaction.isPositive}">
-                {{ moneyToString(transaction.value) }}
+              <td :class="{'positive-value': transaction.isPositive && displayValues, 'negative-value': !transaction.isPositive && displayValues}">
+                {{ displayValues ? moneyToString(transaction.value) : '***' }}
               </td>
             </template>
             </tr>
             <tr v-if="transaction.id === selectedTransaction" class="no-hover">
               <td colspan="3">
-                <DetailTransaction :transaction="transaction"/>
+                <DetailTransaction :transaction="transaction" :display-values="displayValues"/>
               </td>
             </tr>
           </template>

@@ -9,6 +9,7 @@ const props = defineProps<{
     to: Date,
   },
   showPending: boolean,
+  displayValues: boolean,
 }>();
 
 defineEmits(['request-deposit', 'request-withdrawal']);
@@ -86,11 +87,11 @@ onMounted(() => {
         <h5 class="card-title text-center">cantropee</h5>
         <h1
           class="card-title text-center"
-          :class="{ 'text-success': totalBalance.amount >= 0, 'text-danger': totalBalance.amount < 0 }"
+          :class="{ 'text-success': totalBalance.amount >= 0 && displayValues, 'text-danger': totalBalance.amount < 0 && displayValues }"
         >
-          {{ moneyToString(totalBalance) }}
+          {{ displayValues ? moneyToString(totalBalance) : '***' }}
         </h1>
-        <span class="text-center text-sm-center">{{ moneyToString(totalVat) }}</span>
+        <span class="text-center text-sm-center">{{ displayValues ? moneyToString(totalVat) : '***' }}</span>
       </div>
       <div class="row">
         <div class="col">
