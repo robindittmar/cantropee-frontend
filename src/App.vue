@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import type {Ref} from "vue";
-import type {Transaction} from "@/transaction";
 import BalanceComponent from '@/components/BalanceComponent.vue';
 import FilterComponent from "@/components/FilterComponent.vue";
 import TransactionsComponent from "@/components/TransactionsComponent.vue";
 import DepositTransaction from "@/components/DepositTransaction.vue";
 import WithdrawalTransaction from "@/components/WithdrawalTransaction.vue";
-import DetailTransaction from "@/components/DetailTransaction.vue";
 import {Modal} from "bootstrap";
 
 

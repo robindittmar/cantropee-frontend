@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {watch, onMounted, ref, computed} from "vue";
+import {watch, onMounted, ref} from "vue";
 import {Money, Currencies} from "ts-money";
-import {dateToURI, moneyToString} from "../convert";
+import {dateToURI, moneyToString} from "@/convert";
 
 const props = defineProps<{
   effectiveSpan: {
@@ -81,7 +81,7 @@ onMounted(() => {
 
 <template>
   <div class="card">
-    <img id="brand-image" src="/public/img/cat-jam.gif" class="rounded mx-auto d-block" />
+    <img id="brand-image" alt="cat-jam" src="/public/img/cat-jam.gif" class="rounded mx-auto d-block" />
     <div class="card-body">
       <div class="row">
         <h5 class="card-title text-center">cantropee</h5>
