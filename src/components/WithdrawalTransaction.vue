@@ -39,8 +39,8 @@ const deriveVat = () => {
 
 const setValue19 = (event: Event) => {
   value19.value = (event.target as HTMLInputElement).valueAsNumber;
-  value7.value = new Money(value.value * 100, Currencies.EUR)
-      .subtract(new Money(value19.value * 100, Currencies.EUR))
+  value7.value = new Money(Math.round(value.value * 100), Currencies.EUR)
+      .subtract(new Money(Math.round(value19.value * 100), Currencies.EUR))
       .amount / 100;
 
   deriveVat();
@@ -48,8 +48,8 @@ const setValue19 = (event: Event) => {
 
 const setValue7 = (event: Event) => {
   value7.value = (event.target as HTMLInputElement).valueAsNumber;
-  value19.value = new Money(value.value * 100, Currencies.EUR)
-      .subtract(new Money(value7.value * 100, Currencies.EUR))
+  value19.value = new Money(Math.round(value.value * 100), Currencies.EUR)
+      .subtract(new Money(Math.round(value7.value * 100), Currencies.EUR))
       .amount / 100;
 
   deriveVat();

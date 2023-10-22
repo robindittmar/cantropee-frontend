@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import {convertLocalDateForInput} from "@/convert";
 import type {Transaction} from "@/transaction";
-import {watch} from "vue";
 
 const props = defineProps<{
   transaction: Transaction | null,
 }>();
-
-watch(() => props.transaction, () => {
-  console.log(props.transaction);
-})
 </script>
 
 <template>
