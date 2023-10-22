@@ -26,40 +26,40 @@ const props = defineProps<{
               </div>
             </div>
             <div class="mb-3">
+              <label for="detailGroupValue" class="form-label">Betrag</label>
               <div id="detailGroupValue" class="input-group mb-3">
-                <span class="input-group-text">Betrag</span>
+                <span class="input-group-text" id="detailValueAddon">EUR</span>
                 <input id="detailValue" class="form-control"
                        aria-describedby="detailValueAddon" type="text" :value="transaction.value.toString()"
                        disabled/>
-                <span class="input-group-text" id="detailValueAddon">EUR</span>
               </div>
             </div>
             <div class="mb-3">
+              <label for="detailGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
               <div id="detailGroupValue19" class="input-group mb-3">
-                <span class="input-group-text">19%</span>
+                <span class="input-group-text" id="detailValue19addon">EUR</span>
                 <input id="detailValue19" class="form-control"
                        aria-describedby="detailValue19addon" type="text"
                        :value="transaction.value19.toString()"
                        disabled/>
-                <span class="input-group-text" id="detailValue19addon">EUR</span>
+                <span class="input-group-text" id="detailVat19addon">EUR</span>
                 <input id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
                        type="text" :value="transaction.vat19.toString()"
                        disabled/>
-                <span class="input-group-text" id="detailVat19addon">EUR</span>
               </div>
             </div>
             <div class="mb-3">
+              <label for="detailGroupValue7" class="form-label">7% Anteil | 7% Steuern</label>
               <div id="detailGroupValue7" class="input-group mb-3">
-                <span class="input-group-text">7%</span>
+                <span class="input-group-text" id="detailValue7addon">EUR</span>
                 <input id="detailValue7" class="form-control"
                        aria-describedby="detailValue7addon" type="text"
                        :value="transaction.value7.toString()"
                        disabled/>
-                <span class="input-group-text" id="detailValue7addon">EUR</span>
+                <span class="input-group-text" id="detailVat7addon">EUR</span>
                 <input id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
                        type="text" :value="transaction.vat7.toString()"
                        disabled/>
-                <span class="input-group-text" id="detailVat7addon">EUR</span>
               </div>
             </div>
             <div class="form-check mb-3">
@@ -67,19 +67,19 @@ const props = defineProps<{
                      disabled/>
               <label for="detailIsCorrection" class="form-check-label">Ist eine Korrektur</label>
             </div>
-            <div class="input-group mb-3">
-              <span class="input-group-text">Kategorie</span>
+            <div class="mb-3">
+              <label for="detailCategory" class="form-label">Kategorie</label>
               <input id="detailCategory" class="form-control" type="text"
                      :value="transaction.category" disabled/>
             </div>
-            <div class="input-group mb-3">
-              <span class="input-group-text">Buchungsdatum</span>
+            <div class="mb-3">
+              <label for="detailDateTime" class="form-label">Buchungsdatum</label>
               <input id="detailDateTime" class="form-control" type="datetime-local"
                      :value="transaction.effectiveTimestamp && convertLocalDateForInput(transaction.effectiveTimestamp)"
                      disabled/>
             </div>
-            <div class="input-group mb-3">
-              <span class="input-group-text">Erstelldatum</span>
+            <div class="mb-3">
+              <label for="detailDateTime" class="form-label">Erstelldatum</label>
               <input id="detailDateTime" class="form-control" type="datetime-local"
                      :value="transaction.insertTimestamp && convertLocalDateForInput(transaction.insertTimestamp)"
                      disabled/>
