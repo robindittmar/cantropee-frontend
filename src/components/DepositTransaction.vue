@@ -99,7 +99,7 @@ onMounted(() => {
                   data-bs-dismiss="modal">
             Abbrechen
           </button>
-          <button type="button" class="btn btn-primary" @click="submitDeposit">
+          <button type="button" class="btn btn-primary" :disabled="value <= 0" @click="submitDeposit">
             Buchen
           </button>
         </div>

@@ -28,10 +28,24 @@ const requestDeposit = () => {
   modal.show();
 };
 
+const hideDeposit = () => {
+  const modal = Modal.getOrCreateInstance('#depositModal');
+  modal.hide();
+
+  forceReload();
+};
+
 const requestWithdrawal = () => {
   // TODO: not a fan at all of this
   const modal = Modal.getOrCreateInstance('#withdrawModal');
   modal.show();
+};
+
+const hideWithdrawal = () => {
+  const modal = Modal.getOrCreateInstance('#withdrawModal');
+  modal.hide();
+
+  forceReload();
 };
 
 const requestDetailModal = (t: Transaction) => {
@@ -111,8 +125,8 @@ onMounted(() => {
     </main>
   </div>
 
-  <DepositTransaction :categories="categories" @submit-deposit="forceReload"/>
-  <WithdrawalTransaction :categories="categories" @submit-withdrawal="forceReload"/>
+  <DepositTransaction :categories="categories" @submit-deposit="hideDeposit"/>
+  <WithdrawalTransaction :categories="categories" @submit-withdrawal="hideWithdrawal"/>
   <DetailTransaction :transaction="detailTransaction"/>
 </template>
 
