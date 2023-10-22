@@ -109,7 +109,7 @@ onMounted(() => {
       <div class="col">
         <div class="input-group mb-3 pe-3">
           <input id="tableStart" class="form-control"
-                 :value="transactions.start + 1 + ' - ' + transactions.start + transactions.count"
+                 :value="transactions.start + 1 + ' - ' + (transactions.start + transactions.count)"
                  aria-describedby="startEndDivider" type="text" disabled/>
           <span class="input-group-text" id="startEndDivider">/</span>
           <input id="tableEnd" class="form-control"
