@@ -20,8 +20,6 @@ let categories: Ref<[{id: number, name: string}]> = ref([{id: 0, name: ''}]);
 let showPending = ref(false);
 let sortingOrder = ref('desc');
 
-let detailTransaction: Ref<Transaction | null> = ref(null);
-
 const requestDeposit = () => {
   // TODO: not a fan at all of this
   const modal = Modal.getOrCreateInstance('#depositModal');
@@ -46,14 +44,6 @@ const hideWithdrawal = () => {
   modal.hide();
 
   forceReload();
-};
-
-const requestDetailModal = (t: Transaction) => {
-  detailTransaction.value = t;
-
-  // TODO: not a fan at all of this
-  const modal = Modal.getOrCreateInstance('#detailModal');
-  modal.show();
 };
 
 const moveEffectiveSpan = (monthOffset: number) => {
@@ -118,8 +108,7 @@ onMounted(() => {
       <div class="row mt-2">
         <div class="col">
           <TransactionsComponent :effective-span="effectiveSpan" :show-pending="showPending"
-                                 :sorting-order="sortingOrder"
-                                 @click-transaction="requestDetailModal"/>
+                                 :sorting-order="sortingOrder"/>
         </div>
       </div>
     </main>
@@ -127,7 +116,6 @@ onMounted(() => {
 
   <DepositTransaction :categories="categories" @submit-deposit="hideDeposit"/>
   <WithdrawalTransaction :categories="categories" @submit-withdrawal="hideWithdrawal"/>
-  <DetailTransaction :transaction="detailTransaction"/>
 </template>
 
 <style scoped></style>

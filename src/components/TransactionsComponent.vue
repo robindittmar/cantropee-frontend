@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
+import type {Ref} from "vue";
 import {Money} from "ts-money";
 import {dateToURI, dateToString, moneyToString} from "../convert";
 import type {Transaction} from "@/transaction";
+import DetailTransaction from "@/components/DetailTransaction.vue";
 
 const props = defineProps<{
   effectiveSpan: {
@@ -29,13 +31,13 @@ watch(() => props.sortingOrder, () => {
 })
 
 const navigationStep = 10;
-// let showPending = ref(true);
 let transactions: any = ref({
   start: 0,
   count: navigationStep,
   total: -1,
   data: [],
 });
+let selectedTransaction: Ref<string | null> = ref(null);
 
 const fetchTransactions = async () => {
   const res = await fetch(`/api/transactions?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}&pending=${props.showPending}&start=${transactions.value.start}&count=${navigationStep}&order=${props.sortingOrder}`);
@@ -56,6 +58,14 @@ const fetchTransactions = async () => {
   transactions.value = paginatedResult;
 };
 
+const selectTransaction = (transactionId: string) => {
+  if (selectedTransaction.value === transactionId) {
+    selectedTransaction.value = null;
+  } else {
+    selectedTransaction.value = transactionId;
+  }
+}
+
 const nextPage = () => {
   transactions.value.start += navigationStep;
   fetchTransactions();
@@ -73,8 +83,8 @@ onMounted(() => {
 <template>
   <div class="card">
     <div class="row">
-      <div class="col">
-        <table class="table table-hover">
+      <div class="col table-responsive">
+        <table class="table table-hover" >
           <thead>
           <tr>
             <th scope="col">#</th>
@@ -82,8 +92,9 @@ onMounted(() => {
             <th scope="col">Betrag</th>
           </tr>
           </thead>
-          <tbody>
-          <tr v-for="transaction in transactions.data" :key="transaction.id" @click="$emit('click-transaction', transaction)">
+          <tbody class="table-group-divider">
+          <template v-for="transaction in transactions.data" :key="transaction.id">
+            <tr @click="selectTransaction(transaction.id)">
             <template v-if="transaction.pending">
               <th class="text-muted" scope="row">{{ transaction.rowIdx }}</th>
               <td class="text-muted">{{ dateToString(transaction.effectiveTimestamp) }}</td>
@@ -99,7 +110,13 @@ onMounted(() => {
                 {{ moneyToString(transaction.value) }}
               </td>
             </template>
-          </tr>
+            </tr>
+            <tr v-if="transaction.id === selectedTransaction" class="no-hover">
+              <td colspan="3">
+                <DetailTransaction :transaction="transaction"/>
+              </td>
+            </tr>
+          </template>
           </tbody>
         </table>
       </div>
@@ -139,5 +156,10 @@ onMounted(() => {
 .negative-value {
   font-weight: bold;
   color: #c20000 !important;
+}
+
+.table-hover > tbody > tr.no-hover:hover > td,
+.no-hover > td {
+  --bs-table-bg-state: --var(--bs-table-bg-dark);
 }
 </style>
