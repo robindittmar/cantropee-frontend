@@ -2,6 +2,7 @@
 import {onMounted, ref, watch} from "vue";
 import {Money} from "ts-money";
 import {dateToURI, dateToString, moneyToString} from "../convert";
+import type {Transaction} from "@/transaction";
 
 const props = defineProps<{
   effectiveSpan: {
@@ -12,21 +13,7 @@ const props = defineProps<{
   sortingOrder: string,
 }>();
 
-interface Transaction {
-  id: string;
-  rowIdx: number;
-  refId: string | undefined;
-  category: string;
-  insertTimestamp: Date;
-  effectiveTimestamp: Date;
-  pending: boolean;
-  isPositive: boolean;
-  value: Money;
-  value7: Money;
-  value19: Money;
-  vat7: Money;
-  vat19: Money;
-}
+defineEmits(['click-transaction']);
 
 watch(() => props.effectiveSpan, () => {
   fetchTransactions();
@@ -55,6 +42,7 @@ const fetchTransactions = async () => {
   let paginatedResult = await res.json();
 
   paginatedResult.data = paginatedResult.data.map((t: Transaction) => {
+    t.insertTimestamp = new Date(t.insertTimestamp),
     t.effectiveTimestamp = new Date(t.effectiveTimestamp);
     t.value = new Money(t.value.amount, t.value.currency);
     t.value19 = new Money(t.value19.amount, t.value19.currency);
@@ -77,10 +65,6 @@ const prevPage = () => {
   fetchTransactions();
 };
 
-const displayTransaction = (id: number) => {
-  console.log(id);
-};
-
 onMounted(() => {
   fetchTransactions();
 })
@@ -99,7 +83,7 @@ onMounted(() => {
           </tr>
           </thead>
           <tbody>
-          <tr v-for="transaction in transactions.data" :key="transaction.id" @click="displayTransaction(transaction.id)">
+          <tr v-for="transaction in transactions.data" :key="transaction.id" @click="$emit('click-transaction', transaction)">
             <template v-if="transaction.pending">
               <th class="text-muted" scope="row">{{ transaction.rowIdx }}</th>
               <td class="text-muted">{{ dateToString(transaction.effectiveTimestamp) }}</td>

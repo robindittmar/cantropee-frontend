@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {convertLocalDateForInput} from "@/convert";
 import {Currencies, Money} from "ts-money";
 
@@ -11,12 +11,6 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(['submit-withdrawal']);
-
-// const v19 = new Money(value19.value, Currencies.EUR);
-// return (v19.divide(119).multiply(19).amount) / 100;
-
-// const v7 = new Money(value7.value, Currencies.EUR);
-// return (v7.divide(117).multiply(7).amount) / 100;
 
 const value = ref(0);
 const value19 = ref(0);
@@ -78,9 +72,6 @@ const submitWithdrawal = async () => {
     body: JSON.stringify(payload),
   });
 
-  // await this.fetchBalance();
-  // await this.fetchTransactions();
-
   resetValues();
   emit('submit-withdrawal');
 }
@@ -110,17 +101,17 @@ onMounted(() => {
         <div class="modal-body">
           <div>
             <div class="mb-3">
-              <label for="withdraw-group-value" class="form-label">Betrag</label>
-              <div id="withdraw-group-value" class="input-group mb-3">
-                <span class="input-group-text" id="depositValueAddon">EUR</span>
+              <label for="withdrawGroupValue" class="form-label">Betrag</label>
+              <div id="withdrawGroupValue" class="input-group mb-3">
+                <span class="input-group-text" id="withdrawValueAddon">EUR</span>
                 <input id="withdrawValue" class="form-control"
                        aria-describedby="withdrawValueAddon" type="number" step=".01"
                        v-model="value"/>
               </div>
             </div>
             <div class="mb-3">
-              <label for="withdraw-group-value19" class="form-label">19% Anteil | 19% Steuern</label>
-              <div id="withdraw-group-value19" class="input-group mb-3">
+              <label for="withdrawGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
+              <div id="withdrawGroupValue19" class="input-group mb-3">
                 <span class="input-group-text" id="withdrawValue19addon">EUR</span>
                 <input id="withdrawValue19" class="form-control"
                        aria-describedby="withdrawValue19addon" type="number" step=".01"
@@ -128,13 +119,12 @@ onMounted(() => {
                        @input="setValue19"/>
                 <span class="input-group-text" id="withdrawVat19addon">EUR</span>
                 <input id="withdrawVat19" class="form-control" aria-describedby="withdrawVat19addon"
-                       type="text" step=".01" disabled
-                       :value="vat19"/>
+                       type="text" :value="vat19" disabled/>
               </div>
             </div>
             <div class="mb-3">
-              <label for="withdraw-group-value7" class="form-label">7% Anteil | 7% Steuern</label>
-              <div id="withdraw-group-value7" class="input-group mb-3">
+              <label for="withdrawGroupValue7" class="form-label">7% Anteil | 7% Steuern</label>
+              <div id="withdrawGroupValue7" class="input-group mb-3">
                 <span class="input-group-text" id="withdrawValue7addon">EUR</span>
                 <input id="withdrawValue7" class="form-control"
                        aria-describedby="withdrawValue7addon" type="number" step=".01"
@@ -142,8 +132,7 @@ onMounted(() => {
                        @input="setValue7"/>
                 <span class="input-group-text" id="withdrawVat7addon">EUR</span>
                 <input id="withdrawVat7" class="form-control" aria-describedby="withdrawVat7addon"
-                       type="text" step=".01" disabled
-                       :value="vat7"/>
+                       type="text" :value="vat7" disabled/>
               </div>
             </div>
             <div class="mb-3">

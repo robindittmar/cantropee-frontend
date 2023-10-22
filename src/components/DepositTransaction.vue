@@ -40,9 +40,6 @@ const submitDeposit = async () => {
     body: JSON.stringify(payload),
   });
 
-  // await this.fetchBalance();
-  // await this.fetchTransactions();
-
   resetValues();
   emit('submit-deposit');
 }
@@ -72,8 +69,8 @@ onMounted(() => {
         <div class="modal-body">
           <div>
             <div class="mb-3">
-              <label for="deposit-group-value" class="form-label">Betrag</label>
-              <div id="deposit-group-value" class="input-group mb-3">
+              <label for="depositGroupValue" class="form-label">Betrag</label>
+              <div id="depositGroupValue" class="input-group mb-3">
                 <span class="input-group-text" id="depositValueAddon">EUR</span>
                 <input id="depositValue" class="form-control"
                        aria-describedby="depositValueAddon" type="number" step=".01"

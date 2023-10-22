@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import type {Ref} from "vue";
+import type {Transaction} from "@/transaction";
 import BalanceComponent from '@/components/BalanceComponent.vue';
 import FilterComponent from "@/components/FilterComponent.vue";
 import TransactionsComponent from "@/components/TransactionsComponent.vue";
 import DepositTransaction from "@/components/DepositTransaction.vue";
-import {Modal} from "bootstrap";
 import WithdrawalTransaction from "@/components/WithdrawalTransaction.vue";
+import DetailTransaction from "@/components/DetailTransaction.vue";
+import {Modal} from "bootstrap";
 
 
 const now = new Date();
@@ -18,6 +20,8 @@ let categories: Ref<[{id: number, name: string}]> = ref([{id: 0, name: ''}]);
 let showPending = ref(false);
 let sortingOrder = ref('desc');
 
+let detailTransaction: Ref<Transaction | null> = ref(null);
+
 const requestDeposit = () => {
   // TODO: not a fan at all of this
   const modal = Modal.getOrCreateInstance('#depositModal');
@@ -27,6 +31,14 @@ const requestDeposit = () => {
 const requestWithdrawal = () => {
   // TODO: not a fan at all of this
   const modal = Modal.getOrCreateInstance('#withdrawModal');
+  modal.show();
+};
+
+const requestDetailModal = (t: Transaction) => {
+  detailTransaction.value = t;
+
+  // TODO: not a fan at all of this
+  const modal = Modal.getOrCreateInstance('#detailModal');
   modal.show();
 };
 
@@ -47,11 +59,11 @@ const prevMonth = () => moveEffectiveSpan(-1);
 
 const toggleShowPending = () => {
   showPending.value = !showPending.value;
-}
+};
 
 const toggleSortingOrder = () => {
   sortingOrder.value = sortingOrder.value === 'asc' ? 'desc' : 'asc';
-}
+};
 
 const forceReload = () => {
   effectiveSpan.value = {
@@ -63,7 +75,6 @@ const forceReload = () => {
 const fetchCategories = async () => {
   const res = await fetch('/api/categories');
   categories.value = await res.json();
-  // categories.value = JSON.parse("[{\"id\":1,\"name\":\"Nicht spezifiziert\"},{\"id\":2,\"name\":\"Einkauf\"},{\"id\":3,\"name\":\"Kassenabschöpfung\"},{\"id\":4,\"name\":\"Lohnzahlung\"}]");
 };
 
 onMounted(() => {
@@ -93,7 +104,8 @@ onMounted(() => {
       <div class="row mt-2">
         <div class="col">
           <TransactionsComponent :effective-span="effectiveSpan" :show-pending="showPending"
-                                 :sorting-order="sortingOrder"/>
+                                 :sorting-order="sortingOrder"
+                                 @click-transaction="requestDetailModal"/>
         </div>
       </div>
     </main>
@@ -101,6 +113,7 @@ onMounted(() => {
 
   <DepositTransaction :categories="categories" @submit-deposit="forceReload"/>
   <WithdrawalTransaction :categories="categories" @submit-withdrawal="forceReload"/>
+  <DetailTransaction :transaction="detailTransaction"/>
 </template>
 
 <style scoped></style>
