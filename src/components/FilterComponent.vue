@@ -25,7 +25,7 @@ const previewAvailable = computed(() => {
 </script>
 
 <template>
-  <div class="input-group mb-3 col-sm-2">
+  <div class="input-group mb-3">
     <button class="btn btn-secondary" @click="$emit('prev-month')">
       <i class="fa-solid fa-arrow-left"></i>
     </button>
@@ -33,7 +33,7 @@ const previewAvailable = computed(() => {
     <button class="btn btn-secondary" @click="$emit('next-month')">
       <i class="fa-solid fa-arrow-right"></i>
     </button>
-    <button class="btn btn-primary ms-3" @click="$emit('toggle-sorting-order')">
+    <button class="btn btn-secondary ms-3" @click="$emit('toggle-sorting-order')">
       <i v-if="sortingOrder === 'asc'" class="fa-solid fa-arrow-up"></i>
       <i v-else class="fa-solid fa-arrow-down"></i>
     </button>

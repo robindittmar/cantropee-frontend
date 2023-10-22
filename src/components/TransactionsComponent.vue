@@ -132,12 +132,12 @@ onMounted(() => {
                  :value="transactions.start + transactions.count"
                  aria-describedby="startEndDivider"
                  type="text" disabled/>
-          <button @click="prevPage" :disabled="transactions.start === 0" class="btn btn-primary">
+          <button @click="prevPage" :disabled="transactions.start === 0" class="btn btn-secondary">
             <i class="fa-solid fa-arrow-left"></i>
           </button>
           <button @click="nextPage"
                   :disabled="transactions.start + transactions.count >= transactions.total"
-                  class="btn btn-primary">
+                  class="btn btn-secondary">
             <i class="fa-solid fa-arrow-right"></i>
           </button>
         </div>
