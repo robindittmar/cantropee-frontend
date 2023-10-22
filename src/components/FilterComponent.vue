@@ -41,16 +41,6 @@ const previewAvailable = computed(() => {
       <input id="showPendingCheckbox" class="btn-check" type="checkbox" :checked="showPending" @click="$emit('toggle-show-pending')" :disabled="!previewAvailable"/>
       <label for="showPendingCheckbox" class="btn w-100" :class="{'btn-outline-primary': previewAvailable}">Vorschau</label>
     </div>
-<!--    Pro view -->
-<!--    <input id="effectiveFrom" class="form-control"-->
-<!--           aria-describedby="effectiveDivider" type="date"-->
-<!--           :value="convertLocalDateForInput(effectiveFrom)"-->
-<!--           disabled/>-->
-<!--    <span class="input-group-text" id="effectiveDivider">-</span>-->
-<!--    <input id="effectiveTo" class="form-control"-->
-<!--           aria-describedby="effectiveDivider" type="date"-->
-<!--           :value="convertLocalDateForInput(effectiveTo)"-->
-<!--           disabled/>-->
   </div>
 </template>
 
