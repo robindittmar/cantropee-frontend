@@ -19,6 +19,7 @@ const effectiveTimestamp = ref(new Date());
 const resetValues = () => {
   value.value = 0;
   selectedCategory.value = props.categories[0].name ?? '';
+  note.value = '';
   effectiveTimestamp.value = new Date();
 }
 
