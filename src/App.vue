@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import type {Ref} from "vue";
-import type {Transaction} from "@/transaction";
 import BalanceComponent from '@/components/BalanceComponent.vue';
 import FilterComponent from "@/components/FilterComponent.vue";
 import TransactionsComponent from "@/components/TransactionsComponent.vue";
 import DepositTransaction from "@/components/DepositTransaction.vue";
 import WithdrawalTransaction from "@/components/WithdrawalTransaction.vue";
-import DetailTransaction from "@/components/DetailTransaction.vue";
 import {Modal} from "bootstrap";
 
 
@@ -18,6 +16,7 @@ let effectiveSpan = ref({
 });
 let categories: Ref<[{id: number, name: string}]> = ref([{id: 0, name: ''}]);
 let showPending = ref(false);
+let displayValues = ref(false);
 let sortingOrder = ref('desc');
 
 const requestDeposit = () => {
@@ -65,6 +64,10 @@ const toggleShowPending = () => {
   showPending.value = !showPending.value;
 };
 
+const toggleDisplayValues = () => {
+  displayValues.value = !displayValues.value;
+};
+
 const toggleSortingOrder = () => {
   sortingOrder.value = sortingOrder.value === 'asc' ? 'desc' : 'asc';
 };
@@ -91,7 +94,7 @@ onMounted(() => {
     <header>
         <div class="row mt-2">
           <div class="col">
-            <BalanceComponent :effective-span="effectiveSpan" :show-pending="showPending"
+            <BalanceComponent :effective-span="effectiveSpan" :show-pending="showPending" :display-values="displayValues"
                               @request-deposit="requestDeposit" @request-withdrawal="requestWithdrawal"/>
           </div>
         </div>
@@ -99,6 +102,7 @@ onMounted(() => {
         <div class="col">
           <FilterComponent :effective-span="effectiveSpan" @next-month="nextMonth" @prev-month="prevMonth"
                            :show-pending="showPending" @toggle-show-pending="toggleShowPending"
+                           :display-values="displayValues" @toggle-private-mode="toggleDisplayValues"
                            :sorting-order="sortingOrder" @toggle-sorting-order="toggleSortingOrder"/>
         </div>
       </div>
@@ -107,7 +111,7 @@ onMounted(() => {
     <main>
       <div class="row mt-2">
         <div class="col">
-          <TransactionsComponent :effective-span="effectiveSpan" :show-pending="showPending"
+          <TransactionsComponent :effective-span="effectiveSpan" :show-pending="showPending" :display-values="displayValues"
                                  :sorting-order="sortingOrder"/>
         </div>
       </div>

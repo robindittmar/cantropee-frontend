@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {watch, onMounted, ref, computed} from "vue";
+import {watch, onMounted, ref} from "vue";
 import {Money, Currencies} from "ts-money";
-import {dateToURI, moneyToString} from "../convert";
+import {dateToURI, moneyToString} from "@/convert";
 
 const props = defineProps<{
   effectiveSpan: {
@@ -9,6 +9,7 @@ const props = defineProps<{
     to: Date,
   },
   showPending: boolean,
+  displayValues: boolean,
 }>();
 
 defineEmits(['request-deposit', 'request-withdrawal']);
@@ -80,17 +81,17 @@ onMounted(() => {
 
 <template>
   <div class="card">
-    <img id="brand-image" src="/public/img/cat-jam.gif" class="rounded mx-auto d-block" />
+    <img id="brand-image" alt="cat-jam" src="/public/img/cat-jam.gif" class="rounded mx-auto d-block" />
     <div class="card-body">
       <div class="row">
         <h5 class="card-title text-center">cantropee</h5>
         <h1
           class="card-title text-center"
-          :class="{ 'text-success': totalBalance.amount >= 0, 'text-danger': totalBalance.amount < 0 }"
+          :class="{ 'text-success': totalBalance.amount >= 0 && displayValues, 'text-danger': totalBalance.amount < 0 && displayValues }"
         >
-          {{ moneyToString(totalBalance) }}
+          {{ displayValues ? moneyToString(totalBalance) : '***' }}
         </h1>
-        <span class="text-center text-sm-center">{{ moneyToString(totalVat) }}</span>
+        <span class="text-center text-sm-center">{{ displayValues ? moneyToString(totalVat) : '***' }}</span>
       </div>
       <div class="row">
         <div class="col">
