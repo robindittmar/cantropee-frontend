@@ -81,11 +81,6 @@ onMounted(() => {
 
 <template>
   <div class="card">
-    <div class="d-flex justify-content-end pt-2 pe-2">
-      <a class="btn btn-outline-secondary" href="/api/export">
-        <i class="fa-solid fa-download"></i>
-      </a>
-    </div>
     <img id="brand-image" alt="cat-jam" src="/public/img/cat-jam.gif" class="rounded mx-auto d-block" />
     <div class="card-body">
       <div class="row">
