@@ -21,8 +21,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="collapse m-3" id="detailCollapse" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-    <div class="row">
+  <div class="collapse" id="detailCollapse" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="row m-3">
       <div class="col">
         <div class="mb-3">
           <div id="detailGroupId" class="input-group mb-3">
