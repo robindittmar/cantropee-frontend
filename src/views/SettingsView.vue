@@ -32,7 +32,7 @@ let settings = ref(props.userSettings);
             <label for="privateModeCheck" class="form-check-label">Privater Modus</label>
           </div>
 
-          <button class="btn btn-primary" @click="$emit('update-user-settings', settings.value)">Speichern</button>
+          <button class="btn btn-primary" @click="$emit('update-user-settings', settings)">Speichern</button>
         </div>
       </div>
     </main>
