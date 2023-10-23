@@ -76,6 +76,17 @@ const prevPage = () => {
   fetchTransactions();
 };
 
+const waitForCollapse = (el: any, done: any) => {
+  const collapse = document.querySelector('#detailCollapse');
+  if (collapse) {
+    collapse.addEventListener('hidden.bs.collapse', () => {
+      done();
+    });
+  } else {
+    done();
+  }
+};
+
 onMounted(() => {
   fetchTransactions();
 })
@@ -112,11 +123,14 @@ onMounted(() => {
               </td>
             </template>
             </tr>
+            <Transition
+                @leave="waitForCollapse">
             <tr v-if="transaction.id === selectedTransaction" class="no-hover">
               <td colspan="3">
                 <DetailTransaction :transaction="transaction" :display-values="displayValues"/>
               </td>
             </tr>
+            </Transition>
           </template>
           </tbody>
         </table>
