@@ -1,12 +1,12 @@
 
 export interface UserSettings {
-    selectedOrganization: string;
+    defaultOrganization: string;
     privateMode: boolean;
 }
 
 export function defaultUserSettings(): UserSettings {
     return {
-        selectedOrganization: '',
+        defaultOrganization: '',
         privateMode: true,
     };
 }
