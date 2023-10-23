@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import type {UserSettings} from "@/user-settings";
+import {ref, watch} from "vue";
+import type {User} from "@/user";
 import OrganizationComponent from "@/components/OrganizationComponent.vue";
 
 const props = defineProps<{
-  userSettings: UserSettings;
+  user: User;
 }>();
 
 defineEmits(['update-user-settings']);
 
-let settings = ref(props.userSettings);
+watch(() => props.user, () => {
+  settings.value = props.user.settings;
+});
+
+let settings = ref(props.user.settings);
 </script>
 
 <template>

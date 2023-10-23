@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import type {Ref} from "vue";
+import type {User, UserSettings} from "@/user";
+import {defaultUser, fetchUser, updateUserSettings} from "@/user";
 import HomeView from "@/views/HomeView.vue";
 import SettingsView from "@/views/SettingsView.vue";
-import type {UserSettings} from "@/user-settings";
-import {defaultUserSettings, fetchUserSettings, updateUserSettings} from "@/user-settings";
 
 enum View {
   Home,
@@ -16,24 +16,27 @@ const setView = (view: View) => {
   selectedView.value = view;
 };
 
-let userSettings: Ref<UserSettings> = ref(defaultUserSettings());
+let user: Ref<User> = ref(defaultUser());
 
 const updateSettings = async (settings: UserSettings) => {
   if (await updateUserSettings(settings)) {
-    userSettings.value = settings;
+    let intermediate = user.value;
+
+    intermediate.settings = settings;
+    user.value = intermediate;
   }
 }
 
 onMounted(async () => {
-  userSettings.value = await fetchUserSettings();
+  user.value = await fetchUser();
 });
 </script>
 
-<template>
+<template v-if="!loading">
   <HomeView v-if="selectedView === View.Home"
-          :userSettings="userSettings"/>
+            :user="user"/>
   <SettingsView v-if="selectedView === View.Settings"
-                :userSettings="userSettings" @update-user-settings="updateSettings"/>
+                :user="user" @update-user-settings="updateSettings"/>
 
   <div class="fixed-bottom">
     <div class="container mb-1 d-flex justify-content-center">

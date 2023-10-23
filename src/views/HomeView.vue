@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import type {Ref} from "vue";
-import type {UserSettings} from "@/user-settings";
+import type {User} from "@/user";
 import BalanceComponent from '@/components/BalanceComponent.vue';
 import FilterComponent from "@/components/FilterComponent.vue";
 import TransactionsComponent from "@/components/TransactionsComponent.vue";
@@ -10,7 +10,7 @@ import WithdrawalTransaction from "@/components/WithdrawalTransaction.vue";
 import {Modal} from "bootstrap";
 
 const props = defineProps<{
-  userSettings: UserSettings;
+  user: User;
 }>();
 
 const now = new Date();
@@ -20,8 +20,12 @@ let effectiveSpan = ref({
 });
 let categories: Ref<[{id: number, name: string}]> = ref([{id: 0, name: ''}]);
 let showPending = ref(false);
-let displayValues = ref(props.userSettings.privateMode);
+let displayValues = ref(!props.user.settings.privateMode);
 let sortingOrder = ref('desc');
+
+watch(() => props.user, () => {
+  displayValues.value = !props.user.settings.privateMode;
+});
 
 const requestDeposit = () => {
   // TODO: not a fan at all of this
