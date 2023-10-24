@@ -16,6 +16,7 @@ const setView = (view: View) => {
   selectedView.value = view;
 };
 
+let initialLoadDone = ref(false);
 let user: Ref<User> = ref(defaultUser());
 
 const updateSettings = async (settings: UserSettings) => {
@@ -29,10 +30,12 @@ const updateSettings = async (settings: UserSettings) => {
 
 onMounted(async () => {
   user.value = await fetchUser();
+  initialLoadDone.value = true;
 });
 </script>
 
 <template>
+  <template v-if="initialLoadDone">
   <HomeView v-if="selectedView === View.Home"
             :user="user"/>
   <SettingsView v-if="selectedView === View.Settings"
@@ -53,6 +56,14 @@ onMounted(async () => {
       </div>
     </div>
   </div>
+  </template>
+  <template v-else>
+    <div class="d-flex justify-content-center mt-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </template>
 </template>
 
 <style scoped></style>
