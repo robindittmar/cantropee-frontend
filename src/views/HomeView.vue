@@ -26,6 +26,7 @@ let sortingOrder = ref(props.user.settings.defaultSortingOrderAsc ? 'asc' : 'des
 watch(() => props.user, () => {
   showPending.value = props.user.settings.defaultPreviewPending;
   displayValues.value = !props.user.settings.privateMode;
+  sortingOrder.value = props.user.settings.defaultSortingOrderAsc ? 'asc' : 'desc';
 });
 
 const requestDeposit = () => {
