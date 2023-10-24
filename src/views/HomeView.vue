@@ -19,11 +19,12 @@ let effectiveSpan = ref({
   to: new Date(now.getFullYear(), now.getMonth() + 1),
 });
 let categories: Ref<[{id: number, name: string}]> = ref([{id: 0, name: ''}]);
-let showPending = ref(false);
+let showPending = ref(props.user.settings.defaultPreviewPending);
 let displayValues = ref(!props.user.settings.privateMode);
-let sortingOrder = ref('desc');
+let sortingOrder = ref(props.user.settings.defaultSortingOrderAsc ? 'asc' : 'desc');
 
 watch(() => props.user, () => {
+  showPending.value = props.user.settings.defaultPreviewPending;
   displayValues.value = !props.user.settings.privateMode;
 });
 

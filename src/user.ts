@@ -1,9 +1,11 @@
+import type {Organization} from "./organization";
 
 export interface User {
     id: string;
     email: string;
     settings: UserSettings;
-    organizations: string[];
+    organizations: Organization[];
+    currentOrg: Organization | undefined;
 }
 
 export interface UserSettings {
@@ -26,11 +28,14 @@ export function defaultUser(): User {
             extra: null,
         },
         organizations: [],
+        currentOrg: undefined,
     };
-};
+}
 
 export async function fetchUser(): Promise<User> {
-    return await (await fetch('/api/users/me')).json();
+    const user: User = await (await fetch('/api/users/me')).json();
+    user.currentOrg = user.organizations.find(o => o.id === user.settings.defaultOrganization) ?? user.organizations[0];
+    return user;
 }
 
 export async function updateUserSettings(userSettings: UserSettings): Promise<boolean> {

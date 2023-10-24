@@ -11,9 +11,11 @@ defineEmits(['update-user-settings']);
 
 watch(() => props.user, () => {
   settings.value = props.user.settings;
+  organizations.value = props.user.organizations;
 });
 
 let settings = ref(props.user.settings);
+let organizations = ref(props.user.organizations);
 </script>
 
 <template>
@@ -21,7 +23,7 @@ let settings = ref(props.user.settings);
     <header>
       <div class="row mt-2">
         <div class="col">
-          <OrganizationComponent />
+          <OrganizationComponent :user="user" />
         </div>
       </div>
     </header>
@@ -31,12 +33,22 @@ let settings = ref(props.user.settings);
         <div class="col">
           <h1>Nutzer Einstellungen</h1>
 
-          <div class="form-check">
+          <div class="form-check mt-3">
             <input id="privateModeCheck" type="checkbox" class="form-check-input" v-model="settings.privateMode">
             <label for="privateModeCheck" class="form-check-label">Privater Modus</label>
           </div>
 
-          <button class="btn btn-primary" @click="$emit('update-user-settings', settings)">Speichern</button>
+          <div class="form-check mt-3">
+            <input id="defaultPreviewCheck" type="checkbox" class="form-check-input" v-model="settings.defaultPreviewPending">
+            <label for="defaultPreviewCheck" class="form-check-label">"Vorschau" aktiv wenn Seite geladen wird</label>
+          </div>
+
+          <div class="form-check mt-3">
+            <input id="defaultSortingCheck" type="checkbox" class="form-check-input" v-model="settings.defaultSortingOrderAsc">
+            <label for="defaultSortingCheck" class="form-check-label">Sortierung aufsteigend wenn Seite geladen wird</label>
+          </div>
+
+          <button class="btn btn-primary mt-3" @click="$emit('update-user-settings', settings)">Speichern</button>
         </div>
       </div>
     </main>

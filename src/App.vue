@@ -32,7 +32,7 @@ onMounted(async () => {
 });
 </script>
 
-<template v-if="!loading">
+<template>
   <HomeView v-if="selectedView === View.Home"
             :user="user"/>
   <SettingsView v-if="selectedView === View.Settings"
