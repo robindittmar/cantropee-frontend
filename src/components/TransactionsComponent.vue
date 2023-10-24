@@ -137,6 +137,7 @@ onMounted(() => {
       </div>
     </div>
 
+    <template v-if="transactions.total > transactions.count">
     <div class="row ms-1 align-items-center">
       <div class="col">
         <div class="input-group mb-3 pe-3">
@@ -159,6 +160,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
+    </template>
   </div>
 </template>
 
