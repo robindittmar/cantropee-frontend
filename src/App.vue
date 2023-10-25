@@ -40,7 +40,7 @@ onMounted(async () => {
             :user="user"/>
   <SettingsView v-if="selectedView === View.Settings"
                 :user="user" @update-user-settings="updateSettings"/>
-  <div style="min-height: 5vh;">
+  <div class="bottom-filler">
   </div>
   <div class="fixed-bottom">
     <div class="container mb-1 d-flex justify-content-center">
@@ -48,12 +48,12 @@ onMounted(async () => {
         <input type="radio" class="btn-check" name="radioHomeView" id="radioHomeView" autocomplete="off"
                @click="setView(View.Home)"
                :checked="selectedView === View.Home">
-        <label class="btn btn-outline-primary" for="radioHomeView">Home</label>
+        <label class="btn btn-outline-primary" for="radioHomeView"><i class="fa-solid fa-house"></i></label>
 
         <input type="radio" class="btn-check" name="radioTransactionsView" id="radioTransactionsView" autocomplete="off"
                @click="setView(View.Settings)"
                :checked="selectedView === View.Settings">
-        <label class="btn btn-outline-primary" for="radioTransactionsView">Einstellungen</label>
+        <label class="btn btn-outline-primary" for="radioTransactionsView"><i class="fa-solid fa-gear"></i></label>
       </div>
     </div>
   </div>
@@ -67,4 +67,8 @@ onMounted(async () => {
   </template>
 </template>
 
-<style scoped></style>
+<style scoped>
+.bottom-filler {
+  min-height: 50px;
+}
+</style>

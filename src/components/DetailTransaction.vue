@@ -10,18 +10,18 @@ const props = defineProps<{
 }>();
 
 onMounted(() => {
-  const collapse = Collapse.getOrCreateInstance('#detailCollapse');
+  const collapse = Collapse.getOrCreateInstance(`#detailCollapse-${props.transaction.id}`);
   collapse.show();
 });
 
 onBeforeUnmount(() => {
-  const collapse = Collapse.getOrCreateInstance('#detailCollapse');
+  const collapse = Collapse.getOrCreateInstance(`#detailCollapse-${props.transaction.id}`);
   collapse.hide();
 });
 </script>
 
 <template>
-  <div class="collapse" id="detailCollapse" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+  <div class="collapse" :id="'detailCollapse-' + transaction.id" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
     <div class="m-3">
       <div class="row">
         <div class="col">

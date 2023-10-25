@@ -77,9 +77,8 @@ const prevPage = () => {
 };
 
 const waitForCollapse = (el: any, done: any) => {
-  const collapse = document.querySelector('#detailCollapse');
-  if (collapse) {
-    collapse.addEventListener('hidden.bs.collapse', () => {
+  if (el) {
+    el.addEventListener('hidden.bs.collapse', () => {
       done();
     });
   } else {
