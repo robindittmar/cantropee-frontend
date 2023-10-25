@@ -40,7 +40,8 @@ onMounted(async () => {
             :user="user"/>
   <SettingsView v-if="selectedView === View.Settings"
                 :user="user" @update-user-settings="updateSettings"/>
-
+  <div style="min-height: 5vh;">
+  </div>
   <div class="fixed-bottom">
     <div class="container mb-1 d-flex justify-content-center">
       <div class="btn-group" role="group">
