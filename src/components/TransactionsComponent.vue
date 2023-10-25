@@ -16,7 +16,7 @@ const props = defineProps<{
   sortingOrder: string,
 }>();
 
-defineEmits(['click-transaction']);
+const emit = defineEmits(['updated-transaction']);
 
 watch(() => props.effectiveSpan, () => {
   fetchTransactions();
@@ -39,6 +39,8 @@ let transactions: any = ref({
   data: [],
 });
 let selectedTransaction: Ref<string | null> = ref(null);
+let animating = false;
+let openCollapse: Element | null;
 
 const fetchTransactions = async () => {
   const res = await fetch(`/api/transactions?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}&pending=${props.showPending}&start=${transactions.value.start}&count=${navigationStep}&order=${props.sortingOrder}`);
@@ -59,13 +61,26 @@ const fetchTransactions = async () => {
   transactions.value = paginatedResult;
 };
 
+const updatedTransaction = (transactionId: string) => {
+  selectedTransaction.value = transactionId;
+  emit('updated-transaction', transactionId);
+};
+
 const selectTransaction = (transactionId: string) => {
-  if (selectedTransaction.value === transactionId) {
-    selectedTransaction.value = null;
-  } else {
-    selectedTransaction.value = transactionId;
+  if (animating) {
+    return;
   }
-}
+
+  let current = selectedTransaction.value;
+
+  if (current === transactionId) {
+    current = null;
+  } else {
+    current = transactionId;
+  }
+
+  selectedTransaction.value = current;
+};
 
 const nextPage = () => {
   transactions.value.start += navigationStep;
@@ -76,12 +91,33 @@ const prevPage = () => {
   fetchTransactions();
 };
 
-const waitForCollapse = (el: any, done: any) => {
-  if (el) {
-    el.addEventListener('hidden.bs.collapse', () => {
+const waitForExpand = (el: any, done: any) => {
+  let tid = selectedTransaction.value;
+  animating = true;
+
+  openCollapse = document.querySelector(`#detailCollapse-${tid}`);
+  if (openCollapse) {
+    openCollapse.addEventListener('shown.bs.collapse', () => {
+      animating = false;
       done();
     });
   } else {
+    animating = false;
+    done();
+  }
+};
+
+const waitForCollapse = (el: any, done: any) => {
+  animating = true;
+
+  if (openCollapse) {
+    openCollapse.addEventListener('hidden.bs.collapse', () => {
+      animating = false;
+      done();
+      openCollapse = null;
+    });
+  } else {
+    animating = false;
     done();
   }
 };
@@ -123,10 +159,13 @@ onMounted(() => {
             </template>
             </tr>
             <Transition
+                :css="false"
+                @enter="waitForExpand"
                 @leave="waitForCollapse">
             <tr v-if="transaction.id === selectedTransaction" class="no-hover">
               <td colspan="3">
-                <DetailTransaction :transaction="transaction" :display-values="displayValues"/>
+                <DetailTransaction :transaction="transaction" :display-values="displayValues"
+                                   @updated-transaction="updatedTransaction"/>
               </td>
             </tr>
             </Transition>
