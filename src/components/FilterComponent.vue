@@ -15,7 +15,7 @@ defineEmits(['next-month', 'prev-month', 'toggle-show-pending', 'toggle-sorting-
 
 const yearMonthString = computed(() => {
   return props.effectiveSpan.from.toLocaleString('de-DE', {
-    month: 'long',
+    month: 'short',
     year: 'numeric',
   });
 });
