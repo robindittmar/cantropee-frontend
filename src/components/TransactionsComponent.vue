@@ -61,6 +61,7 @@ const fetchTransactions = async () => {
   });
 
   transactions.value = paginatedResult;
+  selectedTransaction.value = null;
 };
 
 const updatedTransaction = (transactionId: string) => {
