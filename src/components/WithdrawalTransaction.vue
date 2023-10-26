@@ -33,8 +33,6 @@ const resetValues = () => {
 }
 
 const deriveVat = () => {
-  // vat19.value = new Money(value19.value * 100, Currencies.EUR).divide(119).multiply(19).amount / 100;
-  // vat7.value = new Money(value7.value * 100, Currencies.EUR).divide(107).multiply(7).amount / 100;
   vat19.value = Math.round(((value19.value * 100) / 119) * 19) / 100;
   vat7.value = Math.round(((value7.value * 100) / 107) * 7) / 100;
 }

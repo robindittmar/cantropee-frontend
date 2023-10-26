@@ -3,6 +3,8 @@ import {convertLocalDateForInput} from "@/convert";
 import type {Transaction} from "@/transaction";
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import {Collapse} from "bootstrap";
+import {Currencies, Money} from "ts-money";
+import {deriveVat} from "@/tax-helper";
 
 const props = defineProps<{
   transaction: Transaction,
@@ -27,6 +29,36 @@ let copyTransaction = ref({
   vat7: props.transaction.vat7.toDecimal(),
   note: props.transaction.note,
 });
+
+const setValue19 = (event: Event) => {
+  let current = copyTransaction.value;
+
+  current.value19 = (event.target as HTMLInputElement).valueAsNumber;
+  current.value7 = new Money(Math.round(current.value * 100), Currencies.EUR)
+      .subtract(new Money(Math.round(current.value19 * 100), Currencies.EUR))
+      .amount / 100;
+
+  let vats = deriveVat(current.value19, current.value7);
+  current.vat19 = vats.vat19;
+  current.vat7 = vats.vat7;
+
+  copyTransaction.value = current;
+};
+
+const setValue7 = (event: Event) => {
+  let current = copyTransaction.value;
+
+  current.value7 = (event.target as HTMLInputElement).valueAsNumber;
+  current.value19 = new Money(Math.round(current.value * 100), Currencies.EUR)
+      .subtract(new Money(Math.round(current.value7 * 100), Currencies.EUR))
+      .amount / 100;
+
+  let vats = deriveVat(current.value19, current.value7);
+  current.vat19 = vats.vat19;
+  current.vat7 = vats.vat7;
+
+  copyTransaction.value = current;
+};
 
 const editTransaction = async () => {
   editing.value = true;
@@ -73,73 +105,94 @@ onBeforeUnmount(() => {
               <span class="input-group-text" id="detailIdAddon">ID</span>
               <input id="detailId" class="form-control"
                      aria-describedby="detailIdAddon" type="text" :value="transaction.id"
-                     :disabled="!editing"/>
+                     disabled/>
             </div>
           </div>
           <div class="mb-3">
             <label for="detailGroupValue" class="form-label">Betrag</label>
             <div id="detailGroupValue" class="input-group mb-3">
               <span class="input-group-text" id="detailValueAddon">EUR</span>
-              <input id="detailValue" class="form-control"
+              <input v-if="!editing" id="detailValue" class="form-control"
                      aria-describedby="detailValueAddon" type="text" :value="displayValues ? transaction.value.toString() : '***'"
-                     :disabled="!editing"/>
+                     disabled/>
+              <input v-else id="detailValue" class="form-control"
+                     aria-describedby="detailValueAddon" type="number" step=".01"
+                     v-model="copyTransaction.value"/>
             </div>
           </div>
           <div class="mb-3">
             <label for="detailGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
             <div id="detailGroupValue19" class="input-group mb-3">
               <span class="input-group-text" id="detailValue19addon">EUR</span>
-              <input id="detailValue19" class="form-control"
+              <input v-if="!editing" id="detailValue19" class="form-control"
                      aria-describedby="detailValue19addon" type="text"
                      :value="displayValues ? transaction.value19.toString() : '***'"
-                     :disabled="!editing"/>
+                     disabled/>
+              <input v-else id="detailValue19" class="form-control"
+                     aria-describedby="detailValue19addon" type="number" step=".01"
+                     :value="copyTransaction.value19"
+                     @input="setValue19"/>
               <span class="input-group-text" id="detailVat19addon">EUR</span>
-              <input id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
+              <input v-if="!editing" id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
                      :value="displayValues ? transaction.vat19.toString() : '***'"
-                     :disabled="!editing"/>
+                     disabled/>
+              <input v-else id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
+                     type="number" step=".01"
+                     v-model="copyTransaction.vat19"/>
             </div>
           </div>
           <div class="mb-3">
             <label for="detailGroupValue7" class="form-label">7% Anteil | 7% Steuern</label>
             <div id="detailGroupValue7" class="input-group mb-3">
               <span class="input-group-text" id="detailValue7addon">EUR</span>
-              <input id="detailValue7" class="form-control"
+              <input v-if="!editing" id="detailValue7" class="form-control"
                      aria-describedby="detailValue7addon" type="text"
                      :value="displayValues ? transaction.value7.toString() : '***'"
-                     :disabled="!editing"/>
+                     disabled/>
+              <input v-else id="detailValue7" class="form-control"
+                     aria-describedby="detailValue7addon" type="number" step=".01"
+                     :value="copyTransaction.value7"
+                     @input="setValue7"/>
               <span class="input-group-text" id="detailVat7addon">EUR</span>
-              <input id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
+              <input v-if="!editing" id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
                      type="text" :value="displayValues ? transaction.vat7.toString() : '***'"
-                     :disabled="!editing"/>
+                     disabled/>
+              <input v-else id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
+                     type="number" step=".01"
+                     v-model="copyTransaction.vat7">
             </div>
           </div>
           <div class="form-check mb-3">
             <input id="detailIsCorrection" class="form-check-input" type="checkbox"
-                   :checked="transaction.refId !== undefined"
-                   :disabled="!editing"/>
-            <label for="detailIsCorrection" class="form-check-label">Ist eine Korrektur</label>
+                   :checked="!!transaction.refId"
+                   disabled/>
+            <label for="detailIsCorrection" class="form-check-label">Korrektur</label>
           </div>
           <div class="mb-3">
             <label for="detailCategory" class="form-label">Kategorie</label>
-            <input id="detailCategory" class="form-control" type="text"
-                   :value="transaction.category" :disabled="!editing"/>
+            <input v-if="!editing" id="detailCategory" class="form-control" type="text"
+                   :value="transaction.category" disabled/>
+            <input v-else id="detailCategory" class="form-control" type="text" value="Das ist mir grad zu doof hier"/>
           </div>
           <div class="mb-3">
             <label for="detailNote" class="form-label">Notiz</label>
             <input id="detailNote" class="form-control" type="text"
-                   :value="transaction.note" :disabled="!editing"/>
-          </div>
-          <div class="mb-3">
-            <label for="detailDateTime" class="form-label">Buchungsdatum</label>
-            <input id="detailDateTime" class="form-control" type="datetime-local"
-                   :value="transaction.effectiveTimestamp && convertLocalDateForInput(transaction.effectiveTimestamp)"
+                   v-model="copyTransaction.note"
                    :disabled="!editing"/>
           </div>
           <div class="mb-3">
-            <label for="detailDateTime" class="form-label">Erstelldatum</label>
-            <input id="detailDateTime" class="form-control" type="datetime-local"
+            <label for="detailEffectiveTime" class="form-label">Buchungsdatum</label>
+            <input id="detailEffectiveTime" class="form-control" type="datetime-local"
+                   :value="copyTransaction.effectiveTimestamp && convertLocalDateForInput(copyTransaction.effectiveTimestamp)"
+                   @input="copyTransaction.effectiveTimestamp = new Date(($event.target as HTMLInputElement)?.value)"
+                   :disabled="!editing"/>
+          </div>
+          <div class="mb-3">
+            <label for="detailInsertTime" class="form-label">Erstelldatum</label>
+            <input v-if="!editing" id="detailInsertTime" class="form-control" type="datetime-local"
                    :value="transaction.insertTimestamp && convertLocalDateForInput(transaction.insertTimestamp)"
-                   :disabled="!editing"/>
+                   disabled/>
+            <input v-else id="detailInsertTime" class="form-control" value="<auto-generiert>" disabled/>
           </div>
         </div>
       </div>
