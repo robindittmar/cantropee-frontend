@@ -2,6 +2,7 @@
 import {onMounted, ref} from "vue";
 import {convertLocalDateForInput} from "@/convert";
 import {Currencies, Money} from "ts-money";
+import {deriveVat} from "@/tax-helper";
 
 const props = defineProps<{
   categories: {
@@ -32,9 +33,10 @@ const resetValues = () => {
   effectiveTimestamp.value = new Date();
 }
 
-const deriveVat = () => {
-  vat19.value = Math.round(((value19.value * 100) / 119) * 19) / 100;
-  vat7.value = Math.round(((value7.value * 100) / 107) * 7) / 100;
+const setVat = () => {
+  const vats = deriveVat(value19.value, value7.value);
+  vat19.value = vats.vat19;
+  vat7.value = vats.vat7;
 }
 
 const setValue19 = (event: Event) => {
@@ -43,7 +45,7 @@ const setValue19 = (event: Event) => {
       .subtract(new Money(Math.round(value19.value * 100), Currencies.EUR))
       .amount / 100;
 
-  deriveVat();
+  setVat();
 };
 
 const setValue7 = (event: Event) => {
@@ -52,7 +54,7 @@ const setValue7 = (event: Event) => {
       .subtract(new Money(Math.round(value7.value * 100), Currencies.EUR))
       .amount / 100;
 
-  deriveVat();
+  setVat();
 };
 
 const submitWithdrawal = async () => {
