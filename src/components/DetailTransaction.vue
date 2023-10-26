@@ -215,14 +215,6 @@ onBeforeUnmount(() => {
                    disabled/>
             <input v-else id="detailInsertTime" class="form-control" value="<auto-generiert>" disabled/>
           </div>
-          <div class="mb-3">
-            <button v-if="!!props.transaction.refId && child === undefined && !editing" type="button" class="btn btn-primary" @click="fetchChild">
-              Historie...
-            </button>
-            <button v-if="child" type="button" class="btn btn-danger" @click="child = undefined">
-              Historie schließen
-            </button>
-          </div>
         </div>
       </div>
       <div v-if="child === undefined" class="row">
@@ -238,6 +230,18 @@ onBeforeUnmount(() => {
             </button>
             <button type="button" class="btn btn-primary" @click="submitTransaction">
               Speichern
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div clas="col">
+          <div class="mt-3">
+            <button v-if="!!props.transaction.refId && child === undefined && !editing" type="button" class="btn btn-primary" @click="fetchChild">
+              Historie...
+            </button>
+            <button v-if="child" type="button" class="btn btn-danger" @click="child = undefined">
+              Historie schließen
             </button>
           </div>
         </div>
