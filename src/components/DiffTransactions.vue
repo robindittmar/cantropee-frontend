@@ -11,6 +11,15 @@ const props = defineProps<{
   displayValues: boolean,
 }>();
 
+let valueChanged = !props.transaction.value.equals(props.parent.value);
+let value19Changed = !props.transaction.value19.equals(props.parent.value19);
+let vat19Changed = !props.transaction.vat19.equals(props.parent.vat19);
+let value7Changed = !props.transaction.value7.equals(props.parent.value7);
+let vat7Changed = !props.transaction.vat7.equals(props.parent.vat7);
+let categoryChanged = props.transaction.category !== props.parent.category;
+let noteChanged = props.transaction.note !== props.parent.note;
+let effectiveTimestampChanged = props.transaction.effectiveTimestamp.getTime() !== props.parent.effectiveTimestamp.getTime();
+
 let child: Ref<Transaction | undefined> = ref(undefined);
 const fetchChild = async () => {
   if(props.transaction.refId) {
@@ -33,64 +42,66 @@ const fetchChild = async () => {
           </div>
         </div>
         <div class="mb-3">
-          <label for="detailGroupValue" class="form-label">Betrag</label>
+          <label for="detailGroupValue" class="form-label" :class="{'text-warning': valueChanged}">Betrag</label>
           <div id="detailGroupValue" class="input-group mb-3">
             <span class="input-group-text" id="detailValueAddon">EUR</span>
             <input id="detailValue" class="form-control"
-                   :class="{'text-warning': !transaction.value.equals(parent.value)}"
+                   :class="{'text-warning': valueChanged}"
                    aria-describedby="detailValueAddon" type="text" :value="displayValues ? transaction.value.toString() : '***'"
                    disabled/>
           </div>
         </div>
         <div class="mb-3">
-          <label for="detailGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
+          <label for="detailGroupValue19" class="form-label"
+                 :class="{'text-warning': value19Changed || vat19Changed}">19% Anteil | 19% Steuern</label>
           <div id="detailGroupValue19" class="input-group mb-3">
             <span class="input-group-text" id="detailValue19addon">EUR</span>
             <input id="detailValue19" class="form-control"
-                   :class="{'text-warning': !transaction.value19.equals(parent.value19)}"
+                   :class="{'text-warning': value19Changed}"
                    aria-describedby="detailValue19addon" type="text"
                    :value="displayValues ? transaction.value19.toString() : '***'"
                    disabled/>
             <span class="input-group-text" id="detailVat19addon">EUR</span>
             <input id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
-                   :class="{'text-warning': !transaction.vat19.equals(parent.vat19)}"
+                   :class="{'text-warning': vat19Changed}"
                    :value="displayValues ? transaction.vat19.toString() : '***'"
                    disabled/>
           </div>
         </div>
         <div class="mb-3">
-          <label for="detailGroupValue7" class="form-label">7% Anteil | 7% Steuern</label>
+          <label for="detailGroupValue7" class="form-label"
+                 :class="{'text-warning': value7Changed || vat7Changed}">7% Anteil | 7% Steuern</label>
           <div id="detailGroupValue7" class="input-group mb-3">
             <span class="input-group-text" id="detailValue7addon">EUR</span>
             <input id="detailValue7" class="form-control"
-                   :class="{'text-warning': !transaction.value7.equals(parent.value7)}"
+                   :class="{'text-warning': value7Changed}"
                    aria-describedby="detailValue7addon" type="text"
                    :value="displayValues ? transaction.value7.toString() : '***'"
                    disabled/>
             <span class="input-group-text" id="detailVat7addon">EUR</span>
             <input id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
-                   :class="{'text-warning': !transaction.vat7.equals(parent.vat7)}"
+                   :class="{'text-warning': vat7Changed}"
                    type="text" :value="displayValues ? transaction.vat7.toString() : '***'"
                    disabled/>
           </div>
         </div>
         <div class="mb-3">
-          <label for="detailCategory" class="form-label">Kategorie</label>
+          <label for="detailCategory" class="form-label" :class="{'text-warning': categoryChanged}">Kategorie</label>
           <input id="detailCategory" class="form-control" type="text"
-                 :class="{'text-warning': transaction.category !== parent.category}"
+                 :class="{'text-warning': categoryChanged}"
                  :value="transaction.category" disabled/>
         </div>
         <div class="mb-3">
-          <label for="detailNote" class="form-label">Notiz</label>
+          <label for="detailNote" class="form-label" :class="{'text-warning': noteChanged}">Notiz</label>
           <input id="detailNote" class="form-control" type="text"
-                 :class="{'text-warning': transaction.note !== parent.note}"
+                 :class="{'text-warning': noteChanged}"
                  :value="transaction.note"
                  disabled/>
         </div>
         <div class="mb-3">
-          <label for="detailEffectiveTime" class="form-label">Buchungsdatum</label>
+          <label for="detailEffectiveTime" class="form-label" :class="{'text-warning': effectiveTimestampChanged}">Buchungsdatum</label>
           <input id="detailEffectiveTime" class="form-control" type="datetime-local"
-                 :class="{'text-warning': transaction.effectiveTimestamp.getTime() !== parent.effectiveTimestamp.getTime()}"
+                 :class="{'text-warning': effectiveTimestampChanged}"
                  :value="transaction.effectiveTimestamp && convertLocalDateForInput(transaction.effectiveTimestamp)"
                  disabled/>
         </div>
