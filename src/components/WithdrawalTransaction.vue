@@ -3,12 +3,10 @@ import {onMounted, ref} from "vue";
 import {convertLocalDateForInput} from "@/convert";
 import {Currencies, Money} from "ts-money";
 import {deriveVat} from "@/tax-helper";
+import type {Category} from "@/category";
 
 const props = defineProps<{
-  categories: {
-    id: number;
-    name: string;
-  }[],
+  categories: Category[],
 }>();
 
 const emit = defineEmits(['submit-withdrawal']);
@@ -76,6 +74,11 @@ const submitWithdrawal = async () => {
     },
     body: JSON.stringify(payload),
   });
+
+  if (!res.ok) {
+    console.warn('call to /api/transactions not ok');
+    console.warn(res);
+  }
 
   resetValues();
   emit('submit-withdrawal');

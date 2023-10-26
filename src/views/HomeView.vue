@@ -122,7 +122,7 @@ onMounted(() => {
       <div class="row mt-2">
         <div class="col">
           <TransactionsComponent :effective-span="effectiveSpan" :show-pending="showPending" :display-values="displayValues"
-                                 :sorting-order="sortingOrder"
+                                 :sorting-order="sortingOrder" :categories="categories"
                                  @updated-transaction="forceReload"/>
         </div>
       </div>

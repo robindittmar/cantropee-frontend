@@ -5,6 +5,7 @@ import {Money} from "ts-money";
 import {dateToURI, dateToString, moneyToString} from "../convert";
 import type {Transaction} from "@/transaction";
 import DetailTransaction from "@/components/DetailTransaction.vue";
+import type {Category} from "@/category";
 
 const props = defineProps<{
   effectiveSpan: {
@@ -14,6 +15,7 @@ const props = defineProps<{
   showPending: boolean,
   displayValues: boolean,
   sortingOrder: string,
+  categories: Category[],
 }>();
 
 const emit = defineEmits(['updated-transaction']);
@@ -164,7 +166,7 @@ onMounted(() => {
                 @leave="waitForCollapse">
             <tr v-if="transaction.id === selectedTransaction" class="no-hover">
               <td colspan="3">
-                <DetailTransaction :transaction="transaction" :display-values="displayValues"
+                <DetailTransaction :transaction="transaction" :display-values="displayValues" :categories="categories"
                                    @updated-transaction="updatedTransaction"/>
               </td>
             </tr>

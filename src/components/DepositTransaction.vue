@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import {convertLocalDateForInput} from "@/convert";
+import type {Category} from "@/category";
 
 const props = defineProps<{
-  categories: {
-    id: number;
-    name: string;
-  }[],
+  categories: Category[],
 }>();
 
 const emit = defineEmits(['submit-deposit']);
