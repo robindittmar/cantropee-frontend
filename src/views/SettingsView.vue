@@ -21,6 +21,12 @@ let organizations = ref(props.user.organizations);
 <template>
   <div class="container">
     <header>
+      <div class="d-flex justify-content-end pt-2 pe-2">
+        <h6 class="me-2">{{ user.email }}</h6>
+        <a class="btn btn-outline-danger me-2" href="/logout">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </a>
+      </div>
       <div class="row mt-2">
         <div class="col">
           <OrganizationComponent :user="user" @change-organization="$emit('change-organization')"/>
