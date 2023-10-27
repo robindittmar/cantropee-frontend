@@ -1,9 +1,12 @@
 export const valueToString = (value: number) => {
-    return (value / 100).toFixed(2);
+    return (value / 100).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
 };
 
 export const moneyToString = (value: number, currency: string) => {
-    return `${currency} ${(value / 100).toFixed(2)}`;
+    return `${currency} ${valueToString(value)}`;
 };
 
 export const dateToURI = (dt: Date) => {
