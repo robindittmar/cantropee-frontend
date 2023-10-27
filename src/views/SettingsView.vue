@@ -7,7 +7,7 @@ const props = defineProps<{
   user: User;
 }>();
 
-defineEmits(['update-user-settings']);
+defineEmits(['change-organization', 'update-user-settings']);
 
 watch(() => props.user, () => {
   settings.value = props.user.settings;
@@ -23,7 +23,7 @@ let organizations = ref(props.user.organizations);
     <header>
       <div class="row mt-2">
         <div class="col">
-          <OrganizationComponent :user="user" />
+          <OrganizationComponent :user="user" @change-organization="$emit('change-organization')"/>
         </div>
       </div>
     </header>

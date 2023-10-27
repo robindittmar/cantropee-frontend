@@ -19,6 +19,10 @@ const setView = (view: View) => {
 let initialLoadDone = ref(false);
 let user: Ref<User> = ref(defaultUser());
 
+const changeOrganization = (orgId: string) => {
+  location.reload();
+}
+
 const updateSettings = async (settings: UserSettings) => {
   if (await updateUserSettings(settings)) {
     let intermediate = user.value;
@@ -39,7 +43,7 @@ onMounted(async () => {
   <HomeView v-if="selectedView === View.Home"
             :user="user"/>
   <SettingsView v-if="selectedView === View.Settings"
-                :user="user" @update-user-settings="updateSettings"/>
+                :user="user" @change-organization="changeOrganization" @update-user-settings="updateSettings"/>
   <div class="bottom-filler">
   </div>
   <div class="fixed-bottom">

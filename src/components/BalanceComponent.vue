@@ -10,6 +10,7 @@ const props = defineProps<{
   },
   showPending: boolean,
   displayValues: boolean,
+  title: string,
 }>();
 
 defineEmits(['request-deposit', 'request-withdrawal']);
@@ -84,7 +85,7 @@ onMounted(() => {
     <img id="brand-image" alt="cat-jam" src="/public/img/cat-jam.gif" class="rounded mx-auto d-block" />
     <div class="card-body">
       <div class="row">
-        <h5 class="card-title text-center">cantropee</h5>
+        <h5 class="card-title text-center">{{ title }}</h5>
         <h1
           class="card-title text-center"
           :class="{ 'text-success': totalBalance.amount >= 0 && displayValues, 'text-danger': totalBalance.amount < 0 && displayValues }"

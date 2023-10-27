@@ -105,6 +105,7 @@ onMounted(() => {
       <div class="row mt-2">
         <div class="col">
           <BalanceComponent :effective-span="effectiveSpan" :show-pending="showPending" :display-values="displayValues"
+                            :title="user.currentOrg?.name ?? 'cantropee'"
                             @request-deposit="requestDeposit" @request-withdrawal="requestWithdrawal"/>
         </div>
       </div>
