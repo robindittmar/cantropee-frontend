@@ -1,5 +1,3 @@
-import {Money} from "ts-money";
-
 export interface Transaction {
     id: string;
     rowIdx: number;
@@ -9,11 +7,11 @@ export interface Transaction {
     effectiveTimestamp: Date;
     pending: boolean;
     isPositive: boolean;
-    value: Money;
-    value7: Money;
-    value19: Money;
-    vat7: Money;
-    vat19: Money;
+    value: number;
+    value7: number;
+    value19: number;
+    vat7: number;
+    vat19: number;
     note: string | undefined;
 }
 
@@ -26,15 +24,15 @@ export async function getTransactionById(id: string): Promise<Transaction> {
         rowIdx: t.rowIdx,
         refId: t.refId,
         category: t.category,
-        effectiveTimestamp:new Date(t.effectiveTimestamp),
+        effectiveTimestamp: new Date(t.effectiveTimestamp),
         insertTimestamp: new Date(t.insertTimestamp),
         pending: false,
         isPositive: false,
-        value: new Money(t.value.amount, t.value.currency),
-        value19: new Money(t.value19.amount, t.value19.currency),
-        value7: new Money(t.value7.amount, t.value7.currency),
-        vat19: new Money(t.vat19.amount, t.vat19.currency),
-        vat7: new Money(t.vat7.amount, t.vat7.currency),
+        value: t.value,
+        value19: t.value19,
+        value7: t.value7,
+        vat19: t.vat19,
+        vat7: t.vat7,
         note: t.note,
     };
 }

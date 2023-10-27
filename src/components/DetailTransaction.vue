@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import {convertLocalDateForInput} from "@/convert";
+import {convertLocalDateForInput, valueToString} from "@/convert";
 import type {Transaction} from "@/transaction";
 import type {Ref} from "vue";
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import {Collapse} from "bootstrap";
-import {Currencies, Money} from "ts-money";
 import {deriveVat} from "@/tax-helper";
 import type {Category} from "@/category";
 import DiffTransactions from "@/components/DiffTransactions.vue";
@@ -13,6 +12,7 @@ import {getTransactionById} from "@/transaction";
 const props = defineProps<{
   transaction: Transaction,
   categories: Category[],
+  currency: string,
   displayValues: boolean,
 }>();
 
@@ -25,11 +25,11 @@ const copyTransaction = () => {
     category: props.transaction.category,
     insertTimestamp: props.transaction.insertTimestamp,
     effectiveTimestamp: props.transaction.effectiveTimestamp,
-    value: props.transaction.value.toDecimal(),
-    value19: props.transaction.value19.toDecimal(),
-    value7: props.transaction.value7.toDecimal(),
-    vat19: props.transaction.vat19.toDecimal(),
-    vat7: props.transaction.vat7.toDecimal(),
+    value: props.transaction.value / 100,
+    value19: props.transaction.value19 / 100,
+    value7: props.transaction.value7 / 100,
+    vat19: props.transaction.vat19 / 100,
+    vat7: props.transaction.vat7 / 100,
     note: props.transaction.note,
   }
 };
@@ -43,9 +43,7 @@ const setValue19 = (event: Event) => {
   let current = transactionCopy.value;
 
   current.value19 = (event.target as HTMLInputElement).valueAsNumber;
-  current.value7 = new Money(Math.round(current.value * 100), Currencies.EUR)
-      .subtract(new Money(Math.round(current.value19 * 100), Currencies.EUR))
-      .amount / 100;
+  current.value7 = (Math.round(current.value * 100) - Math.round(current.value19 * 100)) / 100;
 
   let vats = deriveVat(current.value19, current.value7);
   current.vat19 = vats.vat19;
@@ -58,9 +56,7 @@ const setValue7 = (event: Event) => {
   let current = transactionCopy.value;
 
   current.value7 = (event.target as HTMLInputElement).valueAsNumber;
-  current.value19 = new Money(Math.round(current.value * 100), Currencies.EUR)
-      .subtract(new Money(Math.round(current.value7 * 100), Currencies.EUR))
-      .amount / 100;
+  current.value19 = (Math.round(current.value * 100) - Math.round(current.value7 * 100)) / 100;
 
   let vats = deriveVat(current.value19, current.value7);
   current.vat19 = vats.vat19;
@@ -135,7 +131,7 @@ onBeforeUnmount(() => {
             <div id="detailGroupValue" class="input-group mb-3">
               <span class="input-group-text" id="detailValueAddon">EUR</span>
               <input v-if="!editing" id="detailValue" class="form-control"
-                     aria-describedby="detailValueAddon" type="text" :value="displayValues ? transaction.value.toString() : '***'"
+                     aria-describedby="detailValueAddon" type="text" :value="displayValues ? valueToString(transaction.value) : '***'"
                      disabled/>
               <input v-else id="detailValue" class="form-control"
                      aria-describedby="detailValueAddon" type="number" step=".01"
@@ -148,7 +144,7 @@ onBeforeUnmount(() => {
               <span class="input-group-text" id="detailValue19addon">EUR</span>
               <input v-if="!editing" id="detailValue19" class="form-control"
                      aria-describedby="detailValue19addon" type="text"
-                     :value="displayValues ? transaction.value19.toString() : '***'"
+                     :value="displayValues ? valueToString(transaction.value19) : '***'"
                      disabled/>
               <input v-else id="detailValue19" class="form-control"
                      aria-describedby="detailValue19addon" type="number" step=".01"
@@ -156,7 +152,7 @@ onBeforeUnmount(() => {
                      @input="setValue19"/>
               <span class="input-group-text" id="detailVat19addon">EUR</span>
               <input v-if="!editing" id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
-                     :value="displayValues ? transaction.vat19.toString() : '***'"
+                     :value="displayValues ? valueToString(transaction.vat19) : '***'"
                      disabled/>
               <input v-else id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
                      type="number" step=".01"
@@ -169,7 +165,7 @@ onBeforeUnmount(() => {
               <span class="input-group-text" id="detailValue7addon">EUR</span>
               <input v-if="!editing" id="detailValue7" class="form-control"
                      aria-describedby="detailValue7addon" type="text"
-                     :value="displayValues ? transaction.value7.toString() : '***'"
+                     :value="displayValues ? valueToString(transaction.value7) : '***'"
                      disabled/>
               <input v-else id="detailValue7" class="form-control"
                      aria-describedby="detailValue7addon" type="number" step=".01"
@@ -177,7 +173,7 @@ onBeforeUnmount(() => {
                      @input="setValue7"/>
               <span class="input-group-text" id="detailVat7addon">EUR</span>
               <input v-if="!editing" id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
-                     type="text" :value="displayValues ? transaction.vat7.toString() : '***'"
+                     type="text" :value="displayValues ? valueToString(transaction.vat7) : '***'"
                      disabled/>
               <input v-else id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
                      type="number" step=".01"
@@ -237,7 +233,7 @@ onBeforeUnmount(() => {
       <div class="row">
         <div clas="col">
           <div class="mt-3">
-            <button v-if="!!props.transaction.refId && child === undefined && !editing" type="button" class="btn btn-primary" @click="fetchChild">
+            <button v-if="!!props.transaction.refId && child === undefined" type="button" class="btn btn-primary" @click="fetchChild">
               Historie...
             </button>
             <button v-if="child" type="button" class="btn btn-danger" @click="child = undefined">

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import {convertLocalDateForInput} from "@/convert";
-import {Currencies, Money} from "ts-money";
 import {deriveVat} from "@/tax-helper";
 import type {Category} from "@/category";
 
@@ -39,18 +38,14 @@ const setVat = () => {
 
 const setValue19 = (event: Event) => {
   value19.value = (event.target as HTMLInputElement).valueAsNumber;
-  value7.value = new Money(Math.round(value.value * 100), Currencies.EUR)
-      .subtract(new Money(Math.round(value19.value * 100), Currencies.EUR))
-      .amount / 100;
+  value7.value = (Math.round(value.value * 100) - Math.round(value19.value * 100)) / 100;
 
   setVat();
 };
 
 const setValue7 = (event: Event) => {
   value7.value = (event.target as HTMLInputElement).valueAsNumber;
-  value19.value = new Money(Math.round(value.value * 100), Currencies.EUR)
-      .subtract(new Money(Math.round(value7.value * 100), Currencies.EUR))
-      .amount / 100;
+  value19.value = (Math.round(value.value * 100) - Math.round(value7.value * 100)) / 100;
 
   setVat();
 };

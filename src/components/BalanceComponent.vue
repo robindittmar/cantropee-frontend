@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {watch, onMounted, ref} from "vue";
-import {Money, Currencies} from "ts-money";
 import {dateToURI, moneyToString} from "@/convert";
 
 const props = defineProps<{
@@ -8,6 +7,7 @@ const props = defineProps<{
     from: Date,
     to: Date,
   },
+  currency: string,
   showPending: boolean,
   displayValues: boolean,
   title: string,
@@ -16,34 +16,34 @@ const props = defineProps<{
 defineEmits(['request-deposit', 'request-withdrawal']);
 
 let balance = {
-  total: new Money(0, Currencies.EUR),
+  total: 0,
   vat: {
-    total: new Money(0, Currencies.EUR),
-    vat19: new Money(0, Currencies.EUR),
-    vat7: new Money(0, Currencies.EUR),
+    total: 0,
+    vat19: 0,
+    vat7: 0,
   },
   pending: {
-    total: new Money(0, Currencies.EUR),
+    total: 0,
     vat: {
-      total: new Money(0, Currencies.EUR),
-      vat19: new Money(0, Currencies.EUR),
-      vat7: new Money(0, Currencies.EUR),
+      total: 0,
+      vat19: 0,
+      vat7: 0,
     },
   },
 };
 
 const recalculateBalance = () => {
   if (props.showPending) {
-    totalBalance.value = balance.total.add(balance.pending.total);
-    totalVat.value = balance.vat.total.add(balance.pending.vat.total);
+    totalBalance.value = balance.total + balance.pending.total;
+    totalVat.value = balance.vat.total + balance.pending.vat.total;
   } else {
     totalBalance.value = balance.total;
     totalVat.value = balance.vat.total;
   }
 };
 
-let totalBalance = ref(new Money(0.0, Currencies.EUR));
-let totalVat = ref(new Money(0.0, Currencies.EUR));
+let totalBalance = ref(0.0);
+let totalVat = ref(0.0);
 
 watch(() => props.showPending, () => {
   recalculateBalance();
@@ -55,23 +55,8 @@ watch(() => props.effectiveSpan, () => {
 
 const fetchBalance = async () => {
   const res = await fetch(`/api/transactions/balance?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}`);
-  let newBalance = await res.json();
-  newBalance.total = new Money(newBalance.total.amount, newBalance.total.currency);
-  newBalance.vat = {
-    total: new Money(newBalance.vat.total.amount, newBalance.vat.total.currency),
-    vat19: new Money(newBalance.vat.vat19.amount, newBalance.vat.vat19.currency),
-    vat7: new Money(newBalance.vat.vat7.amount, newBalance.vat.vat7.currency),
-  };
-  newBalance.pending = {
-    total: new Money(newBalance.pending.total.amount, newBalance.pending.total.currency),
-    vat: {
-      total: new Money(newBalance.pending.vat.total.amount, newBalance.pending.vat.total.currency),
-      vat19: new Money(newBalance.pending.vat.vat19.amount, newBalance.pending.vat.vat19.currency),
-      vat7: new Money(newBalance.pending.vat.vat7.amount, newBalance.pending.vat.vat7.currency),
-    }
-  }
+  balance = await res.json();
 
-  balance = newBalance;
   recalculateBalance();
 };
 
@@ -88,11 +73,11 @@ onMounted(() => {
         <h5 class="card-title text-center">{{ title }}</h5>
         <h1
           class="card-title text-center"
-          :class="{ 'text-success': totalBalance.amount >= 0 && displayValues, 'text-danger': totalBalance.amount < 0 && displayValues }"
+          :class="{ 'text-success': totalBalance >= 0 && displayValues, 'text-danger': totalBalance < 0 && displayValues }"
         >
-          {{ displayValues ? moneyToString(totalBalance) : '***' }}
+          {{ displayValues ? moneyToString(totalBalance, currency) : '***' }}
         </h1>
-        <span class="text-center text-sm-center">{{ displayValues ? moneyToString(totalVat) : '***' }}</span>
+        <span class="text-center text-sm-center">{{ displayValues ? moneyToString(totalVat, currency) : '***' }}</span>
       </div>
       <div class="row">
         <div class="col">

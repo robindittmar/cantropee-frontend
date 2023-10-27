@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
 import type {Ref} from "vue";
-import {Money} from "ts-money";
 import {dateToURI, dateToString, moneyToString} from "../convert";
 import type {Transaction} from "@/transaction";
 import DetailTransaction from "@/components/DetailTransaction.vue";
@@ -12,6 +11,7 @@ const props = defineProps<{
     from: Date,
     to: Date,
   },
+  currency: string,
   showPending: boolean,
   displayValues: boolean,
   sortingOrder: string,
@@ -51,12 +51,7 @@ const fetchTransactions = async () => {
   paginatedResult.data = paginatedResult.data.map((t: Transaction) => {
     t.insertTimestamp = new Date(t.insertTimestamp);
     t.effectiveTimestamp = new Date(t.effectiveTimestamp);
-    t.value = new Money(t.value.amount, t.value.currency);
-    t.value19 = new Money(t.value19.amount, t.value19.currency);
-    t.value7 = new Money(t.value7.amount, t.value7.currency);
-    t.vat19 = new Money(t.vat19.amount, t.vat19.currency);
-    t.vat7 = new Money(t.vat7.amount, t.vat7.currency);
-    t.isPositive = t.value.amount >= 0;
+    t.isPositive = t.value >= 0;
     return t;
   });
 
@@ -148,7 +143,7 @@ onMounted(() => {
             <template v-if="transaction.pending">
               <th class="text-muted" scope="row">{{ transaction.rowIdx }}</th>
               <td class="text-muted">{{ dateToString(transaction.effectiveTimestamp) }}</td>
-              <td class="text-muted">{{ displayValues ? moneyToString(transaction.value) : '***' }}</td>
+              <td class="text-muted">{{ displayValues ? moneyToString(transaction.value, currency) : '***' }}</td>
             </template>
             <template v-else>
               <th :class="{'positive-value': transaction.isPositive && displayValues, 'negative-value': !transaction.isPositive && displayValues}"
@@ -157,7 +152,7 @@ onMounted(() => {
               </th>
               <td>{{ dateToString(transaction.effectiveTimestamp) }}</td>
               <td :class="{'positive-value': transaction.isPositive && displayValues, 'negative-value': !transaction.isPositive && displayValues}">
-                {{ displayValues ? moneyToString(transaction.value) : '***' }}
+                {{ displayValues ? moneyToString(transaction.value, currency) : '***' }}
               </td>
             </template>
             </tr>
@@ -167,7 +162,8 @@ onMounted(() => {
                 @leave="waitForCollapse">
             <tr v-if="transaction.id === selectedTransaction" class="no-hover">
               <td colspan="3">
-                <DetailTransaction :transaction="transaction" :display-values="displayValues" :categories="categories"
+                <DetailTransaction :transaction="transaction" :currency="currency" :display-values="displayValues"
+                                   :categories="categories"
                                    @updated-transaction="updatedTransaction"/>
               </td>
             </tr>

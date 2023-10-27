@@ -104,7 +104,8 @@ onMounted(() => {
     <header>
       <div class="row mt-2">
         <div class="col">
-          <BalanceComponent :effective-span="effectiveSpan" :show-pending="showPending" :display-values="displayValues"
+          <BalanceComponent :effective-span="effectiveSpan" :currency="user.currentOrg?.currency ?? 'EUR'"
+                            :show-pending="showPending" :display-values="displayValues"
                             :title="user.currentOrg?.name ?? 'cantropee'"
                             @request-deposit="requestDeposit" @request-withdrawal="requestWithdrawal"/>
         </div>
@@ -122,7 +123,8 @@ onMounted(() => {
     <main>
       <div class="row mt-2">
         <div class="col">
-          <TransactionsComponent :effective-span="effectiveSpan" :show-pending="showPending" :display-values="displayValues"
+          <TransactionsComponent :effective-span="effectiveSpan" :currency="user.currentOrg?.currency ?? 'EUR'"
+                                 :show-pending="showPending" :display-values="displayValues"
                                  :sorting-order="sortingOrder" :categories="categories"
                                  @updated-transaction="forceReload"/>
         </div>

@@ -25,7 +25,7 @@ const submitDeposit = async () => {
   const payload = {
     effectiveTimestamp: effectiveTimestamp.value,
     category: selectedCategory.value,
-    value: value.value * 100,
+    value: Math.round(value.value * 100),
     value19: 0,
     value7: 0,
     vat19: 0,

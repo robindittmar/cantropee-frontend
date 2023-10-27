@@ -1,11 +1,9 @@
-import {Money} from "ts-money";
+export const valueToString = (value: number) => {
+    return (value / 100).toFixed(2);
+};
 
-export const moneyToString = (m: Money) => {
-    if (m === undefined) {
-        return '';
-    }
-
-    return `${m.getCurrency()} ${m.toString()}`;
+export const moneyToString = (value: number, currency: string) => {
+    return `${currency} ${(value / 100).toFixed(2)}`;
 };
 
 export const dateToURI = (dt: Date) => {

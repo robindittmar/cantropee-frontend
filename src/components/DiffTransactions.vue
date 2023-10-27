@@ -11,11 +11,11 @@ const props = defineProps<{
   displayValues: boolean,
 }>();
 
-let valueChanged = !props.transaction.value.equals(props.parent.value);
-let value19Changed = !props.transaction.value19.equals(props.parent.value19);
-let vat19Changed = !props.transaction.vat19.equals(props.parent.vat19);
-let value7Changed = !props.transaction.value7.equals(props.parent.value7);
-let vat7Changed = !props.transaction.vat7.equals(props.parent.vat7);
+let valueChanged = props.transaction.value !== props.parent.value;
+let value19Changed = props.transaction.value19 !== props.parent.value19;
+let vat19Changed = props.transaction.vat19 !== props.parent.vat19;
+let value7Changed = props.transaction.value7 !== props.parent.value7;
+let vat7Changed = props.transaction.vat7 !== props.parent.vat7;
 let categoryChanged = props.transaction.category !== props.parent.category;
 let noteChanged = props.transaction.note !== props.parent.note;
 let effectiveTimestampChanged = props.transaction.effectiveTimestamp.getTime() !== props.parent.effectiveTimestamp.getTime();
