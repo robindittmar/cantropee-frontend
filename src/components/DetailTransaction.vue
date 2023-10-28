@@ -84,6 +84,8 @@ const submitTransaction = async() => {
   edited.vat7 *= 100;
   edited.category = selectedCategory.value;
 
+  console.log(edited);
+
   const res = await fetch('/api/transactions', {
     method: 'PUT',
     headers: {
