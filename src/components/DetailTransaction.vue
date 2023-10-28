@@ -80,11 +80,10 @@ const submitTransaction = async() => {
 
   edited.value *= 100;
   edited.value19 *= 100;
+  edited.value7 *= 100;
   edited.vat19 *= 100;
   edited.vat7 *= 100;
   edited.category = selectedCategory.value;
-
-  console.log(edited);
 
   const res = await fetch('/api/transactions', {
     method: 'PUT',
