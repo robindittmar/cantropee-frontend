@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {Transaction} from "@/transaction";
-import {convertLocalDateForInput} from "@/convert";
+import {convertLocalDateForInput, valueToString} from "@/convert";
 import type {Ref} from "vue";
 import {ref} from "vue";
 import {getTransactionById} from "@/transaction";
@@ -47,7 +47,7 @@ const fetchChild = async () => {
             <span class="input-group-text" id="detailValueAddon">EUR</span>
             <input id="detailValue" class="form-control"
                    :class="{'text-warning': valueChanged}"
-                   aria-describedby="detailValueAddon" type="text" :value="displayValues ? transaction.value.toString() : '***'"
+                   aria-describedby="detailValueAddon" type="text" :value="displayValues ? valueToString(transaction.value) : '***'"
                    disabled/>
           </div>
         </div>
@@ -59,12 +59,12 @@ const fetchChild = async () => {
             <input id="detailValue19" class="form-control"
                    :class="{'text-warning': value19Changed}"
                    aria-describedby="detailValue19addon" type="text"
-                   :value="displayValues ? transaction.value19.toString() : '***'"
+                   :value="displayValues ? valueToString(transaction.value19) : '***'"
                    disabled/>
             <span class="input-group-text" id="detailVat19addon">EUR</span>
             <input id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
                    :class="{'text-warning': vat19Changed}"
-                   :value="displayValues ? transaction.vat19.toString() : '***'"
+                   :value="displayValues ? valueToString(transaction.vat19) : '***'"
                    disabled/>
           </div>
         </div>
@@ -76,12 +76,12 @@ const fetchChild = async () => {
             <input id="detailValue7" class="form-control"
                    :class="{'text-warning': value7Changed}"
                    aria-describedby="detailValue7addon" type="text"
-                   :value="displayValues ? transaction.value7.toString() : '***'"
+                   :value="displayValues ? valueToString(transaction.value7) : '***'"
                    disabled/>
             <span class="input-group-text" id="detailVat7addon">EUR</span>
             <input id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
                    :class="{'text-warning': vat7Changed}"
-                   type="text" :value="displayValues ? transaction.vat7.toString() : '***'"
+                   type="text" :value="displayValues ? valueToString(transaction.vat7) : '***'"
                    disabled/>
           </div>
         </div>
