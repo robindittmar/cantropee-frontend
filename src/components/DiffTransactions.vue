@@ -11,6 +11,18 @@ const props = defineProps<{
 
 const emit = defineEmits(['modal-closed']);
 
+const diffValueToString = (v: number | undefined): string => {
+  if (v === undefined) {
+    return '';
+  }
+
+  if (props.displayValues) {
+    return valueToString(Math.abs(v));
+  } else {
+    return '***';
+  }
+};
+
 onMounted(() => {
   const modal = Modal.getOrCreateInstance('#diffModal');
   modal.show();
@@ -65,19 +77,19 @@ onBeforeUnmount(() => {
                     {{ diff.isDeposit === undefined ? undefined : (diff.isDeposit ? 'Einzahlung' : 'Auszahlung') }}
                   </td>
                   <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
-                    {{ diff.value && valueToString(Math.abs(diff.value)) }}
+                    {{ diffValueToString(diff.value) }}
                   </td>
                   <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
-                    {{ diff.value19 && valueToString(Math.abs(diff.value19)) }}
+                    {{ diffValueToString(diff.value19) }}
                   </td>
                   <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
-                    {{ diff.value7 && valueToString(Math.abs(diff.value7)) }}
+                    {{ diffValueToString(diff.value7) }}
                   </td>
                   <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
-                    {{ diff.vat19 && valueToString(Math.abs(diff.vat19)) }}
+                    {{ diffValueToString(diff.vat19) }}
                   </td>
                   <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
-                    {{ diff.vat7 && valueToString(Math.abs(diff.vat7)) }}
+                    {{ diffValueToString(diff.vat7) }}
                   </td>
                   <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
                     {{ diff.category }}
