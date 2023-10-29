@@ -20,6 +20,17 @@ const newTransaction = () => {
 
 const t = ref(newTransaction());
 
+const setValue = (event: Event) => {
+  let current = t.value;
+
+  current.value = (event.target as HTMLInputElement).valueAsNumber;
+  if (current.value < 0) {
+    current.value = 0;
+  }
+
+  t.value = current;
+};
+
 const submitDeposit = async () => {
   const current = t.value;
   const payload = {
@@ -73,7 +84,8 @@ onMounted(() => {
                 <span class="input-group-text" id="depositValueAddon">EUR</span>
                 <input id="depositValue" class="form-control"
                        aria-describedby="depositValueAddon" type="number" step=".01"
-                       v-model="t.value"/>
+                       :value="t.value"
+                       @input="setValue"/>
               </div>
             </div>
             <div class="mb-3">
