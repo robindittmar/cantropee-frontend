@@ -24,7 +24,7 @@ export interface TransactionDiff {
     value19: number | undefined;
     vat7: number | undefined;
     vat19: number | undefined;
-    note: string | undefined;
+    note: string | null | undefined;
     isDeposit: boolean | undefined;
 }
 
