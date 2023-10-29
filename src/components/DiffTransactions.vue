@@ -57,8 +57,8 @@ onBeforeUnmount(() => {
                 <th scope="col">Typ</th>
                 <th scope="col">Betrag</th>
                 <th scope="col">Betrag 19%</th>
-                <th scope="col">Betrag 7%</th>
                 <th scope="col">MwSt 19%</th>
+                <th scope="col">Betrag 7%</th>
                 <th scope="col">MwSt 7%</th>
                 <th scope="col">Kategorie</th>
                 <th scope="col">Notiz</th>
@@ -83,10 +83,10 @@ onBeforeUnmount(() => {
                     {{ diffValueToString(diff.value19) }}
                   </td>
                   <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
-                    {{ diffValueToString(diff.value7) }}
+                    {{ diffValueToString(diff.vat19) }}
                   </td>
                   <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
-                    {{ diffValueToString(diff.vat19) }}
+                    {{ diffValueToString(diff.value7) }}
                   </td>
                   <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
                     {{ diffValueToString(diff.vat7) }}
