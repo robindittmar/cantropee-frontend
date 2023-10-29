@@ -7,7 +7,6 @@ import {Collapse} from "bootstrap";
 import {deriveVat} from "@/tax-helper";
 import type {Category} from "@/category";
 import DiffTransactions from "@/components/DiffTransactions.vue";
-import {getTransactionById} from "@/transaction";
 
 const props = defineProps<{
   transaction: Transaction,
@@ -25,25 +24,47 @@ const copyTransaction = () => {
     category: props.transaction.category,
     insertTimestamp: props.transaction.insertTimestamp,
     effectiveTimestamp: props.transaction.effectiveTimestamp,
-    value: props.transaction.value / 100,
-    value19: props.transaction.value19 / 100,
-    value7: props.transaction.value7 / 100,
-    vat19: props.transaction.vat19 / 100,
-    vat7: props.transaction.vat7 / 100,
+    value: Math.abs(props.transaction.value / 100),
+    value19: Math.abs(props.transaction.value19 / 100),
+    value7: Math.abs(props.transaction.value7 / 100),
+    vat19: Math.abs(props.transaction.vat19 / 100),
+    vat7: Math.abs(props.transaction.vat7 / 100),
     note: props.transaction.note,
-  }
+  };
 };
 
+let isDeposit = ref(props.transaction.value >= 0);
 let editing = ref(false);
 const selectedCategory = ref('');
 let transactionCopy = ref(copyTransaction());
-let child: Ref<Transaction | undefined> = ref(undefined);
+let history: Ref<Transaction[] | undefined> = ref(undefined);
+
+const setValue = (event: Event) => {
+  let current = transactionCopy.value;
+
+  current.value = (event.target as HTMLInputElement).valueAsNumber;
+  current.value19 = 0;
+  current.value7 = 0;
+  current.vat19 = 0;
+  current.vat7 = 0;
+
+  transactionCopy.value = current;
+}
 
 const setValue19 = (event: Event) => {
   let current = transactionCopy.value;
 
   current.value19 = (event.target as HTMLInputElement).valueAsNumber;
+  if (current.value < 0 && current.value19 > 0 ||
+      current.value > 0 && current.value19 < 0) {
+    current.value19 = 0;
+  }
+
   current.value7 = (Math.round(current.value * 100) - Math.round(current.value19 * 100)) / 100;
+  if (current.value7 < 0) {
+    current.value19 = current.value
+    current.value7 = 0;
+  }
 
   let vats = deriveVat(current.value19, current.value7);
   current.vat19 = vats.vat19;
@@ -56,7 +77,16 @@ const setValue7 = (event: Event) => {
   let current = transactionCopy.value;
 
   current.value7 = (event.target as HTMLInputElement).valueAsNumber;
+  if (current.value < 0 && current.value7 > 0 ||
+      current.value > 0 && current.value7 < 0) {
+    current.value7 = 0;
+  }
+
   current.value19 = (Math.round(current.value * 100) - Math.round(current.value7 * 100)) / 100;
+  if (current.value19 < 0) {
+    current.value7 = current.value
+    current.value19 = 0;
+  }
 
   let vats = deriveVat(current.value19, current.value7);
   current.vat19 = vats.vat19;
@@ -84,6 +114,18 @@ const submitTransaction = async() => {
   edited.vat19 *= 100;
   edited.vat7 *= 100;
   edited.category = selectedCategory.value;
+  if (isDeposit.value) {
+    edited.value19 = 0;
+    edited.value7 = 0;
+    edited.vat19 = 0;
+    edited.vat7 = 0;
+  } else {
+    edited.value = -edited.value;
+    edited.value19 = -edited.value19;
+    edited.value7 = -edited.value7;
+    edited.vat19 = -edited.vat19;
+    edited.vat7 = -edited.vat7;
+  }
 
   const res = await fetch('/api/transactions', {
     method: 'PUT',
@@ -97,10 +139,17 @@ const submitTransaction = async() => {
   emit('updated-transaction', newId.id);
 };
 
-const fetchChild = async () => {
-  if(props.transaction.refId) {
-    child.value = await getTransactionById(props.transaction.refId);
-  }
+const fetchHistory = async () => {
+  const result = await fetch(`/api/transactions/${props.transaction.id}/history`);
+  let transactions = (await result.json()).map((t: Transaction) => {
+    t.insertTimestamp = new Date(t.insertTimestamp);
+    t.effectiveTimestamp = new Date(t.effectiveTimestamp);
+
+    return t;
+  });
+
+  console.log(transactions);
+  history.value = transactions;
 };
 
 onMounted(() => {
@@ -120,6 +169,20 @@ onBeforeUnmount(() => {
       <div class="row">
         <div class="col">
           <div class="mb-3">
+            <button v-if="isDeposit" @click="isDeposit = false"
+                    class="btn w-100"
+                    :class="{'btn-outline-success': !editing, 'btn-success': editing}"
+                    :disabled="!editing">
+              Einzahlung
+            </button>
+            <button v-else @click="isDeposit = true"
+                    class="btn w-100"
+                    :class="{'btn-outline-danger': !editing, 'btn-danger': editing}"
+                    :disabled="!editing">
+              Auszahlung
+            </button>
+          </div>
+          <div class="mb-3">
             <div id="detailGroupId" class="input-group mb-3">
               <span class="input-group-text" id="detailIdAddon">ID</span>
               <input id="detailId" class="form-control"
@@ -132,20 +195,22 @@ onBeforeUnmount(() => {
             <div id="detailGroupValue" class="input-group mb-3">
               <span class="input-group-text" id="detailValueAddon">EUR</span>
               <input v-if="!editing" id="detailValue" class="form-control"
-                     aria-describedby="detailValueAddon" type="text" :value="displayValues ? valueToString(transaction.value) : '***'"
+                     aria-describedby="detailValueAddon" type="text" :value="displayValues ? valueToString(Math.abs(transaction.value)) : '***'"
                      disabled/>
               <input v-else id="detailValue" class="form-control"
                      aria-describedby="detailValueAddon" type="number" step=".01"
-                     v-model="transactionCopy.value"/>
+                     :value="transactionCopy.value"
+                     @input="setValue"/>
             </div>
           </div>
+          <template v-if="!isDeposit">
           <div class="mb-3">
             <label for="detailGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
             <div id="detailGroupValue19" class="input-group mb-3">
               <span class="input-group-text" id="detailValue19addon">EUR</span>
               <input v-if="!editing" id="detailValue19" class="form-control"
                      aria-describedby="detailValue19addon" type="text"
-                     :value="displayValues ? valueToString(transaction.value19) : '***'"
+                     :value="displayValues ? valueToString(Math.abs(transaction.value19)) : '***'"
                      disabled/>
               <input v-else id="detailValue19" class="form-control"
                      aria-describedby="detailValue19addon" type="number" step=".01"
@@ -153,11 +218,12 @@ onBeforeUnmount(() => {
                      @input="setValue19"/>
               <span class="input-group-text" id="detailVat19addon">EUR</span>
               <input v-if="!editing" id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
-                     :value="displayValues ? valueToString(transaction.vat19) : '***'"
+                     :value="displayValues ? valueToString(Math.abs(transaction.vat19)) : '***'"
                      disabled/>
               <input v-else id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
                      type="number" step=".01"
-                     v-model="transactionCopy.vat19"/>
+                     v-model="transactionCopy.vat19"
+                     disabled/>
             </div>
           </div>
           <div class="mb-3">
@@ -166,7 +232,7 @@ onBeforeUnmount(() => {
               <span class="input-group-text" id="detailValue7addon">EUR</span>
               <input v-if="!editing" id="detailValue7" class="form-control"
                      aria-describedby="detailValue7addon" type="text"
-                     :value="displayValues ? valueToString(transaction.value7) : '***'"
+                     :value="displayValues ? valueToString(Math.abs(transaction.value7)) : '***'"
                      disabled/>
               <input v-else id="detailValue7" class="form-control"
                      aria-describedby="detailValue7addon" type="number" step=".01"
@@ -174,13 +240,15 @@ onBeforeUnmount(() => {
                      @input="setValue7"/>
               <span class="input-group-text" id="detailVat7addon">EUR</span>
               <input v-if="!editing" id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
-                     type="text" :value="displayValues ? valueToString(transaction.vat7) : '***'"
+                     type="text" :value="displayValues ? valueToString(Math.abs(transaction.vat7)) : '***'"
                      disabled/>
               <input v-else id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
                      type="number" step=".01"
-                     v-model="transactionCopy.vat7">
+                     v-model="transactionCopy.vat7"
+                     disabled>
             </div>
           </div>
+          </template>
           <div class="mb-3">
             <label for="detailCategory" class="form-label">Kategorie</label>
             <input v-if="!editing" id="detailCategory" class="form-control" type="text"
@@ -214,7 +282,7 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </div>
-      <div v-if="child === undefined" class="row">
+      <div v-if="history === undefined" class="row">
         <div class="col">
           <div v-if="!editing">
             <button type="button" class="btn btn-secondary w-100" @click="editTransaction(true)">
@@ -234,10 +302,10 @@ onBeforeUnmount(() => {
       <div class="row">
         <div clas="col">
           <div class="mt-3">
-            <button v-if="!!props.transaction.refId && child === undefined" type="button" class="btn btn-primary" @click="fetchChild">
+            <button v-if="!!props.transaction.refId && history === undefined" type="button" class="btn btn-primary" @click="fetchHistory">
               Historie...
             </button>
-            <button v-if="child" type="button" class="btn btn-danger" @click="child = undefined">
+            <button v-if="history" type="button" class="btn btn-danger" @click="history = undefined">
               Historie schließen
             </button>
           </div>
@@ -246,7 +314,9 @@ onBeforeUnmount(() => {
     </div>
   </div>
 
-  <DiffTransactions v-if="child" :transaction="child" :parent="props.transaction" :display-values="displayValues"/>
+  <template v-for="transaction of history" :key="transaction.id">
+    <DiffTransactions :transaction="transaction" :parent="props.transaction" :display-values="displayValues"/>
+  </template>
 </template>
 
 <style scoped>

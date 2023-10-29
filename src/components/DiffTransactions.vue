@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import type {Transaction} from "@/transaction";
 import {convertLocalDateForInput, valueToString} from "@/convert";
-import type {Ref} from "vue";
 import {ref} from "vue";
-import {getTransactionById} from "@/transaction";
 
 const props = defineProps<{
   parent: Transaction,
@@ -11,6 +9,7 @@ const props = defineProps<{
   displayValues: boolean,
 }>();
 
+let isDeposit = ref(props.transaction.value >= 0);
 let valueChanged = props.transaction.value !== props.parent.value;
 let value19Changed = props.transaction.value19 !== props.parent.value19;
 let vat19Changed = props.transaction.vat19 !== props.parent.vat19;
@@ -19,20 +18,24 @@ let vat7Changed = props.transaction.vat7 !== props.parent.vat7;
 let categoryChanged = props.transaction.category !== props.parent.category;
 let noteChanged = props.transaction.note !== props.parent.note;
 let effectiveTimestampChanged = props.transaction.effectiveTimestamp.getTime() !== props.parent.effectiveTimestamp.getTime();
-
-let child: Ref<Transaction | undefined> = ref(undefined);
-const fetchChild = async () => {
-  if(props.transaction.refId) {
-    child.value = await getTransactionById(props.transaction.refId);
-  }
-};
-
 </script>
 
 <template>
   <div class="m-3">
     <div class="row">
       <div class="col">
+        <div class="mb-3">
+          <button v-if="isDeposit" @click="isDeposit = false"
+                  class="btn btn-outline-success w-100"
+                  disabled>
+            Einzahlung
+          </button>
+          <button v-else @click="isDeposit = true"
+                  class="btn btn-outline-danger w-100"
+                  disabled>
+            Auszahlung
+          </button>
+        </div>
         <div class="mb-3">
           <div id="detailGroupId" class="input-group mb-3">
             <span class="input-group-text" id="detailIdAddon">ID</span>
@@ -47,10 +50,11 @@ const fetchChild = async () => {
             <span class="input-group-text" id="detailValueAddon">EUR</span>
             <input id="detailValue" class="form-control"
                    :class="{'text-warning': valueChanged}"
-                   aria-describedby="detailValueAddon" type="text" :value="displayValues ? valueToString(transaction.value) : '***'"
+                   aria-describedby="detailValueAddon" type="text" :value="displayValues ? valueToString(Math.abs(transaction.value)) : '***'"
                    disabled/>
           </div>
         </div>
+        <template v-if="!isDeposit">
         <div class="mb-3">
           <label for="detailGroupValue19" class="form-label"
                  :class="{'text-warning': value19Changed || vat19Changed}">19% Anteil | 19% Steuern</label>
@@ -59,12 +63,12 @@ const fetchChild = async () => {
             <input id="detailValue19" class="form-control"
                    :class="{'text-warning': value19Changed}"
                    aria-describedby="detailValue19addon" type="text"
-                   :value="displayValues ? valueToString(transaction.value19) : '***'"
+                   :value="displayValues ? valueToString(Math.abs(transaction.value19)) : '***'"
                    disabled/>
             <span class="input-group-text" id="detailVat19addon">EUR</span>
             <input id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
                    :class="{'text-warning': vat19Changed}"
-                   :value="displayValues ? valueToString(transaction.vat19) : '***'"
+                   :value="displayValues ? valueToString(Math.abs(transaction.vat19)) : '***'"
                    disabled/>
           </div>
         </div>
@@ -76,15 +80,16 @@ const fetchChild = async () => {
             <input id="detailValue7" class="form-control"
                    :class="{'text-warning': value7Changed}"
                    aria-describedby="detailValue7addon" type="text"
-                   :value="displayValues ? valueToString(transaction.value7) : '***'"
+                   :value="displayValues ? valueToString(Math.abs(transaction.value7)) : '***'"
                    disabled/>
             <span class="input-group-text" id="detailVat7addon">EUR</span>
             <input id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
                    :class="{'text-warning': vat7Changed}"
-                   type="text" :value="displayValues ? valueToString(transaction.vat7) : '***'"
+                   type="text" :value="displayValues ? valueToString(Math.abs(transaction.vat7)) : '***'"
                    disabled/>
           </div>
         </div>
+        </template>
         <div class="mb-3">
           <label for="detailCategory" class="form-label" :class="{'text-warning': categoryChanged}">Kategorie</label>
           <input id="detailCategory" class="form-control" type="text"
@@ -111,19 +116,9 @@ const fetchChild = async () => {
                  :value="transaction.insertTimestamp && convertLocalDateForInput(transaction.insertTimestamp)"
                  disabled/>
         </div>
-        <div class="mb-3">
-          <button v-if="!!props.transaction.refId && child === undefined" type="button" class="btn btn-primary" @click="fetchChild">
-            Historie...
-          </button>
-          <button v-if="child" type="button" class="btn btn-danger" @click="child = undefined">
-            Historie schließen
-          </button>
-        </div>
       </div>
     </div>
   </div>
-
-  <DiffTransactions v-if="child" :transaction="child" :parent="transaction" :display-values="displayValues"/>
 </template>
 
 <style scoped>
