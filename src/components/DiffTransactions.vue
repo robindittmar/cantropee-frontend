@@ -36,7 +36,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   const modal = Modal.getOrCreateInstance('#diffModal');
   modal.hide();
-})
+});
 </script>
 
 <template>
