@@ -100,7 +100,7 @@ const editTransaction = async (edit: boolean) => {
 };
 
 const submitTransaction = async() => {
-  let edited = transactionCopy.value;
+  let edited = {...transactionCopy.value};
 
   edited.value *= 100;
   edited.value19 *= 100;
