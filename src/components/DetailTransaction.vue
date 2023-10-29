@@ -55,16 +55,13 @@ const setValue19 = (event: Event) => {
   let current = transactionCopy.value;
 
   current.value19 = (event.target as HTMLInputElement).valueAsNumber;
-  if (current.value < 0 && current.value19 > 0 ||
-      current.value > 0 && current.value19 < 0) {
+  if (current.value19 < 0) {
     current.value19 = 0;
+  } else if (current.value19 > current.value) {
+    current.value19 = current.value;
   }
 
   current.value7 = (Math.round(current.value * 100) - Math.round(current.value19 * 100)) / 100;
-  if (current.value7 < 0) {
-    current.value19 = current.value
-    current.value7 = 0;
-  }
 
   let vats = deriveVat(current.value19, current.value7);
   current.vat19 = vats.vat19;
@@ -77,16 +74,13 @@ const setValue7 = (event: Event) => {
   let current = transactionCopy.value;
 
   current.value7 = (event.target as HTMLInputElement).valueAsNumber;
-  if (current.value < 0 && current.value7 > 0 ||
-      current.value > 0 && current.value7 < 0) {
+  if (current.value7 < 0) {
     current.value7 = 0;
+  } else if (current.value7 > current.value) {
+    current.value7 = current.value;
   }
 
   current.value19 = (Math.round(current.value * 100) - Math.round(current.value7 * 100)) / 100;
-  if (current.value19 < 0) {
-    current.value7 = current.value
-    current.value19 = 0;
-  }
 
   let vats = deriveVat(current.value19, current.value7);
   current.vat19 = vats.vat19;

@@ -3,6 +3,7 @@ import {onMounted, ref} from "vue";
 import {convertLocalDateForInput} from "@/convert";
 import {deriveVat} from "@/tax-helper";
 import type {Category} from "@/category";
+import type {Transaction} from "@/transaction";
 
 const props = defineProps<{
   categories: Category[],
@@ -10,56 +11,91 @@ const props = defineProps<{
 
 const emit = defineEmits(['submit-withdrawal']);
 
-const value = ref(0);
-const value19 = ref(0);
-const value7 = ref(0);
-const vat19 = ref(0);
-const vat7 = ref(0);
-const selectedCategory = ref('');
-const note = ref('');
-const effectiveTimestamp = ref(new Date());
+// const value = ref(0);
+// const value19 = ref(0);
+// const value7 = ref(0);
+// const vat19 = ref(0);
+// const vat7 = ref(0);
+// const selectedCategory = ref('');
+// const note = ref('');
+// const effectiveTimestamp = ref(new Date());
 
-const resetValues = () => {
-  value.value = 0;
-  value19.value = 0;
-  value7.value = 0;
-  vat19.value = 0;
-  vat7.value = 0;
-  selectedCategory.value = props.categories[0].name ?? '';
-  note.value = '';
-  effectiveTimestamp.value = new Date();
+const newTransaction = () => {
+  return {
+    value: 0,
+    value19: 0,
+    value7: 0,
+    vat19: 0,
+    vat7: 0,
+    selectedCategory: props.categories[0]?.name ?? '',
+    note: '',
+    effectiveTimestamp: new Date(),
+  };
 }
 
-const setVat = () => {
-  const vats = deriveVat(value19.value, value7.value);
-  vat19.value = vats.vat19;
-  vat7.value = vats.vat7;
-}
+const t = ref(newTransaction());
+
+const setValue = (event: Event) => {
+  let current = t.value;
+
+  current.value = (event.target as HTMLInputElement).valueAsNumber;
+  current.value19 = 0;
+  current.value7 = 0;
+  current.vat19 = 0;
+  current.vat7 = 0;
+
+  t.value = current;
+};
 
 const setValue19 = (event: Event) => {
-  value19.value = (event.target as HTMLInputElement).valueAsNumber;
-  value7.value = (Math.round(value.value * 100) - Math.round(value19.value * 100)) / 100;
+  let current = t.value;
 
-  setVat();
+  current.value19 = (event.target as HTMLInputElement).valueAsNumber;
+  if (current.value19 < 0) {
+    current.value19 = 0;
+  } else if (current.value19 > current.value) {
+    current.value19 = current.value;
+  }
+
+  current.value7 = (Math.round(current.value * 100) - Math.round(current.value19 * 100)) / 100;
+
+  let vats = deriveVat(current.value19, current.value7);
+  current.vat19 = vats.vat19;
+  current.vat7 = vats.vat7;
+
+  t.value = current;
 };
 
 const setValue7 = (event: Event) => {
-  value7.value = (event.target as HTMLInputElement).valueAsNumber;
-  value19.value = (Math.round(value.value * 100) - Math.round(value7.value * 100)) / 100;
+  let current = t.value;
 
-  setVat();
+  current.value7 = (event.target as HTMLInputElement).valueAsNumber;
+  if (current.value7 < 0) {
+    current.value7 = 0;
+  } else if (current.value7 > current.value) {
+    current.value7 = current.value;
+  }
+
+  current.value19 = (Math.round(current.value * 100) - Math.round(current.value7 * 100)) / 100;
+
+  let vats = deriveVat(current.value19, current.value7);
+  current.vat19 = vats.vat19;
+  current.vat7 = vats.vat7;
+
+  t.value = current;
 };
 
 const submitWithdrawal = async () => {
+  const current = t.value;
   const payload = {
-    effectiveTimestamp: effectiveTimestamp.value,
-    category: selectedCategory.value,
-    value: -(value.value * 100),
-    value19: -(value19.value * 100),
-    value7: -(value7.value * 100),
-    vat19: -(vat19.value * 100),
-    vat7: -(vat7.value * 100),
-    note: note.value.length > 0 ? note.value : undefined,
+    effectiveTimestamp: current.effectiveTimestamp,
+    category: current.selectedCategory,
+    value: -(current.value * 100),
+    value19: -(current.value19 * 100),
+    value7: -(current.value7 * 100),
+    vat19: -(current.vat19 * 100),
+    vat7: -(current.vat7 * 100),
+    note: current.note.length > 0 ? current.note : undefined,
   };
 
   const res = await fetch('/api/transactions', {
@@ -75,21 +111,21 @@ const submitWithdrawal = async () => {
     console.warn(res);
   }
 
-  resetValues();
+  t.value = newTransaction();
   emit('submit-withdrawal');
 }
 
 onMounted(() => {
   const modal = document.querySelector('#withdrawModal');
   modal?.addEventListener('shown.bs.modal', () => {
-    effectiveTimestamp.value = new Date();
+    t.value.effectiveTimestamp = new Date();
 
-    if (selectedCategory.value === '') {
-      selectedCategory.value = props.categories[0].name ?? '';
+    if (t.value.selectedCategory === '') {
+      t.value.selectedCategory = props.categories[0].name ?? '';
     }
   });
 
-  resetValues();
+  t.value = newTransaction();
 });
 </script>
 
@@ -109,7 +145,8 @@ onMounted(() => {
                 <span class="input-group-text" id="withdrawValueAddon">EUR</span>
                 <input id="withdrawValue" class="form-control"
                        aria-describedby="withdrawValueAddon" type="number" step=".01"
-                       v-model="value"/>
+                       :value="t.value"
+                       @input="setValue"/>
               </div>
             </div>
             <div class="mb-3">
@@ -118,11 +155,11 @@ onMounted(() => {
                 <span class="input-group-text" id="withdrawValue19addon">EUR</span>
                 <input id="withdrawValue19" class="form-control"
                        aria-describedby="withdrawValue19addon" type="number" step=".01"
-                       :value="value19"
+                       :value="t.value19"
                        @input="setValue19"/>
                 <span class="input-group-text" id="withdrawVat19addon">EUR</span>
                 <input id="withdrawVat19" class="form-control" aria-describedby="withdrawVat19addon"
-                       type="text" :value="vat19" disabled/>
+                       type="text" :value="t.vat19" disabled/>
               </div>
             </div>
             <div class="mb-3">
@@ -131,40 +168,39 @@ onMounted(() => {
                 <span class="input-group-text" id="withdrawValue7addon">EUR</span>
                 <input id="withdrawValue7" class="form-control"
                        aria-describedby="withdrawValue7addon" type="number" step=".01"
-                       :value="value7"
+                       :value="t.value7"
                        @input="setValue7"/>
                 <span class="input-group-text" id="withdrawVat7addon">EUR</span>
                 <input id="withdrawVat7" class="form-control" aria-describedby="withdrawVat7addon"
-                       type="text" :value="vat7" disabled/>
+                       type="text" :value="t.vat7" disabled/>
               </div>
             </div>
             <div class="mb-3">
               <label for="withdrawCategory" class="form-label">Kategorie</label>
-              <select id="withdrawCategory" class="form-select" v-model="selectedCategory">
-                <option v-for="category in categories" :key="category.id" :value="category.name"
-                        :selected="category.id === 1">
+              <select id="withdrawCategory" class="form-select" v-model="t.selectedCategory">
+                <option v-for="category in categories" :key="category.id" :value="category.name">
                   {{ category.name }}
                 </option>
               </select>
             </div>
             <div class="mb-3">
               <label for="depositNote" class="form-label">Notiz</label>
-              <input id="depositNote" class="form-control" type="text" maxlength="128" v-model="note"/>
+              <input id="depositNote" class="form-control" type="text" maxlength="128" v-model="t.note"/>
             </div>
             <div class="mb-3">
               <label for="withdrawDateTime" class="form-label">Buchungsdatum</label>
               <input id="withdrawDateTime" class="form-control" type="datetime-local"
-                     :value="effectiveTimestamp && convertLocalDateForInput(effectiveTimestamp)"
-                     @input="effectiveTimestamp = new Date(($event.target as HTMLInputElement)?.value)"/>
+                     :value="t.effectiveTimestamp && convertLocalDateForInput(t.effectiveTimestamp)"
+                     @input="t.effectiveTimestamp = new Date(($event.target as HTMLInputElement)?.value)"/>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="resetValues"
+          <button type="button" class="btn btn-secondary" @click="t = newTransaction()"
                   data-bs-dismiss="modal">
             Abbrechen
           </button>
-          <button type="button" class="btn btn-primary" :disabled="value <= 0" @click="submitWithdrawal">
+          <button type="button" class="btn btn-primary" :disabled="t.value <= 0" @click="submitWithdrawal">
             Buchen
           </button>
         </div>
