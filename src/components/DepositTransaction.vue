@@ -9,28 +9,28 @@ const props = defineProps<{
 
 const emit = defineEmits(['submit-deposit']);
 
-const value = ref(0);
-const selectedCategory = ref('');
-const note = ref('');
-const effectiveTimestamp = ref(new Date());
-
-const resetValues = () => {
-  value.value = 0;
-  selectedCategory.value = props.categories[0].name ?? '';
-  note.value = '';
-  effectiveTimestamp.value = new Date();
+const newTransaction = () => {
+  return {
+    value: 0,
+    selectedCategory: props.categories[0]?.name ?? '',
+    note: '',
+    effectiveTimestamp: new Date(),
+  };
 }
 
+const t = ref(newTransaction());
+
 const submitDeposit = async () => {
+  const current = t.value;
   const payload = {
-    effectiveTimestamp: effectiveTimestamp.value,
-    category: selectedCategory.value,
-    value: Math.round(value.value * 100),
+    effectiveTimestamp: current.effectiveTimestamp,
+    category: current.selectedCategory,
+    value: Math.round(current.value * 100),
     value19: 0,
     value7: 0,
     vat19: 0,
     vat7: 0,
-    note: note.value.length > 0 ? note.value : undefined,
+    note: current.note.length > 0 ? current.note : undefined,
   };
 
   const res = await fetch('/api/transactions', {
@@ -41,21 +41,19 @@ const submitDeposit = async () => {
     body: JSON.stringify(payload),
   });
 
-  resetValues();
+  t.value = newTransaction();
   emit('submit-deposit');
 }
 
 onMounted(() => {
   const modal = document.querySelector('#depositModal');
   modal?.addEventListener('shown.bs.modal', () => {
-    effectiveTimestamp.value = new Date();
+    t.value.effectiveTimestamp = new Date();
 
-    if (selectedCategory.value === '') {
-      selectedCategory.value = props.categories[0].name ?? '';
+    if (t.value.selectedCategory === '') {
+      t.value.selectedCategory = props.categories[0].name ?? '';
     }
   });
-
-  resetValues();
 });
 </script>
 
@@ -75,12 +73,12 @@ onMounted(() => {
                 <span class="input-group-text" id="depositValueAddon">EUR</span>
                 <input id="depositValue" class="form-control"
                        aria-describedby="depositValueAddon" type="number" step=".01"
-                       v-model="value"/>
+                       v-model="t.value"/>
               </div>
             </div>
             <div class="mb-3">
               <label for="depositCategory" class="form-label">Kategorie</label>
-              <select id="depositCategory" class="form-select" v-model="selectedCategory">
+              <select id="depositCategory" class="form-select" v-model="t.selectedCategory">
                 <option v-for="category in categories" :key="category.id" :value="category.name"
                         :selected="category.id === 1">
                   {{ category.name }}
@@ -89,22 +87,22 @@ onMounted(() => {
             </div>
             <div class="mb-3">
               <label for="depositNote" class="form-label">Notiz</label>
-              <input id="depositNote" class="form-control" type="text" maxlength="128" v-model="note"/>
+              <input id="depositNote" class="form-control" type="text" maxlength="128" v-model="t.note"/>
             </div>
             <div class="mb-3">
               <label for="depositDateTime" class="form-label">Buchungsdatum</label>
               <input id="depositDateTime" class="form-control" type="datetime-local"
-                     :value="effectiveTimestamp && convertLocalDateForInput(effectiveTimestamp)"
-                     @input="effectiveTimestamp = new Date(($event.target as HTMLInputElement)?.value)"/>
+                     :value="t.effectiveTimestamp && convertLocalDateForInput(t.effectiveTimestamp)"
+                     @input="t.effectiveTimestamp = new Date(($event.target as HTMLInputElement)?.value)"/>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="resetValues"
+          <button type="button" class="btn btn-secondary" @click="t = newTransaction()"
                   data-bs-dismiss="modal">
             Abbrechen
           </button>
-          <button type="button" class="btn btn-primary" :disabled="value <= 0" @click="submitDeposit">
+          <button type="button" class="btn btn-primary" :disabled="t.value <= 0" @click="submitDeposit">
             Buchen
           </button>
         </div>

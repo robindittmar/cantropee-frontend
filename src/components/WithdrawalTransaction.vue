@@ -30,6 +30,9 @@ const setValue = (event: Event) => {
   let current = t.value;
 
   current.value = (event.target as HTMLInputElement).valueAsNumber;
+  if (current.value < 0) {
+    current.value = 0;
+  }
   current.value19 = 0;
   current.value7 = 0;
   current.vat19 = 0;
