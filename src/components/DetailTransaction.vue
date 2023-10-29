@@ -148,7 +148,6 @@ const fetchHistory = async () => {
     return t;
   });
 
-  console.log(transactions);
   history.value = transactions;
 };
 
