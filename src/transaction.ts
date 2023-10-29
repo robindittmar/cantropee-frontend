@@ -15,6 +15,19 @@ export interface Transaction {
     note: string | undefined;
 }
 
+export interface TransactionDiff {
+    insertTimestamp: Date;
+    effectiveTimestamp: Date | undefined;
+    category: string | undefined;
+    value: number | undefined;
+    value7: number | undefined;
+    value19: number | undefined;
+    vat7: number | undefined;
+    vat19: number | undefined;
+    note: string | undefined;
+    isDeposit: boolean | undefined;
+}
+
 export async function getTransactionById(id: string): Promise<Transaction> {
     const res = await fetch(`/api/transactions/${id}`);
     const t = await res.json();

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {convertLocalDateForInput, valueToString} from "@/convert";
-import type {Transaction} from "@/transaction";
+import type {Transaction, TransactionDiff} from "@/transaction";
 import type {Ref} from "vue";
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import {Collapse} from "bootstrap";
@@ -37,7 +37,7 @@ let isDeposit = ref(props.transaction.value >= 0);
 let editing = ref(false);
 const selectedCategory = ref('');
 let transactionCopy = ref(copyTransaction());
-let history: Ref<Transaction[] | undefined> = ref(undefined);
+let history: Ref<TransactionDiff[] | undefined> = ref(undefined);
 
 const setValue = (event: Event) => {
   let current = transactionCopy.value;
@@ -135,14 +135,15 @@ const submitTransaction = async() => {
 
 const fetchHistory = async () => {
   const result = await fetch(`/api/transactions/${props.transaction.id}/history`);
-  let transactions = (await result.json()).map((t: Transaction) => {
+
+  history.value = (await result.json()).map((t: TransactionDiff) => {
     t.insertTimestamp = new Date(t.insertTimestamp);
-    t.effectiveTimestamp = new Date(t.effectiveTimestamp);
+    if (t.effectiveTimestamp) {
+      t.effectiveTimestamp = new Date(t.effectiveTimestamp);
+    }
 
     return t;
   });
-
-  history.value = transactions;
 };
 
 onMounted(() => {
@@ -275,7 +276,7 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </div>
-      <div v-if="history === undefined" class="row">
+      <div class="row">
         <div class="col">
           <div v-if="!editing">
             <button type="button" class="btn btn-secondary w-100" @click="editTransaction(true)">
@@ -295,11 +296,8 @@ onBeforeUnmount(() => {
       <div class="row">
         <div clas="col">
           <div class="mt-3">
-            <button v-if="!!props.transaction.refId && history === undefined" type="button" class="btn btn-primary" @click="fetchHistory">
+            <button v-if="!!props.transaction.refId" type="button" class="btn btn-primary w-100" @click="fetchHistory">
               Historie...
-            </button>
-            <button v-if="history" type="button" class="btn btn-danger" @click="history = undefined">
-              Historie schließen
             </button>
           </div>
         </div>
@@ -307,9 +305,8 @@ onBeforeUnmount(() => {
     </div>
   </div>
 
-  <template v-for="transaction of history" :key="transaction.id">
-    <DiffTransactions :transaction="transaction" :parent="props.transaction" :display-values="displayValues"/>
-  </template>
+  <DiffTransactions v-if="history" :history="history" :display-values="displayValues"
+                    @modal-closed="history = undefined"/>
 </template>
 
 <style scoped>

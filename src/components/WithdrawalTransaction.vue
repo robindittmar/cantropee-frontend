@@ -11,15 +11,6 @@ const props = defineProps<{
 
 const emit = defineEmits(['submit-withdrawal']);
 
-// const value = ref(0);
-// const value19 = ref(0);
-// const value7 = ref(0);
-// const vat19 = ref(0);
-// const vat7 = ref(0);
-// const selectedCategory = ref('');
-// const note = ref('');
-// const effectiveTimestamp = ref(new Date());
-
 const newTransaction = () => {
   return {
     value: 0,
