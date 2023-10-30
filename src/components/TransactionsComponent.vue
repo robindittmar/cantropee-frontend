@@ -21,6 +21,7 @@ const props = defineProps<{
 const emit = defineEmits(['updated-transaction']);
 
 watch(() => props.effectiveSpan, () => {
+  transactions.value.start = 0;
   fetchTransactions();
 });
 
