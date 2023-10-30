@@ -64,7 +64,7 @@ onMounted(() => {
   </div>
   <div class="d-flex justify-content-center pt-2 pe-2">
     <button class="btn btn-outline-secondary">
-      <i class="fa-solid fa-plus"></i>&nbsp;Dieser Button (noch) gar nichts.
+      <i class="fa-solid fa-plus"></i>&nbsp;Dieser button tut (noch) gar nichts.
     </button>
   </div>
 </template>
