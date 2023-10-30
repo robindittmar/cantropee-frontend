@@ -8,9 +8,11 @@ import TransactionsComponent from "@/components/TransactionsComponent.vue";
 import DepositTransaction from "@/components/DepositTransaction.vue";
 import WithdrawalTransaction from "@/components/WithdrawalTransaction.vue";
 import {Modal} from "bootstrap";
+import type {Category} from "@/category";
 
 const props = defineProps<{
   user: User;
+  categories: Category[];
 }>();
 
 const now = new Date();
@@ -18,7 +20,7 @@ let effectiveSpan = ref({
   from: new Date(now.getFullYear(), now.getMonth()),
   to: new Date(now.getFullYear(), now.getMonth() + 1),
 });
-let categories: Ref<[{id: number, name: string}]> = ref([{id: 0, name: ''}]);
+
 let showPending = ref(props.user.settings.defaultPreviewPending);
 let displayValues = ref(!props.user.settings.privateMode);
 let sortingOrder = ref(props.user.settings.defaultSortingOrderAsc ? 'asc' : 'desc');
@@ -89,14 +91,7 @@ const forceReload = () => {
   };
 };
 
-const fetchCategories = async () => {
-  const res = await fetch('/api/categories');
-  categories.value = await res.json();
-};
-
-onMounted(() => {
-  fetchCategories();
-});
+onMounted(() => {});
 </script>
 
 <template>

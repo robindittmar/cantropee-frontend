@@ -1,10 +1,13 @@
 <script setup lang="ts">
 
-import type {User} from "@/user";
 import {ref, watch} from "vue";
+import type {User} from "@/user";
+import type {Category} from "@/category";
+import RecurringTransactionsComponent from "@/components/RecurringTransactionsComponent.vue";
 
 const props = defineProps<{
   user: User;
+  categories: Category[];
 }>();
 
 const emit = defineEmits(['change-organization']);
@@ -44,6 +47,14 @@ watch(selectedOrg, async () => {
               </option>
             </select>
           </div>
+        </div>
+      </div>
+      <h4 class="text-center mt-2">Daueraufträge</h4>
+      <div class="row">
+        <div class="col">
+          <RecurringTransactionsComponent :display-values="!user.settings.privateMode"
+                                          :currency="user.currentOrg?.currency ?? 'EUR'"
+                                          :categories="categories"/>
         </div>
       </div>
     </div>

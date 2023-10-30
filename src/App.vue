@@ -2,9 +2,11 @@
 import {onMounted, ref} from "vue";
 import type {Ref} from "vue";
 import type {User, UserSettings} from "@/user";
+import type {Category} from '@/category';
 import {defaultUser, fetchUser, updateUserSettings} from "@/user";
 import HomeView from "@/views/HomeView.vue";
 import SettingsView from "@/views/SettingsView.vue";
+import {fetchCategories} from "@/category";
 
 enum View {
   Home,
@@ -18,6 +20,7 @@ const setView = (view: View) => {
 
 let initialLoadDone = ref(false);
 let user: Ref<User> = ref(defaultUser());
+let categories: Ref<Category[]> = ref([{id: 0, name: ''}]);
 
 const changeOrganization = (orgId: string) => {
   location.reload();
@@ -32,18 +35,25 @@ const updateSettings = async (settings: UserSettings) => {
   }
 }
 
+const afterMounted = async () => {
+  categories.value = await fetchCategories();
+};
+
 onMounted(async () => {
   user.value = await fetchUser();
   initialLoadDone.value = true;
+
+  afterMounted();
 });
 </script>
 
 <template>
   <template v-if="initialLoadDone">
   <HomeView v-if="selectedView === View.Home"
-            :user="user"/>
+            :user="user" :categories="categories"/>
   <SettingsView v-if="selectedView === View.Settings"
-                :user="user" @change-organization="changeOrganization" @update-user-settings="updateSettings"/>
+                :user="user" :categories="categories"
+                @change-organization="changeOrganization" @update-user-settings="updateSettings"/>
   <div class="bottom-filler">
   </div>
   <div class="fixed-bottom">

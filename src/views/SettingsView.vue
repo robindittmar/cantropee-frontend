@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import {ref, watch} from "vue";
 import type {User} from "@/user";
+import type {Category} from "@/category";
 import OrganizationComponent from "@/components/OrganizationComponent.vue";
 
 const props = defineProps<{
   user: User;
+  categories: Category[];
 }>();
 
 defineEmits(['change-organization', 'update-user-settings']);
@@ -29,7 +31,8 @@ let organizations = ref(props.user.organizations);
       </div>
       <div class="row mt-2">
         <div class="col">
-          <OrganizationComponent :user="user" @change-organization="$emit('change-organization')"/>
+          <OrganizationComponent :user="user" :categories="categories"
+                                 @change-organization="$emit('change-organization')"/>
         </div>
       </div>
     </header>
