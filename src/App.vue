@@ -7,9 +7,11 @@ import {defaultUser, fetchUser, updateUserSettings} from "@/user";
 import HomeView from "@/views/HomeView.vue";
 import SettingsView from "@/views/SettingsView.vue";
 import {fetchCategories} from "@/category";
+import OrganizationView from "@/views/OrganizationView.vue";
 
 enum View {
   Home,
+  Organization,
   Settings
 }
 let selectedView: Ref<View> = ref(View.Home);
@@ -51,9 +53,12 @@ onMounted(async () => {
   <template v-if="initialLoadDone">
   <HomeView v-if="selectedView === View.Home"
             :user="user" :categories="categories"/>
+  <OrganizationView v-if="selectedView === View.Organization"
+                    :user="user" :categories="categories"
+                    @change-organization="changeOrganization"/>
   <SettingsView v-if="selectedView === View.Settings"
                 :user="user" :categories="categories"
-                @change-organization="changeOrganization" @update-user-settings="updateSettings"/>
+                @update-user-settings="updateSettings"/>
   <div class="bottom-filler">
   </div>
   <div class="fixed-bottom">
@@ -63,6 +68,11 @@ onMounted(async () => {
                @click="setView(View.Home)"
                :checked="selectedView === View.Home">
         <label class="btn btn-outline-primary" for="radioHomeView"><i class="fa-solid fa-house"></i></label>
+
+        <input type="radio" class="btn-check" name="radioOrgView" id="radioOrgView" autocomplete="off"
+               @click="setView(View.Organization)"
+               :checked="selectedView === View.Organization">
+        <label class="btn btn-outline-primary" for="radioOrgView"><i class="fa-solid fa-building"></i></label>
 
         <input type="radio" class="btn-check" name="radioTransactionsView" id="radioTransactionsView" autocomplete="off"
                @click="setView(View.Settings)"

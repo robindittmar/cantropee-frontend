@@ -178,8 +178,8 @@ onMounted(() => {
               </select>
             </div>
             <div class="mb-3">
-              <label for="depositNote" class="form-label">Notiz</label>
-              <input id="depositNote" class="form-control" type="text" maxlength="128" v-model="t.note"/>
+              <label for="withdrawNote" class="form-label">Notiz</label>
+              <input id="withdrawNote" class="form-control" type="text" maxlength="128" v-model="t.note"/>
             </div>
             <div class="mb-3">
               <label for="withdrawDateTime" class="form-label">Buchungsdatum</label>

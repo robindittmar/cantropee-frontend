@@ -28,5 +28,9 @@ export const dateToString = (dt: Date) => {
 }
 
 export const convertLocalDateForInput = (dt: Date) => {
-    return new Date(dt.getTime() - (dt.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+    try {
+        return new Date(dt.getTime() - (dt.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+    } catch {
+        return;
+    }
 };

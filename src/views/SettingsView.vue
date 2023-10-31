@@ -2,14 +2,13 @@
 import {ref, watch} from "vue";
 import type {User} from "@/user";
 import type {Category} from "@/category";
-import OrganizationComponent from "@/components/OrganizationComponent.vue";
 
 const props = defineProps<{
   user: User;
   categories: Category[];
 }>();
 
-defineEmits(['change-organization', 'update-user-settings']);
+defineEmits(['update-user-settings']);
 
 watch(() => props.user, () => {
   settings.value = props.user.settings;
@@ -28,12 +27,6 @@ let organizations = ref(props.user.organizations);
         <a class="btn btn-outline-danger me-2" href="/logout">
           <i class="fa-solid fa-arrow-right-from-bracket"></i>
         </a>
-      </div>
-      <div class="row mt-2">
-        <div class="col">
-          <OrganizationComponent :user="user" :categories="categories"
-                                 @change-organization="$emit('change-organization')"/>
-        </div>
       </div>
     </header>
 
