@@ -132,7 +132,8 @@ onMounted(() => {
                   <DetailRecurringTransaction :recurring-transaction="recurring" :currency="currency"
                                               :display-values="displayValues"
                                               :categories="categories"
-                                              @updated-recurring-transaction="updatedRecurringTransaction"/>
+                                              @updated-recurring-transaction="updatedRecurringTransaction"
+                                              @deleted-recurring-transaction="updatedRecurringTransaction"/>
                 </td>
               </tr>
             </Transition>

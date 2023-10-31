@@ -2,7 +2,7 @@
 import {convertLocalDateForInput, valueToString} from "@/convert";
 import type {RecurringTransaction} from "@/recurring-transaction";
 import {onBeforeUnmount, onMounted, ref} from "vue";
-import {Collapse} from "bootstrap";
+import {Collapse, Modal} from "bootstrap";
 import {deriveVat} from "@/tax-helper";
 import type {Category} from "@/category";
 
@@ -13,7 +13,7 @@ const props = defineProps<{
   displayValues: boolean,
 }>();
 
-const emit = defineEmits(['updated-recurring-transaction']);
+const emit = defineEmits(['updated-recurring-transaction', 'deleted-recurring-transaction']);
 
 const copyRecurringTransaction = () => {
   return {
@@ -40,6 +40,9 @@ let isDeposit = ref(props.recurringTransaction.value >= 0);
 let editing = ref(false);
 const selectedCategory = ref('');
 let recurringCopy = ref(copyRecurringTransaction());
+
+let cascadeDelete = ref(false);
+let confirmDelete = ref(false);
 
 const setValue = (event: Event) => {
   let current = recurringCopy.value;
@@ -92,6 +95,34 @@ const setValue7 = (event: Event) => {
   current.vat7 = vats.vat7;
 
   recurringCopy.value = current;
+};
+
+const showConfirmDelete = () => {
+  cascadeDelete.value = false;
+  confirmDelete.value = false;
+
+  const modal = Modal.getOrCreateInstance('#confirmDeleteModal');
+  modal.show();
+};
+
+const hideConfirmDelete = () => {
+  const modal = Modal.getOrCreateInstance('#confirmDeleteModal');
+  modal.hide();
+};
+
+const deleteRecurringTransaction = async () => {
+  const res = await fetch(`/api/recurring/${props.recurringTransaction.id}?cascade=${cascadeDelete.value}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  });
+
+  let success = await res.json();
+  if (success.success) {
+    hideConfirmDelete();
+  }
+  emit('deleted-recurring-transaction', success);
 };
 
 // const editRecurringTransaction = async (edit: boolean) => {
@@ -279,6 +310,42 @@ onBeforeUnmount(() => {
                    :value="recurringTransaction.insertTimestamp && convertLocalDateForInput(recurringTransaction.insertTimestamp)"
                    disabled/>
             <input v-else id="detailInsertTime" class="form-control" value="<auto-generiert>" disabled/>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-danger" @click="showConfirmDelete"><i class="fa-solid fa-trash"></i>&nbsp;Löschen...</button>
+        </div>
+      </div>
+
+      <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="confirmDeleteModalLabel">Bestätigen</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div>
+                <div class="form-check mb-3">
+                  <input id="recurringCascadeDelete" class="form-check-input" type="checkbox" v-model="cascadeDelete"/>
+                  <label for="recurringCascadeDelete" class="form-check-label">Alle Transaktionen dieses Dauerauftrags auch löschen</label>
+                </div>
+                <div class="form-check mb-3">
+                  <input id="recurringConfirmDelete" class="form-check-input" type="checkbox" v-model="confirmDelete"/>
+                  <label for="recurringConfirmDelete" class="form-check-label">Löschen bestätigen</label>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Abbrechen
+              </button>
+              <button type="button" class="btn btn-danger" :disabled="!confirmDelete" @click="deleteRecurringTransaction">
+                <i class="fa-solid fa-trash"></i>&nbsp;Löschen
+              </button>
+            </div>
           </div>
         </div>
       </div>
