@@ -5,6 +5,7 @@ export enum ExecutionPolicy {
 
 export interface RecurringTransaction {
     id: string;
+    active: boolean,
     insertTimestamp: Date;
     timezone: string;
     executionPolicy: ExecutionPolicy;

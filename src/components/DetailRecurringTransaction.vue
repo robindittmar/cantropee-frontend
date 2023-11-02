@@ -313,6 +313,8 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </div>
+
+      <template v-if="recurringTransaction.active">
       <div class="row">
         <div class="col">
           <button class="btn btn-danger" @click="showConfirmDelete"><i class="fa-solid fa-trash"></i>&nbsp;Löschen...</button>
@@ -349,6 +351,7 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </div>
+      </template>
     </div>
   </div>
 </template>

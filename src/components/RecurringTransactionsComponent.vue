@@ -117,9 +117,9 @@ onMounted(() => {
           <tbody class="table-group-divider">
           <template v-for="(recurring, i) in recurringTransactions" :key="recurring.id">
             <tr @click="selectRecurringTransaction(recurring.id)">
-              <td>{{ i + 1 }}</td>
-              <td>{{ dateToString(recurring.nextExecution) }}</td>
-              <td :class="{'positive-value': recurring.isPositive && displayValues, 'negative-value': !recurring.isPositive && displayValues}">
+              <td :class="{'text-muted': !recurring.active}">{{ i + 1 }}</td>
+              <td :class="{'text-muted': !recurring.active}">{{ dateToString(recurring.nextExecution) }}</td>
+              <td :class="{'text-muted': !recurring.active, 'positive-value': recurring.isPositive && displayValues && recurring.active, 'negative-value': !recurring.isPositive && displayValues && recurring.active}">
                 {{ displayValues ? moneyToString(recurring.value, currency) : '***' }}
               </td>
             </tr>
