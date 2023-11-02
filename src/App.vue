@@ -69,6 +69,10 @@ onMounted(async () => {
                :checked="selectedView === View.Home">
         <label class="btn btn-outline-primary" for="radioHomeView"><i class="fa-solid fa-house"></i></label>
 
+        <input type="radio" class="btn-check" name="radioChartView" id="radioChartView" autocomplete="off"
+               disabled />
+        <label class="btn btn-outline-primary" for="radioChartView"><i class="fa-solid fa-chart-simple"></i></label>
+
         <input type="radio" class="btn-check" name="radioOrgView" id="radioOrgView" autocomplete="off"
                @click="setView(View.Organization)"
                :checked="selectedView === View.Organization">

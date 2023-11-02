@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import type {User} from "@/user";
 import type {Category} from "@/category";
 import RecurringTransactionsComponent from "@/components/RecurringTransactionsComponent.vue";
@@ -12,7 +12,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['change-organization']);
 
-const selectedOrg = ref(props.user.currentOrg?.id ?? '');
+const selectedOrg = ref(props.user.currentOrganization?.id ?? '');
 watch(selectedOrg, async () => {
   const orgId = selectedOrg.value;
 
@@ -35,14 +35,14 @@ watch(selectedOrg, async () => {
         <i class="fa-solid fa-download"></i>
       </a>
     </div>
-    <h2 class="card-title text-center mt-2">{{ user.currentOrg?.name }}</h2>
+    <h2 class="card-title text-center mt-2">{{ user.currentOrganization?.name }}</h2>
     <div class="card-body">
       <div class="row">
         <div class="col">
           <div class="mb-3">
             <select id="organizationSelect" class="form-select" v-model="selectedOrg">
               <option v-for="org in user.organizations" :key="org.id" :value="org.id"
-                      :selected="org.id === user.currentOrg?.id">
+                      :selected="org.id === user.currentOrganization?.id">
                 {{ org.name }}
               </option>
             </select>
@@ -53,7 +53,7 @@ watch(selectedOrg, async () => {
       <div class="row">
         <div class="col">
           <RecurringTransactionsComponent :display-values="!user.settings.privateMode"
-                                          :currency="user.currentOrg?.currency ?? 'EUR'"
+                                          :currency="user.currentOrganization?.currency ?? 'EUR'"
                                           :categories="categories"/>
         </div>
       </div>

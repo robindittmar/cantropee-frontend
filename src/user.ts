@@ -5,8 +5,7 @@ export interface User {
     email: string;
     settings: UserSettings;
     organizations: Organization[];
-    currentOrganizationId: string;
-    currentOrg: Organization | undefined;
+    currentOrganization: Organization | undefined;
 }
 
 export interface UserSettings {
@@ -29,15 +28,12 @@ export function defaultUser(): User {
             extra: null,
         },
         organizations: [],
-        currentOrganizationId: '',
-        currentOrg: undefined,
+        currentOrganization: undefined,
     };
 }
 
 export async function fetchUser(): Promise<User> {
-    const user: User = await (await fetch('/api/users/me')).json();
-    user.currentOrg = user.organizations.find(o => o.id === user.currentOrganizationId) ?? user.organizations[0];
-    return user;
+    return await (await fetch('/api/users/me')).json();
 }
 
 export async function updateUserSettings(userSettings: UserSettings): Promise<boolean> {
