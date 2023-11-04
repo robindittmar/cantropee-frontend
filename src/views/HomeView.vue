@@ -114,7 +114,6 @@ onMounted(() => {});
         <div class="col">
           <FilterComponent :effective-span="effectiveSpan" @next-month="nextMonth" @prev-month="prevMonth"
                            :show-pending="showPending" @toggle-show-pending="toggleShowPending"
-                           :display-values="displayValues" @toggle-private-mode="toggleDisplayValues"
                            :categories="categories" @set-category="setCategory"
                            :sorting-order="sortingOrder" @toggle-sorting-order="toggleSortingOrder"/>
         </div>

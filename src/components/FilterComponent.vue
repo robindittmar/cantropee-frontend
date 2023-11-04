@@ -8,7 +8,6 @@ const props = defineProps<{
     to: Date,
   },
   showPending: boolean,
-  displayValues: boolean,
   sortingOrder: string,
   categories: Category[],
 }>();

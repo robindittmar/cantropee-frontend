@@ -33,6 +33,12 @@ export function defaultUser(): User {
 }
 
 export async function fetchUser(): Promise<User> {
+    const result = await fetch('/api/users/me');
+    if (!result.ok) {
+        if (result.status === 401) {
+            throw new Error('Unauthorized');
+        }
+    }
     return await (await fetch('/api/users/me')).json();
 }
 

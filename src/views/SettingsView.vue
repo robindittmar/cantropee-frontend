@@ -8,7 +8,7 @@ const props = defineProps<{
   categories: Category[];
 }>();
 
-defineEmits(['update-user-settings']);
+const emit = defineEmits(['user-logout', 'update-user-settings']);
 
 watch(() => props.user, () => {
   settings.value = props.user.settings;
@@ -17,6 +17,16 @@ watch(() => props.user, () => {
 
 let settings = ref(props.user.settings);
 let organizations = ref(props.user.organizations);
+
+const logout = async () => {
+  let result = await fetch('/api/logout', {
+    method: 'POST',
+  });
+
+  if (result.ok) {
+    emit('user-logout');
+  }
+};
 </script>
 
 <template>
@@ -24,7 +34,7 @@ let organizations = ref(props.user.organizations);
     <header>
       <div class="d-flex justify-content-end pt-2 pe-2">
         <h6 class="me-2">{{ user.email }}</h6>
-        <a class="btn btn-outline-danger me-2" href="/logout">
+        <a class="btn btn-outline-danger me-2" @click="logout">
           <i class="fa-solid fa-arrow-right-from-bracket"></i>
         </a>
       </div>
