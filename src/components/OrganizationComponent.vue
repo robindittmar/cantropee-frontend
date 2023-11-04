@@ -1,9 +1,10 @@
 <script setup lang="ts">
 
-import {onMounted, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import type {User} from "@/core/user";
 import type {Category} from "@/core/category";
 import RecurringTransactionsComponent from "@/components/RecurringTransactionsComponent.vue";
+import {req} from "@/core/requests";
 
 const props = defineProps<{
   user: User;
