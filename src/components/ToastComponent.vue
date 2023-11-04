@@ -1,30 +1,37 @@
 <script setup lang="ts">
 import {onMounted} from "vue";
 import {Toast} from "bootstrap";
+import type {CantropeeToast} from "@/toaster";
+import {removeToast, ToastColor} from "@/toaster";
 
 const props = defineProps<{
-  title: string,
-  subtitle: string,
-  body: string;
+  toast: CantropeeToast
 }>();
 
 onMounted(() => {
-  const t = Toast.getOrCreateInstance('#liveToast');
-  t.show();
+  const el = document.querySelector(`#toast-${props.toast.id}`);
+
+  if (el) {
+    el.addEventListener('hidden.bs.toast', () => {
+      removeToast(props.toast.id);
+    });
+
+    const t = Toast.getOrCreateInstance(el);
+    t.show();
+  }
 });
 </script>
 
 <template>
-  <div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-header">
-        <strong class="me-auto">{{ title }}</strong>
-        <small>{{ subtitle }}</small>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-      <div class="toast-body">
-        {{ body }}
-      </div>
+  <div :id="'toast-' + toast.id" class="toast" role="alert" aria-live="assertive" aria-atomic="true"
+       :class="{'text-bg-primary': toast.color === ToastColor.Info}">
+    <div class="toast-header">
+      <strong class="me-auto">{{ toast.title }}</strong>
+      <small>{{ toast.subtitle }}</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      {{ toast.body }}
     </div>
   </div>
 </template>

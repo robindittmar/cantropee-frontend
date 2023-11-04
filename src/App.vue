@@ -10,6 +10,7 @@ import {fetchCategories} from "@/category";
 import OrganizationView from "@/views/OrganizationView.vue";
 import ToastComponent from "@/components/ToastComponent.vue";
 import LoginView from "@/views/LoginView.vue";
+import {toasts, toast} from "@/toaster";
 
 enum View {
   Home,
@@ -27,7 +28,7 @@ let authenticated = ref(false);
 let initialLoadDone = ref(false);
 let user: Ref<User> = ref(defaultUser());
 let categories: Ref<Category[]> = ref([{id: 0, name: ''}]);
-let toasts: Ref<{title: string, subtitle: string, body: string}[]> = ref([]);
+
 
 const changeOrganization = (orgId: string) => {
   location.reload();
@@ -38,6 +39,9 @@ const initialLoad = async () => {
     user.value = await fetchUser();
     categories.value = await fetchCategories();
     authenticated.value = true;
+    for (let i = 0; i < 3; i++) {
+      toast('Alles fresh Nr ' + i.toString(), 'Bist angemeldet und so, korrekt');
+    }
   } catch {
     authenticated.value = false;
   }
@@ -58,19 +62,6 @@ const updateSettings = async (settings: UserSettings) => {
     user.value = intermediate;
   }
 }
-
-const toast = (title: string, body: string) => {
-  let toast = {
-    title,
-    body,
-    subtitle: 'just now',
-  };
-
-  toasts.value.push(toast);
-  setInterval(() => {
-    toasts.value = toasts.value.filter(t => t.title !== toast.title);
-  }, 10000);
-};
 
 onMounted(async () => {
   selectedView.value = parseInt(localStorage.getItem('view') ?? View.Home.toString());
@@ -93,7 +84,6 @@ onMounted(async () => {
                   @update-user-settings="updateSettings"/>
     <div class="bottom-filler">
     </div>
-    <ToastComponent v-for="toast of toasts" :key="toast.title" :title="toast.title" :subtitle="toast.subtitle" :body="toast.body"/>
     <div class="fixed-bottom">
       <div class="container mb-1 d-flex justify-content-center">
         <div class="btn-group" role="group">
@@ -122,6 +112,9 @@ onMounted(async () => {
     <template v-else>
       <LoginView @authenticated="initialLoad"/>
     </template>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <ToastComponent v-for="toast of toasts" :key="toast.id" :toast="toast"/>
+    </div>
   </template>
   <template v-else>
     <div class="d-flex justify-content-center mt-4">
