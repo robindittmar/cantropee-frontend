@@ -67,7 +67,7 @@ onMounted(() => {
 
 <template>
   <div class="card">
-    <img id="brand-image" alt="cat-jam" src="/public/img/cat-jam.gif" class="rounded mx-auto d-block" />
+    <img id="brand-image" alt="cat-jam" src="/public/img/frog.svg" class="rounded mx-auto d-block" />
     <div class="card-body">
       <div class="row">
         <h5 class="card-title text-center">{{ title }}</h5>
