@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
 import type {Ref} from "vue";
-import type {User} from "@/user";
+import type {User} from "@/core/user";
 import BalanceComponent from '@/components/BalanceComponent.vue';
 import FilterComponent from "@/components/FilterComponent.vue";
 import TransactionsComponent from "@/components/TransactionsComponent.vue";
 import DepositTransaction from "@/components/DepositTransaction.vue";
 import WithdrawalTransaction from "@/components/WithdrawalTransaction.vue";
 import {Modal} from "bootstrap";
-import type {Category} from "@/category";
+import type {Category} from "@/core/category";
 
 const props = defineProps<{
   user: User;
@@ -75,10 +75,6 @@ const prevMonth = () => moveEffectiveSpan(-1);
 
 const toggleShowPending = () => {
   showPending.value = !showPending.value;
-};
-
-const toggleDisplayValues = () => {
-  displayValues.value = !displayValues.value;
 };
 
 const setCategory = (categoryId: number) => {

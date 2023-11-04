@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
 import type {Ref} from "vue";
-import {dateToURI, dateToString, moneyToString} from "@/convert";
-import type {Transaction} from "@/transaction";
+import {dateToURI, dateToString, moneyToString} from "@/core/convert";
+import type {Transaction} from "@/core/transaction";
 import DetailTransaction from "@/components/DetailTransaction.vue";
-import type {Category} from "@/category";
+import type {Category} from "@/core/category";
+import {req} from "@/core/requests";
 
 const props = defineProps<{
   effectiveSpan: {
@@ -56,7 +57,7 @@ const fetchTransactions = async () => {
     uri += `&category=${props.selectedCategory}`;
   }
 
-  const res = await fetch(uri);
+  const res = await req(uri);
   let paginatedResult = await res.json();
 
   paginatedResult.data = paginatedResult.data.map((t: Transaction) => {

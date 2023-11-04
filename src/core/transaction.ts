@@ -1,3 +1,5 @@
+import {req} from "@/core/requests";
+
 export interface Transaction {
     id: string;
     rowIdx: number;
@@ -29,7 +31,7 @@ export interface TransactionDiff {
 }
 
 export async function getTransactionById(id: string): Promise<Transaction> {
-    const res = await fetch(`/api/transactions/${id}`);
+    const res = await req(`/api/transactions/${id}`);
     const t = await res.json();
 
     return {

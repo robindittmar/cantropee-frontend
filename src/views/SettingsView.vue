@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {ref, watch} from "vue";
-import type {User} from "@/user";
-import type {Category} from "@/category";
+import type {User} from "@/core/user";
+import type {Category} from "@/core/category";
+import {req} from "@/core/requests";
 
 const props = defineProps<{
   user: User;
@@ -19,7 +20,7 @@ let settings = ref(props.user.settings);
 let organizations = ref(props.user.organizations);
 
 const logout = async () => {
-  let result = await fetch('/api/logout', {
+  let result = await req('/api/logout', {
     method: 'POST',
   });
 

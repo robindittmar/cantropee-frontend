@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import type {Ref} from "vue";
-import type {User, UserSettings} from "@/user";
-import type {Category} from '@/category';
-import {defaultUser, fetchUser, updateUserSettings} from "@/user";
+import type {User, UserSettings} from "@/core/user";
+import type {Category} from '@/core/category';
+import {authorized, defaultUser, fetchUser, updateUserSettings} from "@/core/user";
 import HomeView from "@/views/HomeView.vue";
 import SettingsView from "@/views/SettingsView.vue";
-import {fetchCategories} from "@/category";
+import {fetchCategories} from "@/core/category";
 import OrganizationView from "@/views/OrganizationView.vue";
 import ToastComponent from "@/components/ToastComponent.vue";
 import LoginView from "@/views/LoginView.vue";
-import {toasts, toast} from "@/toaster";
+import {toasts} from "@/core/toaster";
 
 enum View {
   Home,
@@ -24,7 +24,6 @@ const setView = (view: View) => {
   localStorage.setItem('view', view.toString());
 };
 
-let authenticated = ref(false);
 let initialLoadDone = ref(false);
 let user: Ref<User> = ref(defaultUser());
 let categories: Ref<Category[]> = ref([{id: 0, name: ''}]);
@@ -38,19 +37,16 @@ const initialLoad = async () => {
   try {
     user.value = await fetchUser();
     categories.value = await fetchCategories();
-    authenticated.value = true;
-    for (let i = 0; i < 3; i++) {
-      toast('Alles fresh Nr ' + i.toString(), 'Bist angemeldet und so, korrekt');
-    }
+    authorized.value = true;
   } catch {
-    authenticated.value = false;
+    authorized.value = false;
   }
 
   initialLoadDone.value = true;
 };
 
 const logout = async () => {
-  authenticated.value = false;
+  authorized.value = false;
   setView(View.Home);
 };
 
@@ -72,7 +68,7 @@ onMounted(async () => {
 
 <template>
   <template v-if="initialLoadDone">
-    <template v-if="authenticated">
+    <template v-if="authorized">
     <HomeView v-if="selectedView === View.Home"
               :user="user" :categories="categories"/>
     <OrganizationView v-if="selectedView === View.Organization"

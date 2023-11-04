@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import {toast, ToastColor} from "@/core/toaster";
+import {req} from "@/core/requests";
 
 // const props = defineProps<{}>();
 const emit = defineEmits(['authenticated']);
@@ -23,7 +25,7 @@ const login = async () => {
     password: password.value,
   };
 
-  const result = await fetch('/api/login', {
+  const result = await req('/api/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -31,21 +33,13 @@ const login = async () => {
     body: JSON.stringify(payload),
   });
 
-  if (!result.ok) {
-    // toast
-    return;
-  }
-
   const { success, changePassword } = await result.json();
-  if (!success) {
-    // toast
-    return;
-  }
-
-  if (changePassword) {
-    view.value = LoginView.ResetPassword;
-  } else {
-    emit('authenticated');
+  if (success) {
+    if (changePassword) {
+      view.value = LoginView.ResetPassword;
+    } else {
+      emit('authenticated');
+    }
   }
 };
 
@@ -55,7 +49,7 @@ const updatePassword = async () => {
     confirmPassword: resetPasswordConfirm.value,
   };
 
-  const result = await fetch('/api/change-password', {
+  const result = await req('/api/change-password', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -63,19 +57,17 @@ const updatePassword = async () => {
     body: JSON.stringify(payload),
   });
 
-  if (!result.ok) {
-    // toast
-    return;
-  }
-
   const { success } = await result.json();
-  if (!success) {
-    // toast
-    return;
+  if (success) {
+    emit('authenticated');
   }
-
-  emit('authenticated');
 };
+
+onMounted(() => {
+  toast('info toast', ToastColor.Info);
+  toast('warnungs toast', ToastColor.Warning);
+  toast('fehler toast', ToastColor.Danger);
+});
 </script>
 
 <template>

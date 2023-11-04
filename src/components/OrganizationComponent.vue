@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
 import {onMounted, ref, watch} from "vue";
-import type {User} from "@/user";
-import type {Category} from "@/category";
+import type {User} from "@/core/user";
+import type {Category} from "@/core/category";
 import RecurringTransactionsComponent from "@/components/RecurringTransactionsComponent.vue";
 
 const props = defineProps<{
@@ -16,7 +16,7 @@ const selectedOrg = ref(props.user.currentOrganization?.id ?? '');
 watch(selectedOrg, async () => {
   const orgId = selectedOrg.value;
 
-  await fetch('/api/session/organization', {
+  await req('/api/session/organization', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'

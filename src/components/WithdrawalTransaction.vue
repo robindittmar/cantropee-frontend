@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {convertLocalDateForInput} from "@/convert";
-import {deriveVat} from "@/tax-helper";
-import type {Category} from "@/category";
-import type {Transaction} from "@/transaction";
+import {convertLocalDateForInput} from "@/core/convert";
+import {deriveVat} from "@/core/tax-helper";
+import type {Category} from "@/core/category";
+import type {Transaction} from "@/core/transaction";
 
 const props = defineProps<{
   categories: Category[],
@@ -92,7 +92,7 @@ const submitWithdrawal = async () => {
     note: current.note.length > 0 ? current.note : undefined,
   };
 
-  const res = await fetch('/api/transactions', {
+  const res = await req('/api/transactions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

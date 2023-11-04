@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type {TransactionDiff} from "@/transaction";
-import {dateToString, valueToString} from "@/convert";
+import type {TransactionDiff} from "@/core/transaction";
+import {dateToString, valueToString} from "@/core/convert";
 import {onMounted, onBeforeUnmount} from "vue";
 import {Modal} from "bootstrap";
 

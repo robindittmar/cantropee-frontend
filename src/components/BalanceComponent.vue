@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {watch, onMounted, ref} from "vue";
-import {dateToURI, moneyToString} from "@/convert";
+import {dateToURI, moneyToString} from "@/core/convert";
+import {req} from "@/core/requests";
 
 const props = defineProps<{
   effectiveSpan: {
@@ -54,7 +55,7 @@ watch(() => props.effectiveSpan, () => {
 });
 
 const fetchBalance = async () => {
-  const res = await fetch(`/api/transactions/balance?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}`);
+  const res = await req(`/api/transactions/balance?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}`);
   balance = await res.json();
 
   recalculateBalance();

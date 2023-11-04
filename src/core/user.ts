@@ -1,4 +1,7 @@
 import type {Organization} from "./organization";
+import type {Ref} from "vue";
+import {ref} from "vue";
+import {req} from "@/core/requests";
 
 export interface User {
     id: string;
@@ -15,6 +18,8 @@ export interface UserSettings {
     defaultSortingOrderAsc: boolean;
     extra: object | null;
 }
+
+export const authorized: Ref<boolean> = ref(false);
 
 export function defaultUser(): User {
     return {
@@ -33,17 +38,17 @@ export function defaultUser(): User {
 }
 
 export async function fetchUser(): Promise<User> {
-    const result = await fetch('/api/users/me');
+    const result = await req('/api/users/me');
     if (!result.ok) {
         if (result.status === 401) {
             throw new Error('Unauthorized');
         }
     }
-    return await (await fetch('/api/users/me')).json();
+    return await result.json();
 }
 
 export async function updateUserSettings(userSettings: UserSettings): Promise<boolean> {
-    const result = await fetch('/api/users/me/settings', {
+    const result = await req('/api/users/me/settings', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

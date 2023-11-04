@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, ref, watch} from "vue";
-import type {Category} from "@/category";
+import type {Category} from "@/core/category";
 
 const props = defineProps<{
   effectiveSpan: {

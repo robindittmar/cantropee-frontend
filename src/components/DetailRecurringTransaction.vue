@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import {convertLocalDateForInput, valueToString} from "@/convert";
-import type {RecurringTransaction} from "@/recurring-transaction";
+import {convertLocalDateForInput, valueToString} from "@/core/convert";
+import type {RecurringTransaction} from "@/core/recurring-transaction";
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import {Collapse, Modal} from "bootstrap";
-import {deriveVat} from "@/tax-helper";
-import type {Category} from "@/category";
+import {deriveVat} from "@/core/tax-helper";
+import type {Category} from "@/core/category";
+import {req} from "@/core/requests";
 
 const props = defineProps<{
   recurringTransaction: RecurringTransaction,
@@ -111,7 +112,7 @@ const hideConfirmDelete = () => {
 };
 
 const deleteRecurringTransaction = async () => {
-  const res = await fetch(`/api/recurring/${props.recurringTransaction.id}?cascade=${cascadeDelete.value}`, {
+  const res = await req(`/api/recurring/${props.recurringTransaction.id}?cascade=${cascadeDelete.value}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
@@ -157,7 +158,7 @@ const deleteRecurringTransaction = async () => {
 //     edited.vat7 = -edited.vat7;
 //   }
 //
-//   const res = await fetch(`/api/recurring/${edited.id}`, {
+//   const res = await req(`/api/recurring/${edited.id}`, {
 //     method: 'PUT',
 //     headers: {
 //       'Content-Type': 'application/json'

@@ -1,3 +1,4 @@
+import {req} from "@/core/requests";
 
 export interface Category {
     id: number;
@@ -5,6 +6,6 @@ export interface Category {
 }
 
 export const fetchCategories = async (): Promise<Category[]> => {
-    const res = await fetch('/api/categories');
+    const res = await req('/api/categories');
     return await res.json();
 };

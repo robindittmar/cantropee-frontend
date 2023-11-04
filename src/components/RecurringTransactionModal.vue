@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {convertLocalDateForInput} from "@/convert";
-import {deriveVat} from "@/tax-helper";
-import type {Category} from "@/category";
+import {convertLocalDateForInput} from "@/core/convert";
+import {deriveVat} from "@/core/tax-helper";
+import type {Category} from "@/core/category";
 
 const props = defineProps<{
   categories: Category[],
@@ -106,7 +106,7 @@ const submitRecurring = async () => {
     note: current.note.length > 0 ? current.note : undefined,
   };
 
-  const res = await fetch('/api/recurring', {
+  const res = await req('/api/recurring', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

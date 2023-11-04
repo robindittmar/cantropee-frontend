@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type {Ref} from "vue";
 import {onMounted, ref} from "vue";
-import {dateToString, moneyToString} from "../convert";
-import type {Category} from "@/category";
-import type {RecurringTransaction} from "@/recurring-transaction";
+import {dateToString, moneyToString} from "@/core/convert";
+import type {Category} from "@/core/category";
+import type {RecurringTransaction} from "@/core/recurring-transaction";
 import RecurringTransactionModal from "@/components/RecurringTransactionModal.vue";
 import DetailRecurringTransaction from "@/components/DetailRecurringTransaction.vue";
 import {Modal} from "bootstrap";
+import {req} from "@/core/requests";
 
 const props = defineProps<{
   currency: string,
@@ -22,7 +23,7 @@ let animating = false;
 let openCollapse: Element | null;
 
 const fetchRecurringTransactions = async () => {
-  const res = await fetch('/api/recurring');
+  const res = await req('/api/recurring');
   recurringTransactions.value = (await res.json()).map((r: RecurringTransaction) => {
     r.insertTimestamp = new Date(r.insertTimestamp);
     r.firstExecution = new Date(r.firstExecution);

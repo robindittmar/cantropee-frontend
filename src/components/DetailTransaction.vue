@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import {convertLocalDateForInput, valueToString} from "@/convert";
-import type {Transaction, TransactionDiff} from "@/transaction";
+import {convertLocalDateForInput, valueToString} from "@/core/convert";
+import type {Transaction, TransactionDiff} from "@/core/transaction";
 import type {Ref} from "vue";
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import {Collapse} from "bootstrap";
-import {deriveVat} from "@/tax-helper";
-import type {Category} from "@/category";
+import {deriveVat} from "@/core/tax-helper";
+import type {Category} from "@/core/category";
 import DiffTransactions from "@/components/DiffTransactions.vue";
+import {req} from "@/core/requests";
 
 const props = defineProps<{
   transaction: Transaction,
@@ -124,7 +125,7 @@ const submitTransaction = async() => {
     edited.vat7 = -edited.vat7;
   }
 
-  const res = await fetch('/api/transactions', {
+  const res = await req('/api/transactions', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -137,7 +138,7 @@ const submitTransaction = async() => {
 };
 
 const fetchHistory = async () => {
-  const result = await fetch(`/api/transactions/${props.transaction.id}/history`);
+  const result = await req(`/api/transactions/${props.transaction.id}/history`);
 
   history.value = (await result.json()).map((t: TransactionDiff) => {
     t.insertTimestamp = new Date(t.insertTimestamp);

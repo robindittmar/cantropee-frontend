@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {convertLocalDateForInput} from "@/convert";
-import type {Category} from "@/category";
+import {convertLocalDateForInput} from "@/core/convert";
+import type {Category} from "@/core/category";
+import {req} from "@/core/requests";
 
 const props = defineProps<{
   categories: Category[],
@@ -44,7 +45,7 @@ const submitDeposit = async () => {
     note: current.note.length > 0 ? current.note : undefined,
   };
 
-  const res = await fetch('/api/transactions', {
+  const res = await req('/api/transactions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type {User} from "@/user";
-import type {Category} from "@/category";
+import type {User} from "@/core/user";
+import type {Category} from "@/core/category";
 import OrganizationComponent from "@/components/OrganizationComponent.vue";
 
 const props = defineProps<{

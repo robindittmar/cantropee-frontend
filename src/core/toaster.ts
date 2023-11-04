@@ -1,5 +1,6 @@
 import type {Ref} from "vue";
 import {ref} from "vue";
+import {Toast} from "bootstrap";
 
 export enum ToastColor {
     Info,
@@ -9,8 +10,6 @@ export enum ToastColor {
 
 export interface CantropeeToast {
     id: number,
-    title: string,
-    subtitle: string,
     body: string,
     color: ToastColor,
 }
@@ -18,13 +17,11 @@ export interface CantropeeToast {
 let toastCounter = 0;
 export const toasts: Ref<CantropeeToast[]> = ref([]);
 
-export const toast = (title: string, body: string) => {
+export const toast = (body: string, color: ToastColor = ToastColor.Info) => {
     toasts.value.push({
         id: toastCounter,
-        title: title,
-        subtitle: 'just now',
         body: body,
-        color: ToastColor.Info,
+        color: color,
     });
     toastCounter += 1;
 };
