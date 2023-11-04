@@ -23,6 +23,7 @@ let effectiveSpan = ref({
 
 let showPending = ref(props.user.settings.defaultPreviewPending);
 let displayValues = ref(!props.user.settings.privateMode);
+let selectedCategory = ref(0);
 let sortingOrder = ref(props.user.settings.defaultSortingOrderAsc ? 'asc' : 'desc');
 
 watch(() => props.user, () => {
@@ -80,6 +81,10 @@ const toggleDisplayValues = () => {
   displayValues.value = !displayValues.value;
 };
 
+const setCategory = (categoryId: number) => {
+  selectedCategory.value = categoryId;
+};
+
 const toggleSortingOrder = () => {
   sortingOrder.value = sortingOrder.value === 'asc' ? 'desc' : 'asc';
 };
@@ -110,6 +115,7 @@ onMounted(() => {});
           <FilterComponent :effective-span="effectiveSpan" @next-month="nextMonth" @prev-month="prevMonth"
                            :show-pending="showPending" @toggle-show-pending="toggleShowPending"
                            :display-values="displayValues" @toggle-private-mode="toggleDisplayValues"
+                           :categories="categories" @set-category="setCategory"
                            :sorting-order="sortingOrder" @toggle-sorting-order="toggleSortingOrder"/>
         </div>
       </div>
@@ -121,6 +127,7 @@ onMounted(() => {});
           <TransactionsComponent :effective-span="effectiveSpan" :currency="user.currentOrganization?.currency ?? 'EUR'"
                                  :show-pending="showPending" :display-values="displayValues"
                                  :sorting-order="sortingOrder" :categories="categories"
+                                 :selected-category="selectedCategory"
                                  @updated-transaction="forceReload"/>
         </div>
       </div>

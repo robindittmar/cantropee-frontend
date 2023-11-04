@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
 import type {Ref} from "vue";
-import {dateToURI, dateToString, moneyToString} from "../convert";
+import {dateToURI, dateToString, moneyToString} from "@/convert";
 import type {Transaction} from "@/transaction";
 import DetailTransaction from "@/components/DetailTransaction.vue";
 import type {Category} from "@/category";
@@ -16,6 +16,7 @@ const props = defineProps<{
   displayValues: boolean,
   sortingOrder: string,
   categories: Category[],
+  selectedCategory: number,
 }>();
 
 const emit = defineEmits(['updated-transaction']);
@@ -32,7 +33,11 @@ watch(() => props.showPending, () => {
 
 watch(() => props.sortingOrder, () => {
   fetchTransactions();
-})
+});
+
+watch(() => props.selectedCategory, () => {
+  fetchTransactions();
+});
 
 const navigationStep = 10;
 let transactions: any = ref({
@@ -46,7 +51,12 @@ let animating = false;
 let openCollapse: Element | null;
 
 const fetchTransactions = async () => {
-  const res = await fetch(`/api/transactions?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}&pending=${props.showPending}&start=${transactions.value.start}&count=${navigationStep}&order=${props.sortingOrder}`);
+  let uri = `/api/transactions?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}&pending=${props.showPending}&start=${transactions.value.start}&count=${navigationStep}&order=${props.sortingOrder}`;
+  if (props.selectedCategory > 0) {
+    uri += `&category=${props.selectedCategory}`;
+  }
+
+  const res = await fetch(uri);
   let paginatedResult = await res.json();
 
   paginatedResult.data = paginatedResult.data.map((t: Transaction) => {

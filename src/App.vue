@@ -8,6 +8,7 @@ import HomeView from "@/views/HomeView.vue";
 import SettingsView from "@/views/SettingsView.vue";
 import {fetchCategories} from "@/category";
 import OrganizationView from "@/views/OrganizationView.vue";
+import ToastComponent from "@/components/ToastComponent.vue";
 
 enum View {
   Home,
@@ -18,11 +19,13 @@ let selectedView: Ref<View> = ref(View.Home);
 
 const setView = (view: View) => {
   selectedView.value = view;
+  localStorage.setItem('view', view.toString());
 };
 
 let initialLoadDone = ref(false);
 let user: Ref<User> = ref(defaultUser());
 let categories: Ref<Category[]> = ref([{id: 0, name: ''}]);
+let toasts: Ref<{title: string, subtitle: string, body: string}[]> = ref([]);
 
 const changeOrganization = (orgId: string) => {
   location.reload();
@@ -37,15 +40,25 @@ const updateSettings = async (settings: UserSettings) => {
   }
 }
 
-const afterMounted = async () => {
-  categories.value = await fetchCategories();
+const toast = (title: string, body: string) => {
+  let toast = {
+    title,
+    body,
+    subtitle: 'just now',
+  };
+
+  toasts.value.push(toast);
+  setInterval(() => {
+    toasts.value = toasts.value.filter(t => t.title !== toast.title);
+  }, 10000);
 };
 
 onMounted(async () => {
-  user.value = await fetchUser();
-  initialLoadDone.value = true;
+  selectedView.value = parseInt(localStorage.getItem('view') ?? View.Home.toString());
 
-  afterMounted();
+  user.value = await fetchUser();
+  categories.value = await fetchCategories();
+  initialLoadDone.value = true;
 });
 </script>
 
@@ -61,6 +74,7 @@ onMounted(async () => {
                 @update-user-settings="updateSettings"/>
   <div class="bottom-filler">
   </div>
+  <ToastComponent v-for="toast of toasts" :title="toast.title" :subtitle="toast.subtitle" :body="toast.body"/>
   <div class="fixed-bottom">
     <div class="container mb-1 d-flex justify-content-center">
       <div class="btn-group" role="group">
