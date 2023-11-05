@@ -11,9 +11,11 @@ import OrganizationView from "@/views/OrganizationView.vue";
 import ToastComponent from "@/components/ToastComponent.vue";
 import LoginView from "@/views/LoginView.vue";
 import {toasts} from "@/core/toaster";
+import ChartView from "@/views/ChartView.vue";
 
 enum View {
   Home,
+  Chart,
   Organization,
   Settings
 }
@@ -69,41 +71,46 @@ onMounted(async () => {
 <template>
   <template v-if="initialLoadDone">
     <template v-if="authorized">
-    <HomeView v-if="selectedView === View.Home"
-              :user="user" :categories="categories"/>
-    <OrganizationView v-if="selectedView === View.Organization"
-                      :user="user" :categories="categories"
-                      @change-organization="changeOrganization"/>
-    <SettingsView v-if="selectedView === View.Settings"
-                  :user="user" :categories="categories"
-                  @user-logout="logout"
-                  @update-user-settings="updateSettings"/>
-    <div class="bottom-filler">
-    </div>
-    <div class="fixed-bottom">
-      <div class="container mb-1 d-flex justify-content-center">
-        <div class="btn-group" role="group">
-          <input type="radio" class="btn-check" name="radioHomeView" id="radioHomeView" autocomplete="off"
-                 @click="setView(View.Home)"
-                 :checked="selectedView === View.Home">
-          <label class="btn btn-outline-primary" for="radioHomeView"><i class="fa-solid fa-house"></i></label>
+      <HomeView v-if="selectedView === View.Home"
+                :user="user" :categories="categories"/>
 
-          <input type="radio" class="btn-check" name="radioChartView" id="radioChartView" autocomplete="off"
-                 disabled />
-          <label class="btn btn-outline-primary" for="radioChartView"><i class="fa-solid fa-chart-simple"></i></label>
+      <ChartView v-if="selectedView === View.Chart"/>
 
-          <input type="radio" class="btn-check" name="radioOrgView" id="radioOrgView" autocomplete="off"
-                 @click="setView(View.Organization)"
-                 :checked="selectedView === View.Organization">
-          <label class="btn btn-outline-primary" for="radioOrgView"><i class="fa-solid fa-building"></i></label>
+      <OrganizationView v-if="selectedView === View.Organization"
+                        :user="user" :categories="categories"
+                        @change-organization="changeOrganization"/>
 
-          <input type="radio" class="btn-check" name="radioTransactionsView" id="radioTransactionsView" autocomplete="off"
-                 @click="setView(View.Settings)"
-                 :checked="selectedView === View.Settings">
-          <label class="btn btn-outline-primary" for="radioTransactionsView"><i class="fa-solid fa-gear"></i></label>
+      <SettingsView v-if="selectedView === View.Settings"
+                    :user="user" :categories="categories"
+                    @user-logout="logout"
+                    @update-user-settings="updateSettings"/>
+      <div class="bottom-filler">
+      </div>
+      <div class="fixed-bottom">
+        <div class="container mb-1 d-flex justify-content-center">
+          <div class="btn-group" role="group">
+            <input type="radio" class="btn-check" name="radioHomeView" id="radioHomeView" autocomplete="off"
+                   @click="setView(View.Home)"
+                   :checked="selectedView === View.Home"/>
+            <label class="btn btn-outline-primary" for="radioHomeView"><i class="fa-solid fa-house"></i></label>
+
+            <input type="radio" class="btn-check" name="radioChartView" id="radioChartView" autocomplete="off"
+                   @click="setView(View.Chart)"
+                   :checked="selectedView === View.Chart"/>
+            <label class="btn btn-outline-primary" for="radioChartView"><i class="fa-solid fa-chart-simple"></i></label>
+
+            <input type="radio" class="btn-check" name="radioOrgView" id="radioOrgView" autocomplete="off"
+                   @click="setView(View.Organization)"
+                   :checked="selectedView === View.Organization"/>
+            <label class="btn btn-outline-primary" for="radioOrgView"><i class="fa-solid fa-building"></i></label>
+
+            <input type="radio" class="btn-check" name="radioTransactionsView" id="radioTransactionsView" autocomplete="off"
+                   @click="setView(View.Settings)"
+                   :checked="selectedView === View.Settings"/>
+            <label class="btn btn-outline-primary" for="radioTransactionsView"><i class="fa-solid fa-gear"></i></label>
+          </div>
         </div>
       </div>
-    </div>
     </template>
     <template v-else>
       <LoginView @authenticated="initialLoad"/>
