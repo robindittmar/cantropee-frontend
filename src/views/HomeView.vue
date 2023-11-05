@@ -103,6 +103,7 @@ onMounted(() => {});
           <BalanceComponent :effective-span="effectiveSpan" :currency="user.currentOrganization?.currency ?? 'EUR'"
                             :show-pending="showPending" :display-values="displayValues"
                             :title="user.currentOrganization?.name ?? 'cantropee'"
+                            :selected-category="selectedCategory"
                             @request-deposit="requestDeposit" @request-withdrawal="requestWithdrawal"/>
         </div>
       </div>

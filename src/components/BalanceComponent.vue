@@ -12,6 +12,7 @@ const props = defineProps<{
   showPending: boolean,
   displayValues: boolean,
   title: string,
+  selectedCategory: number,
 }>();
 
 defineEmits(['request-deposit', 'request-withdrawal']);
@@ -54,8 +55,16 @@ watch(() => props.effectiveSpan, () => {
   fetchBalance();
 });
 
+watch(() => props.selectedCategory, () => {
+  fetchBalance();
+});
+
 const fetchBalance = async () => {
-  const res = await req(`/api/transactions/balance?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}`);
+  let uri = `/api/transactions/balance?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}`;
+  if (props.selectedCategory !== 0) {
+    uri += `&category=${props.selectedCategory}`;
+  }
+  const res = await req(uri);
   balance = await res.json();
 
   recalculateBalance();
