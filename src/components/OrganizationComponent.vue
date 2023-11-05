@@ -17,7 +17,7 @@ const selectedOrg = ref(props.user.currentOrganization?.id ?? '');
 watch(selectedOrg, async () => {
   const orgId = selectedOrg.value;
 
-  await req('/api/session/organization', {
+  const result = await req('/api/session/organization', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -25,7 +25,9 @@ watch(selectedOrg, async () => {
     body: JSON.stringify({organizationId: orgId}),
   });
 
-  emit('change-organization', orgId);
+  if (result.ok) {
+    emit('change-organization', orgId);
+  }
 });
 </script>
 

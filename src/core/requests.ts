@@ -6,13 +6,14 @@ export async function req(input: RequestInfo | URL, init?: RequestInit): Promise
     const result = await fetch(input, init);
 
     if (!result.ok) {
+        const err = await result.json();
+
         if (result.status === 401) {
             authorized.value = false;
-            throw new Error('Unauthorized');
         } else if (result.status === 403) {
             toast('Rechte unzureichend', ToastColor.Warning);
-        } else if (result.status === 500) {
-            toast('Server Fehler', ToastColor.Danger);
+        } else {
+            toast(err.message, ToastColor.Danger);
         }
     }
 
