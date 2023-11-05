@@ -61,7 +61,7 @@ watch(() => props.selectedCategory, () => {
 
 const fetchBalance = async () => {
   let uri = `/api/transactions/balance?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}`;
-  if (props.selectedCategory !== 0) {
+  if (props.selectedCategory > 0) {
     uri += `&category=${props.selectedCategory}`;
   }
   const res = await req(uri);

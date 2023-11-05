@@ -69,7 +69,7 @@ const previewAvailable = computed(() => {
             <i v-else class="fa-solid fa-arrow-down"></i>
           </button>
           <select id="transactionsCategory" class="form-select" v-model="selectedCategory">
-            <option value="0" selected>Alle</option>
+            <option :value="0" selected>Alle</option>
             <option v-for="category in categories" :key="category.id" :value="category.id">
               {{ category.name }}
             </option>
