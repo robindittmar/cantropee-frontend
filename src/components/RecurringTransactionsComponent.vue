@@ -143,12 +143,12 @@ onMounted(() => {
         </table>
       </div>
     </div>
-  </div>
-  <div class="d-flex justify-content-center pt-2 pe-2">
-    <button class="btn btn-primary" @click="showModal">
-      <i class="fa-solid fa-plus"></i>&nbsp;Neu
-    </button>
-    <RecurringTransactionModal :categories="categories" @submit-recurring-transaction="hideModal"/>
+    <div class="d-flex justify-content-center pt-2 pb-2">
+      <button class="btn btn-success" @click="showModal">
+        <i class="fa-solid fa-plus"></i>&nbsp;Neu
+      </button>
+      <RecurringTransactionModal :categories="categories" @submit-recurring-transaction="hideModal"/>
+    </div>
   </div>
 </template>
 

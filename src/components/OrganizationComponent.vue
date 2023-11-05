@@ -5,6 +5,7 @@ import type {User} from "@/core/user";
 import type {Category} from "@/core/category";
 import RecurringTransactionsComponent from "@/components/RecurringTransactionsComponent.vue";
 import {req} from "@/core/requests";
+import UsersComponent from "@/components/UsersComponent.vue";
 
 const props = defineProps<{
   user: User;
@@ -52,7 +53,7 @@ watch(selectedOrg, async () => {
           </div>
         </div>
       </div>
-      <h4 class="text-center mt-2">Daueraufträge</h4>
+      <h4 class="text-center mt-5">Daueraufträge</h4>
       <div class="row">
         <div class="col">
           <RecurringTransactionsComponent :display-values="!user.settings.privateMode"
@@ -60,6 +61,14 @@ watch(selectedOrg, async () => {
                                           :categories="categories"/>
         </div>
       </div>
+      <template v-if="user.currentOrganization?.privileges?.includes('admin')">
+      <h4 class="text-center mt-5">Benutzer</h4>
+      <div class="row">
+        <div class="col">
+          <UsersComponent :user="user"/>
+        </div>
+      </div>
+      </template>
     </div>
   </div>
 </template>
