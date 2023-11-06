@@ -15,6 +15,7 @@ const view = ref(LoginView.Login);
 
 const email = ref('');
 const password = ref('');
+const permanentSession = ref(false);
 
 const resetPassword = ref('');
 const resetPasswordConfirm = ref('');
@@ -23,6 +24,7 @@ const login = async () => {
   const payload = {
     email: email.value,
     password: password.value,
+    permanentSession: permanentSession.value,
   };
 
   const result = await req('/api/login', {
@@ -87,6 +89,10 @@ onMounted(() => {
                 <div class="mb-3">
                   <label for="password" class="form-label">Passwort</label>
                   <input id="password" name="password" class="form-control" type="password" v-model="password"/>
+                </div>
+                <div class="form-check mb-3">
+                  <input id="permanentSession" name="permanentSession" class="form-check-input" type="checkbox" v-model="permanentSession"/>
+                  <label for="permanentSession" class="form-check-label">Angemeldet bleiben</label>
                 </div>
                 <div class="mb-3">
                   <input type="submit" class="btn btn-primary" value="Anmelden"/>
