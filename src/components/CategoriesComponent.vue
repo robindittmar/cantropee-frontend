@@ -40,8 +40,6 @@ const insertCategory = async (category: Category) => {
   });
 
   if (result.ok) {
-    const resp = await result.json();
-
     emit('update-categories');
     toast('Kategorie erfolgreich erstellt', ToastColor.Success);
 
