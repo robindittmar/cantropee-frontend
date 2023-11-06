@@ -7,6 +7,7 @@ import RecurringTransactionsComponent from "@/components/RecurringTransactionsCo
 import {req} from "@/core/requests";
 import UsersComponent from "@/components/UsersComponent.vue";
 import CategoriesComponent from "@/components/CategoriesComponent.vue";
+import RolesComponent from "@/components/RolesComponent.vue";
 
 const props = defineProps<{
   user: User;
@@ -63,18 +64,24 @@ watch(selectedOrg, async () => {
         </div>
       </div>
       <template v-if="user.currentOrganization?.privileges?.includes('admin')">
-      <h4 class="text-center mt-5">Benutzer</h4>
-      <div class="row">
-        <div class="col">
-          <UsersComponent :user="user"/>
+        <h4 class="text-center mt-5">Kategorien</h4>
+        <div class="row">
+          <div class="col">
+            <CategoriesComponent :categories="categories" @update-categories="$emit('update-categories')"/>
+          </div>
         </div>
-      </div>
-      <h4 class="text-center mt-5">Kategorien</h4>
-      <div class="row">
-        <div class="col">
-          <CategoriesComponent :categories="categories" @update-categories="$emit('update-categories')"/>
+        <h4 class="text-center mt-5">Benutzer</h4>
+        <div class="row">
+          <div class="col">
+            <UsersComponent :user="user"/>
+          </div>
         </div>
-      </div>
+        <h4 class="text-center mt-5">Rollen</h4>
+        <div class="row">
+          <div class="col">
+            <RolesComponent :user="user"/>
+          </div>
+        </div>
       </template>
     </div>
   </div>
