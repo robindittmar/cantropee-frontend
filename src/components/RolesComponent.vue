@@ -4,6 +4,7 @@ import {onMounted, ref} from "vue";
 import type {Role} from "@/core/role";
 import {req} from "@/core/requests";
 
+const initialLoadDone = ref(false);
 const roles: Ref<Role[]> = ref([]);
 const selectedRole = ref('');
 
@@ -15,6 +16,7 @@ const fetchRoles = async () => {
   const result = await req('/api/roles');
   if (result.ok) {
     roles.value = (await result.json()).roles ?? [];
+    initialLoadDone.value = true;
   }
 };
 
@@ -38,33 +40,46 @@ onMounted(() => {
           </tr>
           </thead>
           <tbody class="table-group-divider">
-          <template v-for="(role, i) in roles" :key="role.id">
-            <template v-if="role.id === selectedRole">
-              <tr>
-                <td>
-                  <div class="input-group">
-                    <button class="btn btn-primary" disabled><i class="fa-solid fa-floppy-disk"></i></button>
-                    <button class="btn btn-secondary" @click="selectRole('')"><i class="fa-solid fa-xmark"></i></button>
-                    <button class="btn btn-danger" disabled><i class="fa-solid fa-trash"></i></button>
+          <template v-if="initialLoadDone">
+            <template v-for="(role, i) in roles" :key="role.id">
+              <template v-if="role.id === selectedRole">
+                <tr>
+                  <td>
+                    <div class="input-group">
+                      <button class="btn btn-primary" disabled><i class="fa-solid fa-floppy-disk"></i></button>
+                      <button class="btn btn-secondary" @click="selectRole('')"><i class="fa-solid fa-xmark"></i></button>
+                      <button class="btn btn-danger" disabled><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                  </td>
+                  <td>
+                    <input id="categoryName" class="form-control" type="text" maxlength="128" :value="role.name"/>
+                  </td>
+                  <td><input type="checkbox" class="form-check-input" :checked="role.privileges.includes('read')"/></td>
+                  <td><input type="checkbox" class="form-check-input" :checked="role.privileges.includes('write')"/></td>
+                  <td><input type="checkbox" class="form-check-input" :checked="role.privileges.includes('admin')"/></td>
+                </tr>
+              </template>
+              <template v-else>
+                <tr @click="selectRole(role.id)">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ role.name }}</td>
+                  <td><input type="checkbox" class="form-check-input" :checked="role.privileges.includes('read')" disabled/></td>
+                  <td><input type="checkbox" class="form-check-input" :checked="role.privileges.includes('write')" disabled/></td>
+                  <td><input type="checkbox" class="form-check-input" :checked="role.privileges.includes('admin')" disabled/></td>
+                </tr>
+              </template>
+            </template>
+          </template>
+          <template v-else>
+            <tr>
+              <td colspan="5">
+                <div class="d-flex justify-content-center mt-4">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
                   </div>
-                </td>
-                <td>
-                  <input id="categoryName" class="form-control" type="text" maxlength="128" :value="role.name"/>
-                </td>
-                <td><input type="checkbox" class="form-check-input" :checked="role.privileges.includes('read')"/></td>
-                <td><input type="checkbox" class="form-check-input" :checked="role.privileges.includes('write')"/></td>
-                <td><input type="checkbox" class="form-check-input" :checked="role.privileges.includes('admin')"/></td>
-              </tr>
-            </template>
-            <template v-else>
-              <tr @click="selectRole(role.id)">
-                <td>{{ i + 1 }}</td>
-                <td>{{ role.name }}</td>
-                <td><input type="checkbox" class="form-check-input" :checked="role.privileges.includes('read')" disabled/></td>
-                <td><input type="checkbox" class="form-check-input" :checked="role.privileges.includes('write')" disabled/></td>
-                <td><input type="checkbox" class="form-check-input" :checked="role.privileges.includes('admin')" disabled/></td>
-              </tr>
-            </template>
+                </div>
+              </td>
+            </tr>
           </template>
 <!--          <template v-if="newCategory">-->
 <!--            <tr>-->

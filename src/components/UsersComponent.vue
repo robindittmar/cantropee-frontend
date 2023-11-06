@@ -14,12 +14,14 @@ interface OrgUser {
   role: string;
 }
 
-let users: Ref<OrgUser[]> = ref([]);
+const initialLoadDone = ref(false);
+const users: Ref<OrgUser[]> = ref([]);
 
 const fetchUsers = async () => {
   const res = await req('/api/users');
   if (res.ok) {
     users.value = (await res.json());
+    initialLoadDone.value = true;
   }
 };
 
@@ -41,18 +43,31 @@ onMounted(() => {
           </tr>
           </thead>
           <tbody class="table-group-divider">
-          <template v-for="(orgUser, i) in users" :key="orgUser.id">
+          <template v-if="initialLoadDone">
+            <template v-for="(orgUser, i) in users" :key="orgUser.id">
+              <tr>
+                <template v-if="orgUser.id !== user.id">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ orgUser.email }}</td>
+                  <td>{{ orgUser.role }}</td>
+                </template>
+                <template v-else>
+                  <th scope="row">{{ i + 1 }}</th>
+                  <th scope="row">{{ orgUser.email }} <i>*</i></th>
+                  <th scope="row">{{ orgUser.role }}</th>
+                </template>
+              </tr>
+            </template>
+          </template>
+          <template v-else>
             <tr>
-              <template v-if="orgUser.id !== user.id">
-                <td>{{ i + 1 }}</td>
-                <td>{{ orgUser.email }}</td>
-                <td>{{ orgUser.role }}</td>
-              </template>
-              <template v-else>
-                <th scope="row">{{ i + 1 }}</th>
-                <th scope="row">{{ orgUser.email }} <i>*</i></th>
-                <th scope="row">{{ orgUser.role }}</th>
-              </template>
+              <td colspan="3">
+                <div class="d-flex justify-content-center mt-4">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+              </td>
             </tr>
           </template>
           </tbody>

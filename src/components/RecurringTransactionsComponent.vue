@@ -17,6 +17,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['updated-recurring-transaction']);
 
+const initialLoadDone = ref(false);
 let recurringTransactions: Ref<RecurringTransaction[]> = ref([]);
 let selectedRecurringTransaction: Ref<string | null> = ref(null);
 let animating = false;
@@ -24,17 +25,21 @@ let openCollapse: Element | null;
 
 const fetchRecurringTransactions = async () => {
   const res = await req('/api/recurring');
-  recurringTransactions.value = (await res.json()).map((r: RecurringTransaction) => {
-    r.insertTimestamp = new Date(r.insertTimestamp);
-    r.firstExecution = new Date(r.firstExecution);
-    r.nextExecution = new Date(r.nextExecution);
-    if (r.lastExecution) {
-      r.lastExecution = new Date(r.lastExecution);
-    }
 
-    r.isPositive = r.value >= 0;
-    return r;
-  });
+  if (res.ok) {
+    recurringTransactions.value = (await res.json()).map((r: RecurringTransaction) => {
+      r.insertTimestamp = new Date(r.insertTimestamp);
+      r.firstExecution = new Date(r.firstExecution);
+      r.nextExecution = new Date(r.nextExecution);
+      if (r.lastExecution) {
+        r.lastExecution = new Date(r.lastExecution);
+      }
+
+      r.isPositive = r.value >= 0;
+      return r;
+    });
+    initialLoadDone.value = true;
+  }
 };
 
 const updatedRecurringTransaction = () => {};
@@ -116,28 +121,41 @@ onMounted(() => {
           </tr>
           </thead>
           <tbody class="table-group-divider">
+          <template v-if="initialLoadDone">
           <template v-for="(recurring, i) in recurringTransactions" :key="recurring.id">
-            <tr @click="selectRecurringTransaction(recurring.id)">
-              <td :class="{'text-muted': !recurring.active}">{{ i + 1 }}</td>
-              <td :class="{'text-muted': !recurring.active}">{{ dateToString(recurring.nextExecution) }}</td>
-              <td :class="{'text-muted': !recurring.active, 'positive-value': recurring.isPositive && displayValues && recurring.active, 'negative-value': !recurring.isPositive && displayValues && recurring.active}">
-                {{ displayValues ? moneyToString(recurring.value, currency) : '***' }}
-              </td>
-            </tr>
-            <Transition
-                :css="false"
-                @enter="waitForExpand"
-                @leave="waitForCollapse">
-              <tr v-if="recurring.id === selectedRecurringTransaction" class="no-hover">
-                <td colspan="3">
-                  <DetailRecurringTransaction :recurring-transaction="recurring" :currency="currency"
-                                              :display-values="displayValues"
-                                              :categories="categories"
-                                              @updated-recurring-transaction="updatedRecurringTransaction"
-                                              @deleted-recurring-transaction="updatedRecurringTransaction"/>
+              <tr @click="selectRecurringTransaction(recurring.id)">
+                <td :class="{'text-muted': !recurring.active}">{{ i + 1 }}</td>
+                <td :class="{'text-muted': !recurring.active}">{{ dateToString(recurring.nextExecution) }}</td>
+                <td :class="{'text-muted': !recurring.active, 'positive-value': recurring.isPositive && displayValues && recurring.active, 'negative-value': !recurring.isPositive && displayValues && recurring.active}">
+                  {{ displayValues ? moneyToString(recurring.value, currency) : '***' }}
                 </td>
               </tr>
-            </Transition>
+              <Transition
+                  :css="false"
+                  @enter="waitForExpand"
+                  @leave="waitForCollapse">
+                <tr v-if="recurring.id === selectedRecurringTransaction" class="no-hover">
+                  <td colspan="3">
+                    <DetailRecurringTransaction :recurring-transaction="recurring" :currency="currency"
+                                                :display-values="displayValues"
+                                                :categories="categories"
+                                                @updated-recurring-transaction="updatedRecurringTransaction"
+                                                @deleted-recurring-transaction="updatedRecurringTransaction"/>
+                  </td>
+                </tr>
+              </Transition>
+            </template>
+          </template>
+          <template v-else>
+            <tr>
+              <td colspan="3">
+                <div class="d-flex justify-content-center mt-4">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+              </td>
+            </tr>
           </template>
           </tbody>
         </table>
