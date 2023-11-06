@@ -8,7 +8,7 @@ const props = defineProps<{
   categories: Category[];
 }>();
 
-const emit = defineEmits(['change-organization']);
+const emit = defineEmits(['change-organization', 'update-categories']);
 
 </script>
 
@@ -17,7 +17,8 @@ const emit = defineEmits(['change-organization']);
     <div class="row mt-2">
       <div class="col">
         <OrganizationComponent :categories="categories" :user="user"
-                               @change-organization="$emit('change-organization')"/>
+                               @change-organization="$emit('change-organization')"
+                               @update-categories="$emit('update-categories')"/>
       </div>
     </div>
   </div>

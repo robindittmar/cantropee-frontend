@@ -6,13 +6,14 @@ import type {Category} from "@/core/category";
 import RecurringTransactionsComponent from "@/components/RecurringTransactionsComponent.vue";
 import {req} from "@/core/requests";
 import UsersComponent from "@/components/UsersComponent.vue";
+import CategoriesComponent from "@/components/CategoriesComponent.vue";
 
 const props = defineProps<{
   user: User;
   categories: Category[];
 }>();
 
-const emit = defineEmits(['change-organization']);
+const emit = defineEmits(['change-organization', 'update-categories']);
 
 const selectedOrg = ref(props.user.currentOrganization?.id ?? '');
 watch(selectedOrg, async () => {
@@ -66,6 +67,12 @@ watch(selectedOrg, async () => {
       <div class="row">
         <div class="col">
           <UsersComponent :user="user"/>
+        </div>
+      </div>
+      <h4 class="text-center mt-5">Kategorien</h4>
+      <div class="row">
+        <div class="col">
+          <CategoriesComponent :categories="categories" @update-categories="$emit('update-categories')"/>
         </div>
       </div>
       </template>

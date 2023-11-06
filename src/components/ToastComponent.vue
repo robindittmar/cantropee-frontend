@@ -24,10 +24,11 @@ onMounted(() => {
 
 <template>
   <div :id="'toast-' + toast.id" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true"
-       :class="{'text-bg-primary': toast.color === ToastColor.Info, 'text-bg-warning': toast.color === ToastColor.Warning, 'text-bg-danger': toast.color === ToastColor.Danger}">
+       :class="{'text-bg-primary': toast.color === ToastColor.Info, 'text-bg-success': toast.color === ToastColor.Success, 'text-bg-warning': toast.color === ToastColor.Warning, 'text-bg-danger': toast.color === ToastColor.Danger}">
     <div class="d-flex">
       <div class="toast-body">
         <i class="fa-solid fa-circle-info" v-if="toast.color === ToastColor.Info"></i>
+        <i class="fa-solid fa-circle-check" v-if="toast.color === ToastColor.Success"></i>
         <i class="fa-solid fa-triangle-exclamation" v-else-if="toast.color === ToastColor.Warning"></i>
         <i class="fa-solid fa-circle-xmark" v-else-if="toast.color === ToastColor.Danger"></i>
         &nbsp;&nbsp;{{ toast.body }}

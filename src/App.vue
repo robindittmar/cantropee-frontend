@@ -47,6 +47,10 @@ const initialLoad = async () => {
   initialLoadDone.value = true;
 };
 
+const reloadCategories = async () => {
+  categories.value = await fetchCategories();
+};
+
 const logout = async () => {
   authorized.value = false;
   setView(View.Home);
@@ -78,7 +82,8 @@ onMounted(async () => {
 
       <OrganizationView v-if="selectedView === View.Organization"
                         :user="user" :categories="categories"
-                        @change-organization="changeOrganization"/>
+                        @change-organization="changeOrganization"
+                        @update-categories="reloadCategories"/>
 
       <SettingsView v-if="selectedView === View.Settings"
                     :user="user" :categories="categories"

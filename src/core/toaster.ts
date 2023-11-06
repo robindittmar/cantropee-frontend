@@ -4,6 +4,7 @@ import {Toast} from "bootstrap";
 
 export enum ToastColor {
     Info,
+    Success,
     Warning,
     Danger,
 }

@@ -49,9 +49,9 @@ onMounted(() => {
                 <td>{{ orgUser.role }}</td>
               </template>
               <template v-else>
-                <th>{{ i + 1 }}</th>
-                <th>{{ orgUser.email }} <i>*</i></th>
-                <th>{{ orgUser.role }}</th>
+                <th scope="row">{{ i + 1 }}</th>
+                <th scope="row">{{ orgUser.email }} <i>*</i></th>
+                <th scope="row">{{ orgUser.role }}</th>
               </template>
             </tr>
           </template>
