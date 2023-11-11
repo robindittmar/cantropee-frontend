@@ -43,7 +43,7 @@ const previewAvailable = computed(() => {
 <template>
   <div class="row">
     <div class="col">
-      <div class="input-group mb-3">
+      <div class="input-group">
         <button class="btn btn-secondary" @click="$emit('prev-month')">
           <i class="fa-solid fa-arrow-left"></i>
         </button>
@@ -63,7 +63,7 @@ const previewAvailable = computed(() => {
       </div>
     </div>
   </div>
-  <div class="row mb-3">
+  <div class="row mt-1">
     <div class="col">
       <div class="collapse" id="transactionsFilterCollapse" aria-hidden="true">
         <div class="mt-1">
