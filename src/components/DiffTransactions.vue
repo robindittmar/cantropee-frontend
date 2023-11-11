@@ -7,6 +7,7 @@ import {Modal} from "bootstrap";
 const props = defineProps<{
   history: TransactionDiff[],
   displayValues: boolean,
+  showTaxes: boolean,
 }>();
 
 const emit = defineEmits(['modal-closed']);
@@ -56,10 +57,12 @@ onBeforeUnmount(() => {
                 <th scope="col">Buchungsdatum</th>
                 <th scope="col">Typ</th>
                 <th scope="col">Betrag</th>
-                <th scope="col">Betrag 19%</th>
-                <th scope="col">MwSt 19%</th>
-                <th scope="col">Betrag 7%</th>
-                <th scope="col">MwSt 7%</th>
+                <template v-if="showTaxes">
+                  <th scope="col">Betrag 19%</th>
+                  <th scope="col">MwSt 19%</th>
+                  <th scope="col">Betrag 7%</th>
+                  <th scope="col">MwSt 7%</th>
+                </template>
                 <th scope="col">Kategorie</th>
                 <th scope="col">Notiz</th>
               </tr>
@@ -79,18 +82,20 @@ onBeforeUnmount(() => {
                   <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
                     {{ diffValueToString(diff.value) }}
                   </td>
-                  <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
-                    {{ diffValueToString(diff.value19) }}
-                  </td>
-                  <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
-                    {{ diffValueToString(diff.vat19) }}
-                  </td>
-                  <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
-                    {{ diffValueToString(diff.value7) }}
-                  </td>
-                  <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
-                    {{ diffValueToString(diff.vat7) }}
-                  </td>
+                  <template v-if="showTaxes">
+                    <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
+                      {{ diffValueToString(diff.value19) }}
+                    </td>
+                    <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
+                      {{ diffValueToString(diff.vat19) }}
+                    </td>
+                    <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
+                      {{ diffValueToString(diff.value7) }}
+                    </td>
+                    <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
+                      {{ diffValueToString(diff.vat7) }}
+                    </td>
+                  </template>
                   <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
                     {{ diff.category }}
                   </td>

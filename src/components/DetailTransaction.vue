@@ -14,6 +14,7 @@ const props = defineProps<{
   categories: Category[],
   currency: string,
   displayValues: boolean,
+  showTaxes: boolean,
 }>();
 
 const emit = defineEmits(['updated-transaction']);
@@ -201,51 +202,51 @@ onBeforeUnmount(() => {
                      @input="setValue"/>
             </div>
           </div>
-          <template v-if="!isDeposit">
-          <div class="mb-3">
-            <label for="detailGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
-            <div id="detailGroupValue19" class="input-group mb-3">
-              <span class="input-group-text" id="detailValue19addon">EUR</span>
-              <input v-if="!editing" id="detailValue19" class="form-control"
-                     aria-describedby="detailValue19addon" type="text"
-                     :value="displayValues ? valueToString(Math.abs(transaction.value19)) : '***'"
-                     disabled/>
-              <input v-else id="detailValue19" class="form-control"
-                     aria-describedby="detailValue19addon" type="number" step=".01"
-                     :value="transactionCopy.value19"
-                     @input="setValue19"/>
-              <span class="input-group-text" id="detailVat19addon">EUR</span>
-              <input v-if="!editing" id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
-                     :value="displayValues ? valueToString(Math.abs(transaction.vat19)) : '***'"
-                     disabled/>
-              <input v-else id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
-                     type="number" step=".01"
-                     v-model="transactionCopy.vat19"
-                     disabled/>
+          <template v-if="!isDeposit && showTaxes">
+            <div class="mb-3">
+              <label for="detailGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
+              <div id="detailGroupValue19" class="input-group mb-3">
+                <span class="input-group-text" id="detailValue19addon">EUR</span>
+                <input v-if="!editing" id="detailValue19" class="form-control"
+                       aria-describedby="detailValue19addon" type="text"
+                       :value="displayValues ? valueToString(Math.abs(transaction.value19)) : '***'"
+                       disabled/>
+                <input v-else id="detailValue19" class="form-control"
+                       aria-describedby="detailValue19addon" type="number" step=".01"
+                       :value="transactionCopy.value19"
+                       @input="setValue19"/>
+                <span class="input-group-text" id="detailVat19addon">EUR</span>
+                <input v-if="!editing" id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
+                       :value="displayValues ? valueToString(Math.abs(transaction.vat19)) : '***'"
+                       disabled/>
+                <input v-else id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
+                       type="number" step=".01"
+                       v-model="transactionCopy.vat19"
+                       disabled/>
+              </div>
             </div>
-          </div>
-          <div class="mb-3">
-            <label for="detailGroupValue7" class="form-label">7% Anteil | 7% Steuern</label>
-            <div id="detailGroupValue7" class="input-group mb-3">
-              <span class="input-group-text" id="detailValue7addon">EUR</span>
-              <input v-if="!editing" id="detailValue7" class="form-control"
-                     aria-describedby="detailValue7addon" type="text"
-                     :value="displayValues ? valueToString(Math.abs(transaction.value7)) : '***'"
-                     disabled/>
-              <input v-else id="detailValue7" class="form-control"
-                     aria-describedby="detailValue7addon" type="number" step=".01"
-                     :value="transactionCopy.value7"
-                     @input="setValue7"/>
-              <span class="input-group-text" id="detailVat7addon">EUR</span>
-              <input v-if="!editing" id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
-                     type="text" :value="displayValues ? valueToString(Math.abs(transaction.vat7)) : '***'"
-                     disabled/>
-              <input v-else id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
-                     type="number" step=".01"
-                     v-model="transactionCopy.vat7"
-                     disabled>
+            <div class="mb-3">
+              <label for="detailGroupValue7" class="form-label">7% Anteil | 7% Steuern</label>
+              <div id="detailGroupValue7" class="input-group mb-3">
+                <span class="input-group-text" id="detailValue7addon">EUR</span>
+                <input v-if="!editing" id="detailValue7" class="form-control"
+                       aria-describedby="detailValue7addon" type="text"
+                       :value="displayValues ? valueToString(Math.abs(transaction.value7)) : '***'"
+                       disabled/>
+                <input v-else id="detailValue7" class="form-control"
+                       aria-describedby="detailValue7addon" type="number" step=".01"
+                       :value="transactionCopy.value7"
+                       @input="setValue7"/>
+                <span class="input-group-text" id="detailVat7addon">EUR</span>
+                <input v-if="!editing" id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
+                       type="text" :value="displayValues ? valueToString(Math.abs(transaction.vat7)) : '***'"
+                       disabled/>
+                <input v-else id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
+                       type="number" step=".01"
+                       v-model="transactionCopy.vat7"
+                       disabled>
+              </div>
             </div>
-          </div>
           </template>
           <div class="mb-3">
             <label for="detailCategory" class="form-label">Kategorie</label>

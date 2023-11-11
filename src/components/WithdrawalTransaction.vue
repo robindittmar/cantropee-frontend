@@ -7,6 +7,7 @@ import {req} from "@/core/requests";
 
 const props = defineProps<{
   categories: Category[],
+  showTaxes: boolean,
 }>();
 
 const emit = defineEmits(['submit-withdrawal']);
@@ -143,32 +144,34 @@ onMounted(() => {
                        @input="setValue"/>
               </div>
             </div>
-            <div class="mb-3">
-              <label for="withdrawGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
-              <div id="withdrawGroupValue19" class="input-group mb-3">
-                <span class="input-group-text" id="withdrawValue19addon">EUR</span>
-                <input id="withdrawValue19" class="form-control"
-                       aria-describedby="withdrawValue19addon" type="number" step=".01"
-                       :value="t.value19"
-                       @input="setValue19"/>
-                <span class="input-group-text" id="withdrawVat19addon">EUR</span>
-                <input id="withdrawVat19" class="form-control" aria-describedby="withdrawVat19addon"
-                       type="text" :value="t.vat19" disabled/>
+            <template v-if="showTaxes">
+              <div class="mb-3">
+                <label for="withdrawGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
+                <div id="withdrawGroupValue19" class="input-group mb-3">
+                  <span class="input-group-text" id="withdrawValue19addon">EUR</span>
+                  <input id="withdrawValue19" class="form-control"
+                         aria-describedby="withdrawValue19addon" type="number" step=".01"
+                         :value="t.value19"
+                         @input="setValue19"/>
+                  <span class="input-group-text" id="withdrawVat19addon">EUR</span>
+                  <input id="withdrawVat19" class="form-control" aria-describedby="withdrawVat19addon"
+                         type="text" :value="t.vat19" disabled/>
+                </div>
               </div>
-            </div>
-            <div class="mb-3">
-              <label for="withdrawGroupValue7" class="form-label">7% Anteil | 7% Steuern</label>
-              <div id="withdrawGroupValue7" class="input-group mb-3">
-                <span class="input-group-text" id="withdrawValue7addon">EUR</span>
-                <input id="withdrawValue7" class="form-control"
-                       aria-describedby="withdrawValue7addon" type="number" step=".01"
-                       :value="t.value7"
-                       @input="setValue7"/>
-                <span class="input-group-text" id="withdrawVat7addon">EUR</span>
-                <input id="withdrawVat7" class="form-control" aria-describedby="withdrawVat7addon"
-                       type="text" :value="t.vat7" disabled/>
+              <div class="mb-3">
+                <label for="withdrawGroupValue7" class="form-label">7% Anteil | 7% Steuern</label>
+                <div id="withdrawGroupValue7" class="input-group mb-3">
+                  <span class="input-group-text" id="withdrawValue7addon">EUR</span>
+                  <input id="withdrawValue7" class="form-control"
+                         aria-describedby="withdrawValue7addon" type="number" step=".01"
+                         :value="t.value7"
+                         @input="setValue7"/>
+                  <span class="input-group-text" id="withdrawVat7addon">EUR</span>
+                  <input id="withdrawVat7" class="form-control" aria-describedby="withdrawVat7addon"
+                         type="text" :value="t.vat7" disabled/>
+                </div>
               </div>
-            </div>
+            </template>
             <div class="mb-3">
               <label for="withdrawCategory" class="form-label">Kategorie</label>
               <select id="withdrawCategory" class="form-select" v-model="t.selectedCategory">

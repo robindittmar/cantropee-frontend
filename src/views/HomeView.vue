@@ -104,6 +104,7 @@ onMounted(() => {});
                             :show-pending="showPending" :display-values="displayValues"
                             :title="user.currentOrganization?.name ?? 'cantropee'"
                             :selected-category="selectedCategory"
+                            :show-taxes="user.currentOrganization?.usesTaxes ?? false"
                             @request-deposit="requestDeposit" @request-withdrawal="requestWithdrawal"/>
         </div>
       </div>
@@ -124,6 +125,7 @@ onMounted(() => {});
                                  :show-pending="showPending" :display-values="displayValues"
                                  :sorting-order="sortingOrder" :categories="categories"
                                  :selected-category="selectedCategory"
+                                 :show-taxes="user.currentOrganization?.usesTaxes ?? false"
                                  @updated-transaction="forceReload"/>
         </div>
       </div>
@@ -131,7 +133,8 @@ onMounted(() => {});
   </div>
 
   <DepositTransaction :categories="categories" @submit-deposit="hideDeposit"/>
-  <WithdrawalTransaction :categories="categories" @submit-withdrawal="hideWithdrawal"/>
+  <WithdrawalTransaction :categories="categories" @submit-withdrawal="hideWithdrawal"
+                         :show-taxes="user.currentOrganization?.usesTaxes ?? false"/>
 </template>
 
 <style scoped></style>

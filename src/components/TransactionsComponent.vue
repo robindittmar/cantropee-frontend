@@ -15,6 +15,7 @@ const props = defineProps<{
   currency: string,
   showPending: boolean,
   displayValues: boolean,
+  showTaxes: boolean,
   sortingOrder: string,
   categories: Category[],
   selectedCategory: number,
@@ -175,7 +176,7 @@ onMounted(() => {
             <tr v-if="transaction.id === selectedTransaction" class="no-hover">
               <td colspan="3">
                 <DetailTransaction :transaction="transaction" :currency="currency" :display-values="displayValues"
-                                   :categories="categories"
+                                   :categories="categories" :show-taxes="showTaxes"
                                    @updated-transaction="updatedTransaction"/>
               </td>
             </tr>

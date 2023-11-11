@@ -11,6 +11,7 @@ const props = defineProps<{
   currency: string,
   showPending: boolean,
   displayValues: boolean,
+  showTaxes: boolean,
   title: string,
   selectedCategory: number,
 }>();
@@ -87,7 +88,7 @@ onMounted(() => {
         >
           {{ displayValues ? moneyToString(totalBalance, currency) : '***' }}
         </h1>
-        <span class="text-center text-sm-center">{{ displayValues ? moneyToString(totalVat, currency) : '***' }}</span>
+        <span v-if="showTaxes" class="text-center text-sm-center">{{ displayValues ? moneyToString(totalVat, currency) : '***' }}</span>
       </div>
       <div class="row">
         <div class="col">
