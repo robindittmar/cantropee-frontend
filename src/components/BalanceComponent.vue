@@ -93,12 +93,12 @@ onMounted(() => {
       <div class="row">
         <div class="col">
           <button type="button" class="btn btn-success w-100" @click="$emit('request-deposit')">
-            <i class="fa-solid fa-arrow-up"></i>
+            <i class="fa-solid fa-plus"></i>&nbsp;Einzahlen
           </button>
         </div>
         <div class="col">
           <button type="button" class="btn btn-danger w-100" @click="$emit('request-withdrawal')">
-            <i class="fa-solid fa-arrow-down"></i>
+            <i class="fa-solid fa-minus"></i>&nbsp;Auszahlen
           </button>
         </div>
       </div>
