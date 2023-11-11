@@ -10,7 +10,7 @@ import {fetchCategories} from "@/core/category";
 import OrganizationView from "@/views/OrganizationView.vue";
 import ToastComponent from "@/components/ToastComponent.vue";
 import LoginView from "@/views/LoginView.vue";
-import {toasts} from "@/core/toaster";
+import {toast, toasts} from "@/core/toaster";
 import ChartView from "@/views/ChartView.vue";
 
 enum View {
@@ -62,6 +62,8 @@ const updateSettings = async (settings: UserSettings) => {
 
     intermediate.settings = settings;
     user.value = intermediate;
+
+    toast('Einstellungen gespeichert!');
   }
 }
 
