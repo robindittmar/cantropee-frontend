@@ -60,6 +60,7 @@ watch(selectedOrg, async () => {
         <div class="col">
           <RecurringTransactionsComponent :display-values="!user.settings.privateMode"
                                           :currency="user.currentOrganization?.currency ?? 'EUR'"
+                                          :show-taxes="user.currentOrganization?.usesTaxes ?? false"
                                           :categories="categories"/>
         </div>
       </div>

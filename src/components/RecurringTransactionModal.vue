@@ -7,6 +7,7 @@ import {req} from "@/core/requests";
 
 const props = defineProps<{
   categories: Category[],
+  showTaxes: boolean,
 }>();
 
 const emit = defineEmits(['submit-recurring-transaction']);
@@ -189,33 +190,33 @@ onMounted(() => {
                        @input="setValue"/>
               </div>
             </div>
-            <template v-if="!r.isDeposit">
-            <div class="mb-3">
-              <label for="recurringGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
-              <div id="recurringGroupValue19" class="input-group mb-3">
-                <span class="input-group-text" id="recurringValue19addon">EUR</span>
-                <input id="recurringValue19" class="form-control"
-                       aria-describedby="recurringValue19addon" type="number" step=".01"
-                       :value="r.value19"
-                       @input="setValue19"/>
-                <span class="input-group-text" id="recurringVat19addon">EUR</span>
-                <input id="recurringVat19" class="form-control" aria-describedby="recurringVat19addon"
-                       type="text" :value="r.vat19" disabled/>
+            <template v-if="!r.isDeposit && showTaxes">
+              <div class="mb-3">
+                <label for="recurringGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
+                <div id="recurringGroupValue19" class="input-group mb-3">
+                  <span class="input-group-text" id="recurringValue19addon">EUR</span>
+                  <input id="recurringValue19" class="form-control"
+                         aria-describedby="recurringValue19addon" type="number" step=".01"
+                         :value="r.value19"
+                         @input="setValue19"/>
+                  <span class="input-group-text" id="recurringVat19addon">EUR</span>
+                  <input id="recurringVat19" class="form-control" aria-describedby="recurringVat19addon"
+                         type="text" :value="r.vat19" disabled/>
+                </div>
               </div>
-            </div>
-            <div class="mb-3">
-              <label for="recurringGroupValue7" class="form-label">7% Anteil | 7% Steuern</label>
-              <div id="recurringGroupValue7" class="input-group mb-3">
-                <span class="input-group-text" id="recurringValue7addon">EUR</span>
-                <input id="recurringValue7" class="form-control"
-                       aria-describedby="recurringValue7addon" type="number" step=".01"
-                       :value="r.value7"
-                       @input="setValue7"/>
-                <span class="input-group-text" id="recurringVat7addon">EUR</span>
-                <input id="recurringVat7" class="form-control" aria-describedby="recurringVat7addon"
-                       type="text" :value="r.vat7" disabled/>
+              <div class="mb-3">
+                <label for="recurringGroupValue7" class="form-label">7% Anteil | 7% Steuern</label>
+                <div id="recurringGroupValue7" class="input-group mb-3">
+                  <span class="input-group-text" id="recurringValue7addon">EUR</span>
+                  <input id="recurringValue7" class="form-control"
+                         aria-describedby="recurringValue7addon" type="number" step=".01"
+                         :value="r.value7"
+                         @input="setValue7"/>
+                  <span class="input-group-text" id="recurringVat7addon">EUR</span>
+                  <input id="recurringVat7" class="form-control" aria-describedby="recurringVat7addon"
+                         type="text" :value="r.vat7" disabled/>
+                </div>
               </div>
-            </div>
             </template>
             <div class="mb-3">
               <label for="recurringCategory" class="form-label">Kategorie</label>

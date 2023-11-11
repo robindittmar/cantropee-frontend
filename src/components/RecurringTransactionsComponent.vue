@@ -12,6 +12,7 @@ import {req} from "@/core/requests";
 const props = defineProps<{
   currency: string,
   displayValues: boolean,
+  showTaxes: boolean,
   categories: Category[],
 }>();
 
@@ -137,7 +138,7 @@ onMounted(() => {
                 <tr v-if="recurring.id === selectedRecurringTransaction" class="no-hover">
                   <td colspan="3">
                     <DetailRecurringTransaction :recurring-transaction="recurring" :currency="currency"
-                                                :display-values="displayValues"
+                                                :display-values="displayValues" :show-taxes="showTaxes"
                                                 :categories="categories"
                                                 @updated-recurring-transaction="updatedRecurringTransaction"
                                                 @deleted-recurring-transaction="updatedRecurringTransaction"/>
@@ -165,7 +166,8 @@ onMounted(() => {
       <button class="btn btn-success" @click="showModal">
         <i class="fa-solid fa-plus"></i>&nbsp;Neu
       </button>
-      <RecurringTransactionModal :categories="categories" @submit-recurring-transaction="hideModal"/>
+      <RecurringTransactionModal :categories="categories" :show-taxes="showTaxes"
+                                 @submit-recurring-transaction="hideModal"/>
     </div>
   </div>
 </template>
