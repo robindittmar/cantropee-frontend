@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {convertLocalDateForInput} from "@/core/convert";
 import {deriveVat} from "@/core/tax-helper";
 import type {Category} from "@/core/category";
 import {req} from "@/core/requests";
+import {ExecutionPolicy} from "@/core/recurring-transaction";
 
 const props = defineProps<{
   categories: Category[],
@@ -22,6 +23,7 @@ const newRecurringTransaction = () => {
   return {
     isDeposit: true,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    executionPolicy: ExecutionPolicy.StartOfMonth,
     firstExecution: nextMonth,
     nextExecution: nextMonth,
     hasLastExecution: false,
@@ -37,6 +39,42 @@ const newRecurringTransaction = () => {
 }
 
 const r = ref(newRecurringTransaction());
+watch(() => r.value.executionPolicy, () => {
+  setFirstExecution(r.value.firstExecution);
+  setLastExecution(r.value.lastExecution);
+});
+
+const setFirstExecution = (value: Date) => {
+  let current = r.value;
+  if (current.executionPolicy === ExecutionPolicy.StartOfMonth) {
+    current.firstExecution = new Date(value.getFullYear(), value.getMonth());
+  } else if (current.executionPolicy === ExecutionPolicy.EndOfMonth) {
+    current.firstExecution = new Date(
+        value.getFullYear(),
+        value.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+    );
+  }
+};
+
+const setLastExecution = (value: Date) => {
+  let current = r.value;
+  if (current.executionPolicy === ExecutionPolicy.StartOfMonth) {
+    current.lastExecution = new Date(value.getFullYear(), value.getMonth());
+  } else if (current.executionPolicy === ExecutionPolicy.EndOfMonth) {
+    current.lastExecution = new Date(
+        value.getFullYear(),
+        value.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+    );
+  }
+};
 
 const setValue = (event: Event) => {
   let current = r.value;
@@ -95,7 +133,7 @@ const submitRecurring = async () => {
   const current = r.value;
   const payload = {
     timezone: current.timezone,
-    executionPolicy: 0,
+    executionPolicy: ExecutionPolicy.StartOfMonth,
     executionPolicyData: {},
     firstExecution: current.firstExecution,
     lastExecution: current.hasLastExecution ? current.lastExecution : null,
@@ -146,14 +184,17 @@ onMounted(() => {
         <div class="modal-body">
           <div>
             <div class="mb-3">
-              <label for="recurringTimezone" class="form-label">Strategie</label>
-              <input id="recurringTimezone" class="form-control" type="text" maxlength="128" value="Erster jeden Monats" disabled/>
+              <label for="executionPolicy" class="form-label">Strategie</label>
+              <select id="executionPolicy" class="form-select" v-model="r.executionPolicy">
+                <option :value="ExecutionPolicy.StartOfMonth">Anfang des Monats</option>
+                <option :value="ExecutionPolicy.EndOfMonth">Ende des Monats</option>
+              </select>
             </div>
             <div class="mb-3">
               <label for="recurringFirstExecution" class="form-label">Erste Ausführung</label>
               <input id="recurringFirstExecution" class="form-control" type="datetime-local"
                      :value="r.firstExecution && convertLocalDateForInput(r.firstExecution)"
-                     @input="r.firstExecution = new Date(($event.target as HTMLInputElement)?.value)"/>
+                     @input="setFirstExecution(new Date(($event.target as HTMLInputElement)?.value))"/>
             </div>
             <div class="form-check mb-3">
               <input id="recurringLastExecutionEnabled" class="form-check-input" type="checkbox"
@@ -164,7 +205,7 @@ onMounted(() => {
               <label for="recurringLastExecution" class="form-label">Letzte Ausführung</label>
               <input id="recurringLastExecution" class="form-control" type="datetime-local"
                      :value="r.lastExecution && convertLocalDateForInput(r.lastExecution)"
-                     @input="r.lastExecution = new Date(($event.target as HTMLInputElement)?.value)"/>
+                     @input="setLastExecution(new Date(($event.target as HTMLInputElement)?.value))"/>
             </div>
             <div class="mb-3">
               <label for="recurringTimezone" class="form-label">Zeitzone</label>
