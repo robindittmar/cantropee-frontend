@@ -17,13 +17,16 @@ const emit = defineEmits([
   'prev-month',
   'toggle-show-pending',
   'toggle-sorting-order',
-  'set-category'
+  'set-category',
+  'set-notes',
 ]);
 
 let selectedCategory = ref(0);
 watch(selectedCategory, () => {
   emit('set-category', selectedCategory.value);
 });
+
+const notesFilter = ref('');
 
 const yearMonthString = computed(() => {
   return props.effectiveSpan.from.toLocaleString('de-DE', {
@@ -60,20 +63,35 @@ const previewAvailable = computed(() => {
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row mb-3">
     <div class="col">
       <div class="collapse" id="transactionsFilterCollapse" aria-hidden="true">
-        <div class="input-group">
-          <button class="btn btn-secondary" @click="$emit('toggle-sorting-order')">
-            <i v-if="sortingOrder === 'asc'" class="fa-solid fa-arrow-up"></i>
-            <i v-else class="fa-solid fa-arrow-down"></i>
+        <div class="mt-1">
+          <label for="sortingOrd" class="form-label me-3">Sortierung</label>
+          <button id="sortingOrd" class="btn btn-secondary" @click="$emit('toggle-sorting-order')">
+            <template v-if="sortingOrder === 'asc'">
+              <i class="fa-solid fa-arrow-up"></i>&nbsp;Aufsteigend
+            </template>
+            <template v-else>
+              <i class="fa-solid fa-arrow-down"></i>&nbsp;Absteigend
+            </template>
           </button>
+        </div>
+        <div class="form-floating mt-3">
           <select id="transactionsCategory" class="form-select" v-model="selectedCategory">
             <option :value="0" selected>Alle</option>
             <option v-for="category in categories" :key="category.id" :value="category.id">
               {{ category.name }}
             </option>
           </select>
+          <label for="transactionsCategory" class="form-label">Kategorie</label>
+        </div>
+        <div class="input-group mt-3">
+          <div class="form-floating">
+            <input id="notesFilter" class="form-control" type="text" v-model="notesFilter"/>
+            <label for="notesFilter" class="form-label">Notiz</label>
+          </div>
+          <button class="btn btn-secondary" @click="$emit('set-notes')"><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
       </div>
     </div>
