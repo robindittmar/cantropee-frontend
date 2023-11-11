@@ -91,7 +91,7 @@ const previewAvailable = computed(() => {
             <input id="notesFilter" class="form-control" type="text" v-model="notesFilter"/>
             <label for="notesFilter" class="form-label">Notiz</label>
           </div>
-          <button class="btn btn-secondary" @click="$emit('set-notes')"><i class="fa-solid fa-magnifying-glass"></i></button>
+          <button class="btn btn-secondary" @click="$emit('set-notes', notesFilter)"><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
       </div>
     </div>

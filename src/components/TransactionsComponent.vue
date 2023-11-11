@@ -19,6 +19,7 @@ const props = defineProps<{
   sortingOrder: string,
   categories: Category[],
   selectedCategory: number,
+  note: string,
 }>();
 
 const emit = defineEmits(['updated-transaction']);
@@ -41,6 +42,10 @@ watch(() => props.selectedCategory, () => {
   fetchTransactions();
 });
 
+watch(() => props.note, () => {
+  fetchTransactions();
+});
+
 const navigationStep = 10;
 let transactions: any = ref({
   start: 0,
@@ -56,6 +61,9 @@ const fetchTransactions = async () => {
   let uri = `/api/transactions?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}&pending=${props.showPending}&start=${transactions.value.start}&count=${navigationStep}&order=${props.sortingOrder}`;
   if (props.selectedCategory > 0) {
     uri += `&category=${props.selectedCategory}`;
+  }
+  if (props.note.length > 0) {
+    uri += `&note=${props.note}`;
   }
 
   const res = await req(uri);

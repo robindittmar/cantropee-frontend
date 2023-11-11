@@ -310,7 +310,7 @@ onBeforeUnmount(() => {
     </div>
   </div>
 
-  <DiffTransactions v-if="history" :history="history" :display-values="displayValues"
+  <DiffTransactions v-if="history" :history="history" :display-values="displayValues" :show-taxes="showTaxes"
                     @modal-closed="history = undefined"/>
 </template>
 

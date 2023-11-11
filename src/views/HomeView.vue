@@ -24,6 +24,7 @@ let effectiveSpan = ref({
 let showPending = ref(props.user.settings.defaultPreviewPending);
 let displayValues = ref(!props.user.settings.privateMode);
 let selectedCategory = ref(0);
+let notesFilter = ref('');
 let sortingOrder = ref(props.user.settings.defaultSortingOrderAsc ? 'asc' : 'desc');
 
 watch(() => props.user, () => {
@@ -81,6 +82,10 @@ const setCategory = (categoryId: number) => {
   selectedCategory.value = categoryId;
 };
 
+const setNotes = (note: string) => {
+  notesFilter.value = note;
+}
+
 const toggleSortingOrder = () => {
   sortingOrder.value = sortingOrder.value === 'asc' ? 'desc' : 'asc';
 };
@@ -104,6 +109,7 @@ onMounted(() => {});
                             :show-pending="showPending" :display-values="displayValues"
                             :title="user.currentOrganization?.name ?? 'cantropee'"
                             :selected-category="selectedCategory"
+                            :note="notesFilter"
                             :show-taxes="user.currentOrganization?.usesTaxes ?? false"
                             @request-deposit="requestDeposit" @request-withdrawal="requestWithdrawal"/>
         </div>
@@ -113,7 +119,8 @@ onMounted(() => {});
           <FilterComponent :effective-span="effectiveSpan" @next-month="nextMonth" @prev-month="prevMonth"
                            :show-pending="showPending" @toggle-show-pending="toggleShowPending"
                            :categories="categories" @set-category="setCategory"
-                           :sorting-order="sortingOrder" @toggle-sorting-order="toggleSortingOrder"/>
+                           :sorting-order="sortingOrder" @toggle-sorting-order="toggleSortingOrder"
+                           @set-notes="setNotes"/>
         </div>
       </div>
     </header>
@@ -125,6 +132,7 @@ onMounted(() => {});
                                  :show-pending="showPending" :display-values="displayValues"
                                  :sorting-order="sortingOrder" :categories="categories"
                                  :selected-category="selectedCategory"
+                                 :note="notesFilter"
                                  :show-taxes="user.currentOrganization?.usesTaxes ?? false"
                                  @updated-transaction="forceReload"/>
         </div>
