@@ -43,8 +43,6 @@ const fetchRecurringTransactions = async () => {
   }
 };
 
-const updatedRecurringTransaction = () => {};
-
 const selectRecurringTransaction = (transactionId: string) => {
   if (animating) {
     return;
@@ -140,8 +138,8 @@ onMounted(() => {
                     <DetailRecurringTransaction :recurring-transaction="recurring" :currency="currency"
                                                 :display-values="displayValues" :show-taxes="showTaxes"
                                                 :categories="categories"
-                                                @updated-recurring-transaction="updatedRecurringTransaction"
-                                                @deleted-recurring-transaction="updatedRecurringTransaction"/>
+                                                @updated-recurring-transaction="fetchRecurringTransactions"
+                                                @deleted-recurring-transaction="fetchRecurringTransactions"/>
                   </td>
                 </tr>
               </Transition>

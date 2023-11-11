@@ -122,9 +122,9 @@ const deleteRecurringTransaction = async () => {
 
   let success = await res.json();
   if (success.success) {
+    emit('deleted-recurring-transaction');
     hideConfirmDelete();
   }
-  emit('deleted-recurring-transaction', success);
 };
 
 // const editRecurringTransaction = async (edit: boolean) => {

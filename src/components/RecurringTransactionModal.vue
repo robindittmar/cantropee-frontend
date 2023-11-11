@@ -5,6 +5,7 @@ import {deriveVat} from "@/core/tax-helper";
 import type {Category} from "@/core/category";
 import {req} from "@/core/requests";
 import {ExecutionPolicy} from "@/core/recurring-transaction";
+import {toast, ToastColor} from "@/core/toaster";
 
 const props = defineProps<{
   categories: Category[],
@@ -131,6 +132,16 @@ const setValue7 = (event: Event) => {
 
 const submitRecurring = async () => {
   const current = r.value;
+
+  if (isNaN(current.firstExecution.getTime())) {
+    toast('"Erste Ausführung" ist kein gültiges Datum', ToastColor.Warning);
+    return;
+  }
+  if (current.hasLastExecution && isNaN(current.lastExecution.getTime())) {
+    toast('"Letzte Ausführung" ist kein gültiges Datum', ToastColor.Warning);
+    return;
+  }
+
   const payload = {
     timezone: current.timezone,
     executionPolicy: ExecutionPolicy.StartOfMonth,
