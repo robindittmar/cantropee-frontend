@@ -285,15 +285,15 @@ onBeforeUnmount(() => {
         <div class="col">
           <div v-if="!editing">
             <button type="button" class="btn btn-secondary w-100" @click="editTransaction(true)">
-              Bearbeiten...
+              <i class="fa-solid fa-pen"></i>&nbsp;Bearbeiten...
             </button>
           </div>
           <div v-else class="btn-group w-100">
             <button type="button" class="btn btn-secondary" @click="editTransaction(false)">
-              Abbrechen
+              <i class="fa-solid fa-xmark"></i>&nbsp;Abbrechen
             </button>
             <button type="button" class="btn btn-primary" @click="submitTransaction">
-              Speichern
+              <i class="fa-solid fa-floppy-disk"></i>&nbsp;Speichern
             </button>
           </div>
         </div>
