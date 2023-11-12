@@ -100,7 +100,7 @@ onBeforeUnmount(() => {
                     {{ diff.category }}
                   </td>
                   <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
-                    {{ diff.note === undefined ? undefined : (diff.note === null ? '/' : diff.note) }}
+                    {{ diff.note === undefined ? undefined : ((diff.note === null || diff.note === '') ? '/' : diff.note) }}
                   </td>
                 </tr>
               </template>
