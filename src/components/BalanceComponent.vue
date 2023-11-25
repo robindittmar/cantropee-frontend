@@ -1,86 +1,39 @@
 <script setup lang="ts">
-import {watch, onMounted, ref} from "vue";
-import {dateToURI, moneyToString} from "@/core/convert";
-import {req} from "@/core/requests";
+import {watch, ref} from "vue";
+import {moneyToString} from "@/core/convert";
+import type {Balance} from "@/core/balance";
 
 const props = defineProps<{
-  effectiveSpan: {
-    from: Date,
-    to: Date,
-  },
+  balance: Balance,
   currency: string,
   showPending: boolean,
   displayValues: boolean,
   showTaxes: boolean,
   title: string,
-  selectedCategory: number,
-  note: string,
 }>();
 
 defineEmits(['request-deposit', 'request-withdrawal']);
 
-let balance = {
-  total: 0,
-  vat: {
-    total: 0,
-    vat19: 0,
-    vat7: 0,
-  },
-  pending: {
-    total: 0,
-    vat: {
-      total: 0,
-      vat19: 0,
-      vat7: 0,
-    },
-  },
-};
 
 const recalculateBalance = () => {
   if (props.showPending) {
-    totalBalance.value = balance.total + balance.pending.total;
-    totalVat.value = balance.vat.total + balance.pending.vat.total;
+    totalBalance.value = props.balance.total + props.balance.pending.total;
+    totalVat.value = props.balance.vat.total + props.balance.pending.vat.total;
   } else {
-    totalBalance.value = balance.total;
-    totalVat.value = balance.vat.total;
+    totalBalance.value = props.balance.total;
+    totalVat.value = props.balance.vat.total;
   }
 };
 
 let totalBalance = ref(0.0);
 let totalVat = ref(0.0);
 
+watch(() => props.balance, () => {
+  recalculateBalance();
+})
+
 watch(() => props.showPending, () => {
   recalculateBalance();
-});
-
-watch(() => props.effectiveSpan, () => {
-  fetchBalance();
-});
-
-watch(() => props.selectedCategory, () => {
-  fetchBalance();
-});
-
-watch(() => props.note, () => {
-  fetchBalance();
-});
-
-const fetchBalance = async () => {
-  let uri = `/api/transactions/balance?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}`;
-  if (props.selectedCategory > 0) {
-    uri += `&category=${props.selectedCategory}`;
-  }
-  if (props.note.length > 0) {
-    uri += `&note=${encodeURI(props.note)}`;
-  }
-  const res = await req(uri);
-  balance = await res.json();
-
-  recalculateBalance();
-};
-
-onMounted(() => {
-  fetchBalance();
 });
 </script>
 

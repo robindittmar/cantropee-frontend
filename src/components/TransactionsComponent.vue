@@ -1,84 +1,30 @@
 <script setup lang="ts">
-import {onMounted, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import type {Ref} from "vue";
-import {dateToURI, dateToString, moneyToString} from "@/core/convert";
+import {dateToString, moneyToString} from "@/core/convert";
 import type {Transaction} from "@/core/transaction";
 import DetailTransaction from "@/components/DetailTransaction.vue";
 import type {Category} from "@/core/category";
-import {req} from "@/core/requests";
+import type {Paginated} from "@/core/paginated";
 
 const props = defineProps<{
-  effectiveSpan: {
-    from: Date,
-    to: Date,
-  },
   currency: string,
-  showPending: boolean,
   displayValues: boolean,
   showTaxes: boolean,
-  sortingOrder: string,
   categories: Category[],
-  selectedCategory: number,
-  note: string,
+  transactions: Paginated<Transaction>,
 }>();
 
-const emit = defineEmits(['updated-transaction']);
+const emit = defineEmits(['updated-transaction', 'transactions-next-page', 'transactions-prev-page']);
 
-watch(() => props.effectiveSpan, () => {
-  transactions.value.start = 0;
-  fetchTransactions();
-});
 
-watch(() => props.showPending, () => {
-  transactions.value.start = 0;
-  fetchTransactions();
-});
-
-watch(() => props.sortingOrder, () => {
-  fetchTransactions();
-});
-
-watch(() => props.selectedCategory, () => {
-  fetchTransactions();
-});
-
-watch(() => props.note, () => {
-  fetchTransactions();
-});
-
-const navigationStep = 10;
-let transactions: any = ref({
-  start: 0,
-  count: navigationStep,
-  total: -1,
-  data: [],
-});
 let selectedTransaction: Ref<string | null> = ref(null);
 let animating = false;
 let openCollapse: Element | null;
 
-const fetchTransactions = async () => {
-  let uri = `/api/transactions?from=${dateToURI(props.effectiveSpan.from)}&to=${dateToURI(props.effectiveSpan.to)}&pending=${props.showPending}&start=${transactions.value.start}&count=${navigationStep}&order=${props.sortingOrder}`;
-  if (props.selectedCategory > 0) {
-    uri += `&category=${props.selectedCategory}`;
-  }
-  if (props.note.length > 0) {
-    uri += `&note=${props.note}`;
-  }
-
-  const res = await req(uri);
-  let paginatedResult = await res.json();
-
-  paginatedResult.data = paginatedResult.data.map((t: Transaction) => {
-    t.insertTimestamp = new Date(t.insertTimestamp);
-    t.effectiveTimestamp = new Date(t.effectiveTimestamp);
-    t.isPositive = t.value >= 0;
-    return t;
-  });
-
-  transactions.value = paginatedResult;
+watch(() => props.transactions, () => {
   selectedTransaction.value = null;
-};
+});
 
 const updatedTransaction = (transactionId: string) => {
   selectedTransaction.value = transactionId;
@@ -102,12 +48,10 @@ const selectTransaction = (transactionId: string) => {
 };
 
 const nextPage = () => {
-  transactions.value.start += navigationStep;
-  fetchTransactions();
+  emit('transactions-next-page');
 };
 const prevPage = () => {
-  transactions.value.start -= navigationStep;
-  fetchTransactions();
+  emit('transactions-prev-page');
 };
 
 const waitForExpand = (el: any, done: any) => {
@@ -140,10 +84,6 @@ const waitForCollapse = (el: any, done: any) => {
     done();
   }
 };
-
-onMounted(() => {
-  fetchTransactions();
-})
 </script>
 
 <template>

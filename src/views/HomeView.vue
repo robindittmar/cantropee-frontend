@@ -9,6 +9,11 @@ import DepositTransaction from "@/components/DepositTransaction.vue";
 import WithdrawalTransaction from "@/components/WithdrawalTransaction.vue";
 import {Modal} from "bootstrap";
 import type {Category} from "@/core/category";
+import {dateToURI} from "@/core/convert";
+import {req} from "@/core/requests";
+import type {Transaction} from "@/core/transaction";
+import type {Paginated} from "@/core/paginated";
+import type {Balance} from "@/core/balance";
 
 const props = defineProps<{
   user: User;
@@ -33,6 +38,55 @@ watch(() => props.user, () => {
   sortingOrder.value = props.user.settings.defaultSortingOrderAsc ? 'asc' : 'desc';
 });
 
+
+let balanceRef: Ref<Balance> = ref({
+  total: 0,
+  vat: {
+    total: 0,
+    vat19: 0,
+    vat7: 0,
+  },
+  pending: {
+    total: 0,
+    vat: {
+      total: 0,
+      vat19: 0,
+      vat7: 0,
+    },
+  },
+});
+
+const navigationStep = 20;
+let transactionsRef: Ref<Paginated<Transaction>> = ref({
+  start: 0,
+  count: navigationStep,
+  total: -1,
+  data: [],
+});
+
+const fetchTransactions = async () => {
+  let uri = `/api/transactions?from=${dateToURI(effectiveSpan.value.from)}&to=${dateToURI(effectiveSpan.value.to)}&pending=${showPending.value}&start=${transactionsRef.value.start}&count=${navigationStep}&order=${sortingOrder.value}`;
+  if (selectedCategory.value > 0) {
+    uri += `&category=${selectedCategory.value}`;
+  }
+  if (notesFilter.value.length > 0) {
+    uri += `&note=${notesFilter.value}`;
+  }
+
+  const res = await req(uri);
+  let {balance, transactions} = await res.json();
+
+  transactions.data = transactions.data.map((t: Transaction) => {
+    t.insertTimestamp = new Date(t.insertTimestamp);
+    t.effectiveTimestamp = new Date(t.effectiveTimestamp);
+    t.isPositive = t.value >= 0;
+    return t;
+  });
+
+  transactionsRef.value = transactions;
+  balanceRef.value = balance;
+};
+
 const requestDeposit = () => {
   // TODO: not a fan at all of this
   const modal = Modal.getOrCreateInstance('#depositModal');
@@ -43,7 +97,7 @@ const hideDeposit = () => {
   const modal = Modal.getOrCreateInstance('#depositModal');
   modal.hide();
 
-  forceReload();
+  fetchTransactions();
 };
 
 const requestWithdrawal = () => {
@@ -56,7 +110,7 @@ const hideWithdrawal = () => {
   const modal = Modal.getOrCreateInstance('#withdrawModal');
   modal.hide();
 
-  forceReload();
+  fetchTransactions();
 };
 
 const moveEffectiveSpan = (monthOffset: number) => {
@@ -69,10 +123,21 @@ const moveEffectiveSpan = (monthOffset: number) => {
     from: newFrom,
     to: newTo,
   };
+
+  fetchTransactions();
 };
 
 const nextMonth = () => moveEffectiveSpan(1);
 const prevMonth = () => moveEffectiveSpan(-1);
+
+const nextPage = () => {
+  transactionsRef.value.start += navigationStep;
+  fetchTransactions();
+};
+const prevPage = () => {
+  transactionsRef.value.start -= navigationStep;
+  fetchTransactions();
+};
 
 const toggleShowPending = () => {
   showPending.value = !showPending.value;
@@ -97,7 +162,9 @@ const forceReload = () => {
   };
 };
 
-onMounted(() => {});
+onMounted(() => {
+  fetchTransactions();
+});
 </script>
 
 <template>
@@ -105,11 +172,9 @@ onMounted(() => {});
     <header>
       <div class="row mt-2">
         <div class="col">
-          <BalanceComponent :effective-span="effectiveSpan" :currency="user.currentOrganization?.currency ?? 'EUR'"
+          <BalanceComponent :balance="balanceRef" :currency="user.currentOrganization?.currency ?? 'EUR'"
                             :show-pending="showPending" :display-values="displayValues"
                             :title="user.currentOrganization?.name ?? 'cantropee'"
-                            :selected-category="selectedCategory"
-                            :note="notesFilter"
                             :show-taxes="user.currentOrganization?.usesTaxes ?? false"
                             @request-deposit="requestDeposit" @request-withdrawal="requestWithdrawal"/>
         </div>
@@ -128,13 +193,13 @@ onMounted(() => {});
     <main>
       <div class="row mt-2">
         <div class="col">
-          <TransactionsComponent :effective-span="effectiveSpan" :currency="user.currentOrganization?.currency ?? 'EUR'"
-                                 :show-pending="showPending" :display-values="displayValues"
-                                 :sorting-order="sortingOrder" :categories="categories"
+          <TransactionsComponent :transactions="transactionsRef" :currency="user.currentOrganization?.currency ?? 'EUR'"
+                                 :display-values="displayValues" :categories="categories"
                                  :selected-category="selectedCategory"
-                                 :note="notesFilter"
                                  :show-taxes="user.currentOrganization?.usesTaxes ?? false"
-                                 @updated-transaction="forceReload"/>
+                                 @updated-transaction="forceReload"
+                                 @transactions-next-page="nextPage"
+                                 @transactions-prev-page="prevPage"/>
         </div>
       </div>
     </main>
