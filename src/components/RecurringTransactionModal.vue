@@ -45,6 +45,8 @@ watch(() => r.value.executionPolicy, () => {
   setLastExecution(r.value.lastExecution);
 });
 
+const submitting = ref(false);
+
 const setFirstExecution = (value: Date) => {
   let current = r.value;
   if (current.executionPolicy === ExecutionPolicy.StartOfMonth) {
@@ -142,6 +144,8 @@ const submitRecurring = async () => {
     return;
   }
 
+  submitting.value = true;
+
   const payload = {
     timezone: current.timezone,
     executionPolicy: ExecutionPolicy.StartOfMonth,
@@ -164,6 +168,8 @@ const submitRecurring = async () => {
     },
     body: JSON.stringify(payload),
   });
+
+  submitting.value = false;
 
   if (!res.ok) {
     console.warn('call to /api/recurring not ok');
@@ -289,7 +295,7 @@ onMounted(() => {
                   data-bs-dismiss="modal">
             Abbrechen
           </button>
-          <button type="button" class="btn btn-primary" :disabled="r.value <= 0" @click="submitRecurring">
+          <button type="button" class="btn btn-primary" :disabled="submitting || r.value <= 0" @click="submitRecurring">
             Hinzufügen
           </button>
         </div>

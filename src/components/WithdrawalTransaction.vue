@@ -26,6 +26,7 @@ const newTransaction = () => {
 }
 
 const t = ref(newTransaction());
+const submitting = ref(false);
 
 const setValue = (event: Event) => {
   let current = t.value;
@@ -81,6 +82,8 @@ const setValue7 = (event: Event) => {
 };
 
 const submitWithdrawal = async () => {
+  submitting.value = true;
+
   const current = t.value;
   const payload = {
     effectiveTimestamp: current.effectiveTimestamp,
@@ -100,6 +103,8 @@ const submitWithdrawal = async () => {
     },
     body: JSON.stringify(payload),
   });
+
+  submitting.value = false;
 
   if (!res.ok) {
     console.warn('call to /api/transactions not ok');
@@ -197,7 +202,7 @@ onMounted(() => {
                   data-bs-dismiss="modal">
             Abbrechen
           </button>
-          <button type="button" class="btn btn-primary" :disabled="t.value <= 0" @click="submitWithdrawal">
+          <button type="button" class="btn btn-primary" :disabled="submitting || t.value <= 0" @click="submitWithdrawal">
             Buchen
           </button>
         </div>

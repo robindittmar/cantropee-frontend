@@ -20,6 +20,7 @@ const newTransaction = () => {
 }
 
 const t = ref(newTransaction());
+const submitting = ref(false);
 
 const setValue = (event: Event) => {
   let current = t.value;
@@ -33,6 +34,8 @@ const setValue = (event: Event) => {
 };
 
 const submitDeposit = async () => {
+  submitting.value = true;
+
   const current = t.value;
   const payload = {
     effectiveTimestamp: current.effectiveTimestamp,
@@ -52,6 +55,8 @@ const submitDeposit = async () => {
     },
     body: JSON.stringify(payload),
   });
+
+  submitting.value = false;
 
   t.value = newTransaction();
   emit('submit-deposit');
@@ -115,7 +120,7 @@ onMounted(() => {
                   data-bs-dismiss="modal">
             Abbrechen
           </button>
-          <button type="button" class="btn btn-primary" :disabled="t.value <= 0" @click="submitDeposit">
+          <button type="button" class="btn btn-primary" :disabled="submitting || t.value <= 0" @click="submitDeposit">
             Buchen
           </button>
         </div>
