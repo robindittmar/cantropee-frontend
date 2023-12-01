@@ -14,6 +14,10 @@ const selectedCategory: Ref<number> = ref(0);
 const categoryCopy: Ref<Category> = ref({id: 0, name: ''});
 const newCategory: Ref<Category | undefined> = ref(undefined);
 
+const inserting = ref(false);
+const updating = ref(false);
+const deleting = ref(false);
+
 const selectCategory = (categoryId: number) => {
   categoryCopy.value = {...props.categories.find(c => c.id === categoryId) ?? {id: 0, name: ''}};
   selectedCategory.value = categoryId;
@@ -31,6 +35,8 @@ const cancelNewCategory = () => {
 };
 
 const insertCategory = async (category: Category) => {
+  inserting.value = true;
+
   let result = await req('/api/categories', {
     method: 'POST',
     headers: {
@@ -38,6 +44,8 @@ const insertCategory = async (category: Category) => {
     },
     body: JSON.stringify({name: category.name}),
   });
+
+  inserting.value = false;
 
   if (result.ok) {
     emit('update-categories');
@@ -48,6 +56,8 @@ const insertCategory = async (category: Category) => {
 };
 
 const updateCategory = async (category: Category) => {
+  updating.value = true;
+
   let result = await req('/api/categories', {
     method: 'PUT',
     headers: {
@@ -55,6 +65,8 @@ const updateCategory = async (category: Category) => {
     },
     body: JSON.stringify(category),
   });
+
+  updating.value = false;
 
   if (result.ok) {
     emit('update-categories');
@@ -64,6 +76,8 @@ const updateCategory = async (category: Category) => {
 };
 
 const deleteCategory = async (category: Category) => {
+  deleting.value = true;
+
   let result = await req('/api/categories', {
     method: 'DELETE',
     headers: {
@@ -71,6 +85,8 @@ const deleteCategory = async (category: Category) => {
     },
     body: JSON.stringify({id: category.id}),
   });
+
+  deleting.value = false;
 
   if (result.ok) {
     emit('update-categories');
@@ -99,9 +115,9 @@ const deleteCategory = async (category: Category) => {
                 <td>
                   <div class="input-group">
                     <input id="categoryName" class="form-control" type="text" maxlength="128" v-model="categoryCopy.name"/>
-                    <button class="btn btn-primary" @click="updateCategory(categoryCopy)"><i class="fa-solid fa-floppy-disk"></i></button>
+                    <button class="btn btn-primary" @click="updateCategory(categoryCopy)" :disabled="updating"><i class="fa-solid fa-floppy-disk"></i></button>
                     <button class="btn btn-secondary" @click="selectCategory(0)"><i class="fa-solid fa-xmark"></i></button>
-                    <button class="btn btn-danger" @click="deleteCategory(categoryCopy)"><i class="fa-solid fa-trash"></i></button>
+                    <button class="btn btn-danger" @click="deleteCategory(categoryCopy)" :disabled="deleting"><i class="fa-solid fa-trash"></i></button>
                   </div>
                 </td>
               </tr>
@@ -119,7 +135,7 @@ const deleteCategory = async (category: Category) => {
               <td>
                 <div class="input-group">
                   <input id="newCategoryName" class="form-control" type="text" maxlength="128" v-model="newCategory.name"/>
-                  <button class="btn btn-primary" @click="insertCategory(newCategory)"><i class="fa-solid fa-floppy-disk"></i></button>
+                  <button class="btn btn-primary" @click="insertCategory(newCategory)" :disabled="inserting"><i class="fa-solid fa-floppy-disk"></i></button>
                   <button class="btn btn-secondary" @click="cancelNewCategory"><i class="fa-solid fa-xmark"></i></button>
                 </div>
               </td>

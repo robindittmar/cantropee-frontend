@@ -31,6 +31,10 @@ const selectedRole = ref('');
 const roleCopy: Ref<SimplifiedRole> = ref(nullSimplifiedRole());
 const newRole: Ref<SimplifiedRole | undefined> = ref(undefined);
 
+const inserting = ref(false);
+const updating = ref(false);
+const deleting = ref(false);
+
 const selectRole = (roleId: string) => {
   roleCopy.value = {...roles.value.find(r => r.id === roleId) ?? nullSimplifiedRole()};
   selectedRole.value = roleId;
@@ -77,6 +81,8 @@ const cancelNewRole = () => {
 };
 
 const insertRole = async (role: SimplifiedRole) => {
+  inserting.value = true;
+
   const payload = simplifiedToRole(role);
 
   let result = await req('/api/roles', {
@@ -86,6 +92,8 @@ const insertRole = async (role: SimplifiedRole) => {
     },
     body: JSON.stringify(payload),
   });
+
+  inserting.value = false;
 
   if (result.ok) {
     await fetchRoles();
@@ -97,6 +105,8 @@ const insertRole = async (role: SimplifiedRole) => {
 };
 
 const updateRole = async (role: SimplifiedRole) => {
+  updating.value = true;
+
   const payload = simplifiedToRole(role);
 
   let result = await req('/api/roles', {
@@ -107,6 +117,8 @@ const updateRole = async (role: SimplifiedRole) => {
     body: JSON.stringify(payload),
   });
 
+  updating.value = false;
+
   if (result.ok) {
     await fetchRoles();
     emit('update-roles');
@@ -116,6 +128,8 @@ const updateRole = async (role: SimplifiedRole) => {
 };
 
 const deleteRole = async (role: SimplifiedRole) => {
+  deleting.value = true;
+
   let result = await req('/api/roles', {
     method: 'DELETE',
     headers: {
@@ -123,6 +137,8 @@ const deleteRole = async (role: SimplifiedRole) => {
     },
     body: JSON.stringify({id: role.id}),
   });
+
+  deleting.value = false;
 
   if (result.ok) {
     await fetchRoles();
@@ -158,9 +174,9 @@ onMounted(() => {
                 <tr>
                   <td>
                     <div class="input-group">
-                      <button class="btn btn-primary" @click="updateRole(roleCopy)"><i class="fa-solid fa-floppy-disk"></i></button>
+                      <button class="btn btn-primary" @click="updateRole(roleCopy)" :disabled="updating"><i class="fa-solid fa-floppy-disk"></i></button>
                       <button class="btn btn-secondary" @click="selectRole('')"><i class="fa-solid fa-xmark"></i></button>
-                      <button class="btn btn-danger" @click="deleteRole(role)"><i class="fa-solid fa-trash"></i></button>
+                      <button class="btn btn-danger" @click="deleteRole(role)" :disabled="deleting"><i class="fa-solid fa-trash"></i></button>
                     </div>
                   </td>
                   <td>
@@ -197,7 +213,7 @@ onMounted(() => {
             <tr>
               <td>
                 <div class="input-group">
-                  <button class="btn btn-primary" @click="insertRole(newRole)"><i class="fa-solid fa-floppy-disk"></i></button>
+                  <button class="btn btn-primary" @click="insertRole(newRole)" :disabled="inserting"><i class="fa-solid fa-floppy-disk"></i></button>
                   <button class="btn btn-secondary" @click="newRole = undefined"><i class="fa-solid fa-xmark"></i></button>
                 </div>
               </td>
