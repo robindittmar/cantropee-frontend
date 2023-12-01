@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, watch} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import type {Ref} from "vue";
 import {dateToString, moneyToString} from "@/core/convert";
 import type {Transaction} from "@/core/transaction";
@@ -17,6 +17,9 @@ const props = defineProps<{
 
 const emit = defineEmits(['updated-transaction', 'transactions-next-page', 'transactions-prev-page']);
 
+let showNotes = ref(false);
+let showCategories = ref(false);
+let columnCount = ref(3);
 
 let selectedTransaction: Ref<string | null> = ref(null);
 let animating = false;
@@ -70,6 +73,13 @@ const waitForExpand = (el: any, done: any) => {
   }
 };
 
+const transformNote = (note: string): string => {
+  if (note.length >= 32) {
+    return note.substring(0, 29) + '...';
+  }
+  return note;
+};
+
 const waitForCollapse = (el: any, done: any) => {
   animating = true;
 
@@ -84,6 +94,23 @@ const waitForCollapse = (el: any, done: any) => {
     done();
   }
 };
+
+const updateWindowSize = () => {
+  showNotes.value = window.innerWidth >= 768;
+  showCategories.value = window.innerWidth >= 992;
+
+  if (showNotes.value) {
+    columnCount.value += 1;
+  }
+  if (showCategories.value) {
+    columnCount.value += 1;
+  }
+};
+
+onMounted(() => {
+  updateWindowSize();
+  window.addEventListener('resize', updateWindowSize);
+});
 </script>
 
 <template>
@@ -96,6 +123,8 @@ const waitForCollapse = (el: any, done: any) => {
             <th scope="col">#</th>
             <th scope="col">Buchungsdatum</th>
             <th scope="col">Betrag</th>
+            <th v-if="showNotes" scope="col">Notiz</th>
+            <th v-if="showCategories" scope="col">Kategorie</th>
           </tr>
           </thead>
           <tbody class="table-group-divider">
@@ -105,6 +134,8 @@ const waitForCollapse = (el: any, done: any) => {
               <th class="text-muted" scope="row">{{ transaction.rowIdx }}</th>
               <td class="text-muted">{{ dateToString(transaction.effectiveTimestamp) }}</td>
               <td class="text-muted">{{ displayValues ? moneyToString(transaction.value, currency) : '***' }}</td>
+              <td v-if="showNotes" class="text-muted">{{ transaction.note ? transformNote(transaction.note) : '' }}</td>
+              <td v-if="showCategories" class="text-muted">{{ transaction.category }}</td>
             </template>
             <template v-else>
               <th :class="{'positive-value': transaction.isPositive && displayValues, 'negative-value': !transaction.isPositive && displayValues}"
@@ -115,6 +146,8 @@ const waitForCollapse = (el: any, done: any) => {
               <td :class="{'positive-value': transaction.isPositive && displayValues, 'negative-value': !transaction.isPositive && displayValues}">
                 {{ displayValues ? moneyToString(transaction.value, currency) : '***' }}
               </td>
+              <td v-if="showNotes">{{ transaction.note ? transformNote(transaction.note) : '' }}</td>
+              <td v-if="showCategories">{{ transaction.category }}</td>
             </template>
             </tr>
             <Transition
@@ -122,7 +155,7 @@ const waitForCollapse = (el: any, done: any) => {
                 @enter="waitForExpand"
                 @leave="waitForCollapse">
             <tr v-if="transaction.id === selectedTransaction" class="no-hover">
-              <td colspan="3">
+              <td :colspan="columnCount">
                 <DetailTransaction :transaction="transaction" :currency="currency" :display-values="displayValues"
                                    :categories="categories" :show-taxes="showTaxes"
                                    @updated-transaction="updatedTransaction"/>
