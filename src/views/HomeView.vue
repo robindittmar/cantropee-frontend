@@ -141,25 +141,22 @@ const prevPage = () => {
 
 const toggleShowPending = () => {
   showPending.value = !showPending.value;
+  fetchTransactions();
 };
 
 const setCategory = (categoryId: number) => {
   selectedCategory.value = categoryId;
+  fetchTransactions();
 };
 
 const setNotes = (note: string) => {
   notesFilter.value = note;
+  fetchTransactions();
 }
 
 const toggleSortingOrder = () => {
   sortingOrder.value = sortingOrder.value === 'asc' ? 'desc' : 'asc';
-};
-
-const forceReload = () => {
-  effectiveSpan.value = {
-    from: new Date(effectiveSpan.value.from),
-    to: new Date(effectiveSpan.value.to)
-  };
+  fetchTransactions();
 };
 
 onMounted(() => {
@@ -197,7 +194,7 @@ onMounted(() => {
                                  :display-values="displayValues" :categories="categories"
                                  :selected-category="selectedCategory"
                                  :show-taxes="user.currentOrganization?.usesTaxes ?? false"
-                                 @updated-transaction="forceReload"
+                                 @updated-transaction="fetchTransactions"
                                  @transactions-next-page="nextPage"
                                  @transactions-prev-page="prevPage"/>
         </div>
