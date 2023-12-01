@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
-import {toast, ToastColor} from "@/core/toaster";
+import {ref} from "vue";
 import {req} from "@/core/requests";
 
 // const props = defineProps<{}>();
@@ -64,12 +63,6 @@ const updatePassword = async () => {
     emit('authenticated');
   }
 };
-
-onMounted(() => {
-  toast('info toast', ToastColor.Info);
-  toast('warnungs toast', ToastColor.Warning);
-  toast('fehler toast', ToastColor.Danger);
-});
 </script>
 
 <template>

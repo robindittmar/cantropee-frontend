@@ -64,7 +64,12 @@ let transactionsRef: Ref<Paginated<Transaction>> = ref({
   data: [],
 });
 
+let abortFetch: AbortController | null = null;
 const fetchTransactions = async () => {
+  if (abortFetch) {
+    abortFetch.abort();
+  }
+
   let uri = `/api/transactions?from=${dateToURI(effectiveSpan.value.from)}&to=${dateToURI(effectiveSpan.value.to)}&pending=${showPending.value}&start=${transactionsRef.value.start}&count=${navigationStep}&order=${sortingOrder.value}`;
   if (selectedCategory.value > 0) {
     uri += `&category=${selectedCategory.value}`;
@@ -73,8 +78,11 @@ const fetchTransactions = async () => {
     uri += `&note=${notesFilter.value}`;
   }
 
-  const res = await req(uri);
+  abortFetch = new AbortController();
+  const res = await req(uri, {signal: abortFetch.signal});
   let {balance, transactions} = await res.json();
+
+  abortFetch = null;
 
   transactions.data = transactions.data.map((t: Transaction) => {
     t.insertTimestamp = new Date(t.insertTimestamp);
@@ -149,9 +157,18 @@ const setCategory = (categoryId: number) => {
   fetchTransactions();
 };
 
+let noteTimoutId: number | null = null;
 const setNotes = (note: string) => {
   notesFilter.value = note;
-  fetchTransactions();
+  if (noteTimoutId) {
+    clearTimeout(noteTimoutId);
+    console.log('cleared timeout');
+  }
+
+  noteTimoutId = setTimeout(async () => {
+    await fetchTransactions();
+    noteTimoutId = null;
+  }, 500);
 }
 
 const toggleSortingOrder = () => {
