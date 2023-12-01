@@ -36,11 +36,6 @@ watch(selectedOrg, async () => {
 
 <template>
   <div class="card">
-    <div class="d-flex justify-content-end pt-2 pe-2">
-      <a class="btn btn-outline-secondary" href="/api/export">
-        <i class="fa-solid fa-download"></i>
-      </a>
-    </div>
     <h2 class="card-title text-center mt-2">{{ user.currentOrganization?.name }}</h2>
     <div class="card-body">
       <div class="row">
