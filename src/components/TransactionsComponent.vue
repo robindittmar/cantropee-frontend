@@ -19,6 +19,8 @@ const emit = defineEmits(['updated-transaction', 'transactions-next-page', 'tran
 
 let showNotes = ref(false);
 let showCategories = ref(false);
+let showVat19 = ref(false);
+let showVat7 = ref(false);
 let columnCount = ref(3);
 
 let selectedTransaction: Ref<string | null> = ref(null);
@@ -98,11 +100,19 @@ const waitForCollapse = (el: any, done: any) => {
 const updateWindowSize = () => {
   showNotes.value = window.innerWidth >= 768;
   showCategories.value = window.innerWidth >= 992;
+  showVat19.value = props.showTaxes && window.innerWidth >= 1200;
+  showVat7.value = props.showTaxes && window.innerWidth >= 1400;
 
   if (showNotes.value) {
     columnCount.value += 1;
   }
   if (showCategories.value) {
+    columnCount.value += 1;
+  }
+  if (showVat19.value) {
+    columnCount.value += 1;
+  }
+  if (showVat7.value) {
     columnCount.value += 1;
   }
 };
@@ -123,6 +133,8 @@ onMounted(() => {
             <th scope="col">#</th>
             <th scope="col">Buchungsdatum</th>
             <th scope="col">Betrag</th>
+            <th v-if="showVat19" scope="col">MwSt 19%</th>
+            <th v-if="showVat7" scope="col">MwSt 7%</th>
             <th v-if="showNotes" scope="col">Notiz</th>
             <th v-if="showCategories" scope="col">Kategorie</th>
           </tr>
@@ -134,6 +146,8 @@ onMounted(() => {
               <th class="text-muted" scope="row">{{ transaction.rowIdx }}</th>
               <td class="text-muted">{{ dateToString(transaction.effectiveTimestamp) }}</td>
               <td class="text-muted">{{ displayValues ? moneyToString(transaction.value, currency) : '***' }}</td>
+              <td v-if="showVat19" class="text-muted">{{ displayValues ? moneyToString(transaction.vat19, currency) : '***' }}</td>
+              <td v-if="showVat7" class="text-muted">{{ displayValues ? moneyToString(transaction.vat7, currency) : '***' }}</td>
               <td v-if="showNotes" class="text-muted">{{ transaction.note ? transformNote(transaction.note) : '' }}</td>
               <td v-if="showCategories" class="text-muted">{{ transaction.category }}</td>
             </template>
@@ -146,6 +160,8 @@ onMounted(() => {
               <td :class="{'positive-value': transaction.isPositive && displayValues, 'negative-value': !transaction.isPositive && displayValues}">
                 {{ displayValues ? moneyToString(transaction.value, currency) : '***' }}
               </td>
+              <td v-if="showVat19">{{ displayValues ? moneyToString(transaction.vat19, currency) : '***' }}</td>
+              <td v-if="showVat7">{{ displayValues ? moneyToString(transaction.vat7, currency) : '***' }}</td>
               <td v-if="showNotes">{{ transaction.note ? transformNote(transaction.note) : '' }}</td>
               <td v-if="showCategories">{{ transaction.category }}</td>
             </template>
