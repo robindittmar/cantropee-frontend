@@ -13,6 +13,7 @@ export interface User {
 
 export interface UserSettings {
     defaultOrganization: string;
+    canCreateInvite: boolean;
     privateMode: boolean;
     defaultPreviewPending: boolean;
     defaultSortingOrderAsc: boolean;
@@ -27,6 +28,7 @@ export function defaultUser(): User {
         email: '',
         settings: {
             defaultOrganization: '',
+            canCreateInvite: false,
             privateMode: true,
             defaultPreviewPending: false,
             defaultSortingOrderAsc: false,

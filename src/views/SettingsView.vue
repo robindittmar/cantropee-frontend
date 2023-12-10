@@ -19,6 +19,9 @@ watch(() => props.user, () => {
 let settings = ref(props.user.settings);
 let organizations = ref(props.user.organizations);
 
+let inviteId = ref('');
+let inviteExpires = ref('');
+
 const logout = async () => {
   let result = await req('/api/logout', {
     method: 'POST',
@@ -26,6 +29,18 @@ const logout = async () => {
 
   if (result.ok) {
     emit('user-logout');
+  }
+};
+
+const createInvite = async () => {
+  let result = await req('/api/invite', {
+    method: 'POST',
+  });
+
+  if (result.ok) {
+    let resp = await result.json();
+    inviteId.value = resp.id;
+    inviteExpires.value = resp.expiresAt.toLocaleString();
   }
 };
 </script>
@@ -62,6 +77,25 @@ const logout = async () => {
           </div>
 
           <button class="btn btn-primary mt-3" @click="$emit('update-user-settings', settings)">Speichern</button>
+        </div>
+      </div>
+      <div v-if="user.settings.canCreateInvite" class="row mt-2">
+        <div class="col">
+          <h1>Einladung</h1>
+
+          <div class="input-group mt-3">
+            <div class="form-floating">
+              <input class="form-control" type="text" :value="inviteId" disabled/>
+              <label for="notesFilter" class="form-label">Einladung</label>
+            </div>
+            <div class="form-floating">
+              <input class="form-control" type="text" :value="inviteExpires" disabled/>
+              <label for="notesFilter" class="form-label">Gültig bis</label>
+            </div>
+          </div>
+          <div class="mt-3">
+            <button class="btn btn-primary" @click="createInvite">Einladung erstellen</button>
+          </div>
         </div>
       </div>
     </main>

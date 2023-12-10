@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {req} from "@/core/requests";
+import CreateOrganization from "@/components/CreateOrganization.vue";
 
 // const props = defineProps<{}>();
 const emit = defineEmits(['authenticated']);
@@ -8,6 +9,7 @@ const emit = defineEmits(['authenticated']);
 enum LoginView {
   Login,
   ResetPassword,
+  UseInvite,
 }
 
 const view = ref(LoginView.Login);
@@ -90,6 +92,12 @@ const updatePassword = async () => {
                 <div class="mb-3">
                   <input type="submit" class="btn btn-primary" value="Anmelden"/>
                 </div>
+                <hr/>
+                <div class="mb-3">
+                  <button class="btn btn-secondary" @click="view = LoginView.UseInvite">
+                    <i class="fa-solid fa-envelope-open"></i>&nbsp;Ich habe eine Einladung
+                  </button>
+                </div>
               </form>
             </div>
           </template>
@@ -110,6 +118,9 @@ const updatePassword = async () => {
                 </div>
               </form>
             </div>
+          </template>
+          <template v-else-if="view === LoginView.UseInvite">
+            <CreateOrganization @cancel="view = LoginView.Login"/>
           </template>
         </div>
       </div>
