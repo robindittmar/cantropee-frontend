@@ -65,6 +65,10 @@ const updatePassword = async () => {
     emit('authenticated');
   }
 };
+
+const setViewLogin = () => {
+  view.value = LoginView.Login;
+};
 </script>
 
 <template>
@@ -120,7 +124,7 @@ const updatePassword = async () => {
             </div>
           </template>
           <template v-else-if="view === LoginView.UseInvite">
-            <CreateOrganization @cancel="view = LoginView.Login"/>
+            <CreateOrganization @submit="setViewLogin" @cancel="setViewLogin"/>
           </template>
         </div>
       </div>

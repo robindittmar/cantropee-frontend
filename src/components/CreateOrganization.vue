@@ -3,8 +3,7 @@ import {ref} from "vue";
 import {toast, ToastColor} from "@/core/toaster";
 import {req} from "@/core/requests";
 
-const props = defineProps<{}>();
-const emits = defineEmits(['submit', 'cancel']);
+const emit = defineEmits(['submit', 'cancel']);
 
 let validInvite = ref(false);
 
@@ -63,7 +62,7 @@ const createOrganization = async () => {
     toast('Erfolgreich! Du kannst dich nun Anmelden', ToastColor.Info);
 
     setTimeout(() => {
-      window.location.reload();
+      emit('submit');
     }, 3000);
   } else {
     toast('Ein Fehler ist aufgetreten', ToastColor.Danger);
