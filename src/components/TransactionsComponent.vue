@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import type {Ref} from "vue";
 import {dateToString, moneyToString} from "@/core/convert";
 import type {Transaction} from "@/core/transaction";
 import DetailTransaction from "@/components/DetailTransaction.vue";
 import type {Category} from "@/core/category";
 import type {Paginated} from "@/core/paginated";
+import {lang} from "@/core/languages";
 
 const props = defineProps<{
   currency: string,
@@ -131,12 +132,12 @@ onMounted(() => {
           <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Buchungsdatum</th>
-            <th scope="col">Betrag</th>
-            <th v-if="showVat19" scope="col">MwSt 19%</th>
-            <th v-if="showVat7" scope="col">MwSt 7%</th>
-            <th v-if="showNotes" scope="col">Notiz</th>
-            <th v-if="showCategories" scope="col">Kategorie</th>
+            <th scope="col">{{ lang.bookingDate }}</th>
+            <th scope="col">{{ lang.value }}</th>
+            <th v-if="showVat19" scope="col">{{ lang.vat19 }}</th>
+            <th v-if="showVat7" scope="col">{{ lang.vat7 }}</th>
+            <th v-if="showNotes" scope="col">{{ lang.note }}</th>
+            <th v-if="showCategories" scope="col">{{ lang.category }}</th>
           </tr>
           </thead>
           <tbody class="table-group-divider">

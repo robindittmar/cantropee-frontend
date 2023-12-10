@@ -8,6 +8,7 @@ import {deriveVat} from "@/core/tax-helper";
 import type {Category} from "@/core/category";
 import DiffTransactions from "@/components/DiffTransactions.vue";
 import {req} from "@/core/requests";
+import {lang} from "@/core/languages";
 
 const props = defineProps<{
   transaction: Transaction,
@@ -172,13 +173,13 @@ onBeforeUnmount(() => {
                     class="btn w-100"
                     :class="{'btn-outline-success': !editing, 'btn-success': editing}"
                     :disabled="!editing">
-              Einzahlung
+              {{ lang.depositTitle }}
             </button>
             <button v-else @click="isDeposit = true"
                     class="btn w-100"
                     :class="{'btn-outline-danger': !editing, 'btn-danger': editing}"
                     :disabled="!editing">
-              Auszahlung
+              {{ lang.withdrawalTitle }}
             </button>
           </div>
           <div class="mb-3">
@@ -190,9 +191,9 @@ onBeforeUnmount(() => {
             </div>
           </div>
           <div class="mb-3">
-            <label for="detailGroupValue" class="form-label">Betrag</label>
+            <label for="detailGroupValue" class="form-label">{{ lang.value }}</label>
             <div id="detailGroupValue" class="input-group mb-3">
-              <span class="input-group-text" id="detailValueAddon">EUR</span>
+              <span class="input-group-text" id="detailValueAddon">{{ currency }}</span>
               <input v-if="!editing" id="detailValue" class="form-control"
                      aria-describedby="detailValueAddon" type="text" :value="displayValues ? valueToString(Math.abs(transaction.value)) : '***'"
                      disabled/>
@@ -204,9 +205,9 @@ onBeforeUnmount(() => {
           </div>
           <template v-if="!isDeposit && showTaxes">
             <div class="mb-3">
-              <label for="detailGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
+              <label for="detailGroupValue19" class="form-label">{{ lang.value19 }} | {{ lang.vat19 }}</label>
               <div id="detailGroupValue19" class="input-group mb-3">
-                <span class="input-group-text" id="detailValue19addon">EUR</span>
+                <span class="input-group-text" id="detailValue19addon">{{ currency }}</span>
                 <input v-if="!editing" id="detailValue19" class="form-control"
                        aria-describedby="detailValue19addon" type="text"
                        :value="displayValues ? valueToString(Math.abs(transaction.value19)) : '***'"
@@ -215,7 +216,7 @@ onBeforeUnmount(() => {
                        aria-describedby="detailValue19addon" type="number" step=".01"
                        :value="transactionCopy.value19"
                        @input="setValue19"/>
-                <span class="input-group-text" id="detailVat19addon">EUR</span>
+                <span class="input-group-text" id="detailVat19addon">{{ currency }}</span>
                 <input v-if="!editing" id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
                        :value="displayValues ? valueToString(Math.abs(transaction.vat19)) : '***'"
                        disabled/>
@@ -226,9 +227,9 @@ onBeforeUnmount(() => {
               </div>
             </div>
             <div class="mb-3">
-              <label for="detailGroupValue7" class="form-label">7% Anteil | 7% Steuern</label>
+              <label for="detailGroupValue7" class="form-label">{{ lang.value7 }} | {{ lang.vat7 }}</label>
               <div id="detailGroupValue7" class="input-group mb-3">
-                <span class="input-group-text" id="detailValue7addon">EUR</span>
+                <span class="input-group-text" id="detailValue7addon">{{ currency }}</span>
                 <input v-if="!editing" id="detailValue7" class="form-control"
                        aria-describedby="detailValue7addon" type="text"
                        :value="displayValues ? valueToString(Math.abs(transaction.value7)) : '***'"
@@ -237,7 +238,7 @@ onBeforeUnmount(() => {
                        aria-describedby="detailValue7addon" type="number" step=".01"
                        :value="transactionCopy.value7"
                        @input="setValue7"/>
-                <span class="input-group-text" id="detailVat7addon">EUR</span>
+                <span class="input-group-text" id="detailVat7addon">{{ currency }}</span>
                 <input v-if="!editing" id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
                        type="text" :value="displayValues ? valueToString(Math.abs(transaction.vat7)) : '***'"
                        disabled/>
@@ -249,7 +250,7 @@ onBeforeUnmount(() => {
             </div>
           </template>
           <div class="mb-3">
-            <label for="detailCategory" class="form-label">Kategorie</label>
+            <label for="detailCategory" class="form-label">{{ lang.category }}</label>
             <input v-if="!editing" id="detailCategory" class="form-control" type="text"
                    :value="transaction.category" disabled/>
             <select v-else id="withdrawCategory" class="form-select" v-model="selectedCategory">
@@ -260,24 +261,24 @@ onBeforeUnmount(() => {
             </select>
           </div>
           <div class="mb-3">
-            <label for="detailNote" class="form-label">Notiz</label>
+            <label for="detailNote" class="form-label">{{ lang.note }}</label>
             <input id="detailNote" class="form-control" type="text"
                    v-model="transactionCopy.note"
                    :disabled="!editing"/>
           </div>
           <div class="mb-3">
-            <label for="detailEffectiveTime" class="form-label">Buchungsdatum</label>
+            <label for="detailEffectiveTime" class="form-label">{{ lang.bookingDate }}</label>
             <input id="detailEffectiveTime" class="form-control" type="datetime-local"
                    :value="transactionCopy.effectiveTimestamp && convertLocalDateForInput(transactionCopy.effectiveTimestamp)"
                    @input="transactionCopy.effectiveTimestamp = new Date(($event.target as HTMLInputElement)?.value)"
                    :disabled="!editing"/>
           </div>
           <div class="mb-3">
-            <label for="detailInsertTime" class="form-label">Erstelldatum</label>
+            <label for="detailInsertTime" class="form-label">{{ lang.creationDate }}</label>
             <input v-if="!editing" id="detailInsertTime" class="form-control" type="datetime-local"
                    :value="transaction.insertTimestamp && convertLocalDateForInput(transaction.insertTimestamp)"
                    disabled/>
-            <input v-else id="detailInsertTime" class="form-control" value="<auto-generiert>" disabled/>
+            <input v-else id="detailInsertTime" class="form-control" :value="lang.autoGenerated" disabled/>
           </div>
         </div>
       </div>
@@ -285,15 +286,15 @@ onBeforeUnmount(() => {
         <div class="col">
           <div v-if="!editing">
             <button type="button" class="btn btn-secondary w-100" @click="editTransaction(true)">
-              <i class="fa-solid fa-pen"></i>&nbsp;Bearbeiten...
+              <i class="fa-solid fa-pen"></i>&nbsp;{{ lang.edit }}...
             </button>
           </div>
           <div v-else class="btn-group w-100">
             <button type="button" class="btn btn-secondary" @click="editTransaction(false)">
-              <i class="fa-solid fa-xmark"></i>&nbsp;Abbrechen
+              <i class="fa-solid fa-xmark"></i>&nbsp;{{ lang.cancel }}
             </button>
             <button type="button" class="btn btn-primary" @click="submitTransaction">
-              <i class="fa-solid fa-floppy-disk"></i>&nbsp;Speichern
+              <i class="fa-solid fa-floppy-disk"></i>&nbsp;{{ lang.save }}
             </button>
           </div>
         </div>
@@ -302,7 +303,7 @@ onBeforeUnmount(() => {
         <div clas="col">
           <div class="mt-3">
             <button v-if="!!props.transaction.refId" type="button" class="btn btn-primary w-100" @click="fetchHistory">
-              Historie...
+              {{ lang.history }}...
             </button>
           </div>
         </div>

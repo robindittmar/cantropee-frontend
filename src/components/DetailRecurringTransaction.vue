@@ -6,6 +6,7 @@ import {Collapse, Modal} from "bootstrap";
 import {deriveVat} from "@/core/tax-helper";
 import type {Category} from "@/core/category";
 import {req} from "@/core/requests";
+import {lang} from "@/core/languages";
 
 const props = defineProps<{
   recurringTransaction: RecurringTransaction,
@@ -192,13 +193,13 @@ onBeforeUnmount(() => {
                     class="btn w-100"
                     :class="{'btn-outline-success': !editing, 'btn-success': editing}"
                     :disabled="!editing">
-              Einzahlung
+              {{ lang.depositTitle }}
             </button>
             <button v-else @click="isDeposit = true"
                     class="btn w-100"
                     :class="{'btn-outline-danger': !editing, 'btn-danger': editing}"
                     :disabled="!editing">
-              Auszahlung
+              {{ lang.withdrawalTitle }}
             </button>
           </div>
           <div class="mb-3">
@@ -210,30 +211,30 @@ onBeforeUnmount(() => {
             </div>
           </div>
           <div class="mb-3">
-            <label for="detailFirstExecution" class="form-label">Erste Ausführung</label>
+            <label for="detailFirstExecution" class="form-label">{{ lang.firstExecution }}</label>
             <input id="detailFirstExecution" class="form-control" type="datetime-local"
                    :value="recurringCopy.firstExecution && convertLocalDateForInput(recurringCopy.firstExecution)"
                    @input="recurringCopy.firstExecution = new Date(($event.target as HTMLInputElement)?.value)"
                    disabled/>
           </div>
           <div class="mb-3">
-            <label for="detailNextExecution" class="form-label">Nächste Ausführung</label>
+            <label for="detailNextExecution" class="form-label">{{ lang.nextExecution }}</label>
             <input id="detailNextExecution" class="form-control" type="datetime-local"
                    :value="recurringCopy.nextExecution && convertLocalDateForInput(recurringCopy.nextExecution)"
                    @input="recurringCopy.nextExecution = new Date(($event.target as HTMLInputElement)?.value)"
                    disabled/>
           </div>
           <div v-if="recurringTransaction.lastExecution" class="mb-3">
-            <label for="detailLastExecution" class="form-label">Letzte Ausführung</label>
+            <label for="detailLastExecution" class="form-label">{{ lang.lastExecution }}</label>
             <input id="detailLastExecution" class="form-control" type="datetime-local"
                    :value="recurringCopy.lastExecution && convertLocalDateForInput(recurringCopy.lastExecution)"
                    @input="recurringCopy.lastExecution = new Date(($event.target as HTMLInputElement)?.value)"
                    disabled/>
           </div>
           <div class="mb-3">
-            <label for="detailGroupValue" class="form-label">Betrag</label>
+            <label for="detailGroupValue" class="form-label">{{ lang.value }}</label>
             <div id="detailGroupValue" class="input-group mb-3">
-              <span class="input-group-text" id="detailValueAddon">EUR</span>
+              <span class="input-group-text" id="detailValueAddon">{{ currency }}</span>
               <input v-if="!editing" id="detailValue" class="form-control"
                      aria-describedby="detailValueAddon" type="text" :value="displayValues ? valueToString(Math.abs(recurringTransaction.value)) : '***'"
                      disabled/>
@@ -245,9 +246,9 @@ onBeforeUnmount(() => {
           </div>
           <template v-if="!isDeposit && showTaxes">
             <div class="mb-3">
-              <label for="detailGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
+              <label for="detailGroupValue19" class="form-label">{{ lang.value19 }} | {{ lang.vat19 }}</label>
               <div id="detailGroupValue19" class="input-group mb-3">
-                <span class="input-group-text" id="detailValue19addon">EUR</span>
+                <span class="input-group-text" id="detailValue19addon">{{ currency }}</span>
                 <input v-if="!editing" id="detailValue19" class="form-control"
                        aria-describedby="detailValue19addon" type="text"
                        :value="displayValues ? valueToString(Math.abs(recurringTransaction.value19 ?? 0)) : '***'"
@@ -256,7 +257,7 @@ onBeforeUnmount(() => {
                        aria-describedby="detailValue19addon" type="number" step=".01"
                        :value="recurringCopy.value19"
                        @input="setValue19"/>
-                <span class="input-group-text" id="detailVat19addon">EUR</span>
+                <span class="input-group-text" id="detailVat19addon">{{ currency }}</span>
                 <input v-if="!editing" id="detailVat19" class="form-control" aria-describedby="detailVat19addon"
                        :value="displayValues ? valueToString(Math.abs(recurringTransaction.vat19 ?? 0)) : '***'"
                        disabled/>
@@ -267,9 +268,9 @@ onBeforeUnmount(() => {
               </div>
             </div>
             <div class="mb-3">
-              <label for="detailGroupValue7" class="form-label">7% Anteil | 7% Steuern</label>
+              <label for="detailGroupValue7" class="form-label">{{ lang.value7 }} | {{ lang.vat7 }}</label>
               <div id="detailGroupValue7" class="input-group mb-3">
-                <span class="input-group-text" id="detailValue7addon">EUR</span>
+                <span class="input-group-text" id="detailValue7addon">{{ currency }}</span>
                 <input v-if="!editing" id="detailValue7" class="form-control"
                        aria-describedby="detailValue7addon" type="text"
                        :value="displayValues ? valueToString(Math.abs(recurringTransaction.value7 ?? 0)) : '***'"
@@ -278,7 +279,7 @@ onBeforeUnmount(() => {
                        aria-describedby="detailValue7addon" type="number" step=".01"
                        :value="recurringCopy.value7"
                        @input="setValue7"/>
-                <span class="input-group-text" id="detailVat7addon">EUR</span>
+                <span class="input-group-text" id="detailVat7addon">{{ currency }}</span>
                 <input v-if="!editing" id="detailVat7" class="form-control" aria-describedby="detailVat7addon"
                        type="text" :value="displayValues ? valueToString(Math.abs(recurringTransaction.vat7 ?? 0)) : '***'"
                        disabled/>
@@ -290,7 +291,7 @@ onBeforeUnmount(() => {
             </div>
           </template>
           <div class="mb-3">
-            <label for="detailCategory" class="form-label">Kategorie</label>
+            <label for="detailCategory" class="form-label">{{ lang.category }}</label>
             <input v-if="!editing" id="detailCategory" class="form-control" type="text"
                    :value="recurringTransaction.category" disabled/>
             <select v-else id="withdrawCategory" class="form-select" v-model="selectedCategory">
@@ -301,13 +302,13 @@ onBeforeUnmount(() => {
             </select>
           </div>
           <div class="mb-3">
-            <label for="detailNote" class="form-label">Notiz</label>
+            <label for="detailNote" class="form-label">{{ lang.note }}</label>
             <input id="detailNote" class="form-control" type="text"
                    v-model="recurringCopy.note"
                    :disabled="!editing"/>
           </div>
           <div class="mb-3">
-            <label for="detailInsertTime" class="form-label">Erstelldatum</label>
+            <label for="detailInsertTime" class="form-label">{{ lang.creationDate }}</label>
             <input v-if="!editing" id="detailInsertTime" class="form-control" type="datetime-local"
                    :value="recurringTransaction.insertTimestamp && convertLocalDateForInput(recurringTransaction.insertTimestamp)"
                    disabled/>
@@ -319,7 +320,7 @@ onBeforeUnmount(() => {
       <template v-if="recurringTransaction.active">
       <div class="row">
         <div class="col">
-          <button class="btn btn-danger" @click="showConfirmDelete"><i class="fa-solid fa-trash"></i>&nbsp;Löschen...</button>
+          <button class="btn btn-danger" @click="showConfirmDelete"><i class="fa-solid fa-trash"></i>&nbsp;{{ lang.delete }}...</button>
         </div>
       </div>
 
@@ -327,27 +328,27 @@ onBeforeUnmount(() => {
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="confirmDeleteModalLabel">Bestätigen</h1>
+              <h1 class="modal-title fs-5" id="confirmDeleteModalLabel">{{ lang.confirm }}</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <div>
                 <div class="form-check mb-3">
                   <input id="recurringCascadeDelete" class="form-check-input" type="checkbox" v-model="cascadeDelete"/>
-                  <label for="recurringCascadeDelete" class="form-check-label">Alle Transaktionen dieses Dauerauftrags auch löschen</label>
+                  <label for="recurringCascadeDelete" class="form-check-label">{{ lang.recurringDeleteTransactionsCascasing }}</label>
                 </div>
                 <div class="form-check mb-3">
                   <input id="recurringConfirmDelete" class="form-check-input" type="checkbox" v-model="confirmDelete"/>
-                  <label for="recurringConfirmDelete" class="form-check-label">Löschen bestätigen</label>
+                  <label for="recurringConfirmDelete" class="form-check-label">{{ lang.confirmDelete }}</label>
                 </div>
               </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                Abbrechen
+                {{ lang.cancel }}
               </button>
               <button type="button" class="btn btn-danger" :disabled="!confirmDelete" @click="deleteRecurringTransaction">
-                <i class="fa-solid fa-trash"></i>&nbsp;Löschen
+                <i class="fa-solid fa-trash"></i>&nbsp;{{ lang.delete }}
               </button>
             </div>
           </div>
