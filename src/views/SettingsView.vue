@@ -22,16 +22,6 @@ let organizations = ref(props.user.organizations);
 let inviteId = ref('');
 let inviteExpires = ref('');
 
-const logout = async () => {
-  let result = await req('/api/logout', {
-    method: 'POST',
-  });
-
-  if (result.ok) {
-    emit('user-logout');
-  }
-};
-
 const createInvite = async () => {
   let result = await req('/api/invite', {
     method: 'POST',
@@ -48,12 +38,7 @@ const createInvite = async () => {
 <template>
   <div class="container">
     <header>
-      <div class="d-flex justify-content-end pt-2 pe-2">
-        <h6 class="me-2">{{ user.email }}</h6>
-        <a class="btn btn-outline-danger me-2" @click="logout">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i>
-        </a>
-      </div>
+
     </header>
 
     <main>

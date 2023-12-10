@@ -12,6 +12,7 @@ import ToastComponent from "@/components/ToastComponent.vue";
 import LoginView from "@/views/LoginView.vue";
 import {toast, toasts} from "@/core/toaster";
 import ChartView from "@/views/ChartView.vue";
+import {req} from "@/core/requests";
 
 enum View {
   Home,
@@ -52,8 +53,14 @@ const reloadCategories = async () => {
 };
 
 const logout = async () => {
-  authorized.value = false;
-  setView(View.Home);
+  let result = await req('/api/logout', {
+    method: 'POST',
+  });
+
+  if (result.ok) {
+    authorized.value = false;
+    setView(View.Home);
+  }
 };
 
 const updateSettings = async (settings: UserSettings) => {
@@ -77,6 +84,13 @@ onMounted(async () => {
 <template>
   <template v-if="initialLoadDone">
     <template v-if="authorized">
+      <div class="d-flex justify-content-end pt-2 pe-2">
+        <h6 class="me-2 mt-2">{{ user.email }}</h6>
+        <a class="btn btn-outline-danger me-2" @click="logout">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </a>
+      </div>
+
       <HomeView v-if="selectedView === View.Home"
                 :user="user" :categories="categories"/>
 
@@ -89,7 +103,6 @@ onMounted(async () => {
 
       <SettingsView v-if="selectedView === View.Settings"
                     :user="user" :categories="categories"
-                    @user-logout="logout"
                     @update-user-settings="updateSettings"/>
       <div class="bottom-filler">
       </div>
