@@ -92,7 +92,7 @@ const createOrganization = async () => {
       </div>
 
       <div class="form-check mb-3">
-        <input id="useTax" class="form-check-input" v-model="useTaxes"/>
+        <input id="useTax" class="form-check-input" type="checkbox" v-model="useTaxes"/>
         <label for="useTax" class="form-check-label">Steuern erfassen</label>
       </div>
 
