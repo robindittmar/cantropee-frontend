@@ -4,6 +4,7 @@ import {ref} from "vue";
 import type {Category} from "@/core/category";
 import {req} from "@/core/requests";
 import {toast, ToastColor} from "@/core/toaster";
+import {lang} from "@/core/languages";
 
 const props = defineProps<{
   categories: Category[];
@@ -26,7 +27,7 @@ const selectCategory = (categoryId: number) => {
 const startNewCategory = () => {
   newCategory.value = {
     id: 0,
-    name: 'Unbenannt',
+    name: lang.value.unnamed,
   };
 };
 
@@ -49,7 +50,7 @@ const insertCategory = async (category: Category) => {
 
   if (result.ok) {
     emit('update-categories');
-    toast('Kategorie erfolgreich erstellt', ToastColor.Success);
+    toast(lang.value.categoryCreatedSuccess, ToastColor.Success);
 
     newCategory.value = undefined;
   }
@@ -70,7 +71,7 @@ const updateCategory = async (category: Category) => {
 
   if (result.ok) {
     emit('update-categories');
-    toast('Kategorie erfolgreich gespeichert', ToastColor.Success);
+    toast(lang.value.categoryUpdatedSuccess, ToastColor.Success);
     selectedCategory.value = 0;
   }
 };
@@ -90,7 +91,7 @@ const deleteCategory = async (category: Category) => {
 
   if (result.ok) {
     emit('update-categories');
-    toast('Kategorie erfolgreich gelöscht', ToastColor.Success);
+    toast(lang.value.categoryDeletedSuccess, ToastColor.Success);
     selectedCategory.value = 0;
   }
 };
@@ -104,7 +105,7 @@ const deleteCategory = async (category: Category) => {
           <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Kategorie</th>
+            <th scope="col">{{ lang.category }}</th>
           </tr>
           </thead>
           <tbody class="table-group-divider">
@@ -147,7 +148,7 @@ const deleteCategory = async (category: Category) => {
     </div>
     <div class="d-flex justify-content-center pt-2 pb-2">
       <button class="btn btn-success" @click="startNewCategory">
-        <i class="fa-solid fa-plus"></i>&nbsp;Neu
+        <i class="fa-solid fa-plus"></i>&nbsp;{{ lang.new }}
       </button>
     </div>
   </div>

@@ -3,6 +3,7 @@ import {ref, watch} from "vue";
 import type {User} from "@/core/user";
 import type {Category} from "@/core/category";
 import {req} from "@/core/requests";
+import {lang} from "@/core/languages";
 
 const props = defineProps<{
   user: User;
@@ -48,38 +49,38 @@ const createInvite = async () => {
 
           <div class="form-check mt-3">
             <input id="privateModeCheck" type="checkbox" class="form-check-input" v-model="settings.privateMode">
-            <label for="privateModeCheck" class="form-check-label">Privater Modus</label>
+            <label for="privateModeCheck" class="form-check-label">{{ lang.privateModeActiveOnLoad }}</label>
           </div>
 
           <div class="form-check mt-3">
             <input id="defaultPreviewCheck" type="checkbox" class="form-check-input" v-model="settings.defaultPreviewPending">
-            <label for="defaultPreviewCheck" class="form-check-label">"Vorschau" aktiv wenn Seite geladen wird</label>
+            <label for="defaultPreviewCheck" class="form-check-label">{{ lang.previewActiveOnLoad }}</label>
           </div>
 
           <div class="form-check mt-3">
             <input id="defaultSortingCheck" type="checkbox" class="form-check-input" v-model="settings.defaultSortingOrderAsc">
-            <label for="defaultSortingCheck" class="form-check-label">Sortierung aufsteigend wenn Seite geladen wird</label>
+            <label for="defaultSortingCheck" class="form-check-label">{{ lang.sortingAscendingOnLoad }}</label>
           </div>
 
-          <button class="btn btn-primary mt-3" @click="$emit('update-user-settings', settings)">Speichern</button>
+          <button class="btn btn-primary mt-3" @click="$emit('update-user-settings', settings)">{{ lang.save }}</button>
         </div>
       </div>
       <div v-if="user.settings.canCreateInvite" class="row mt-2">
         <div class="col">
-          <h1>Einladung</h1>
+          <h1>{{ lang.invite }}</h1>
 
           <div class="input-group mt-3">
             <div class="form-floating">
-              <input class="form-control" type="text" :value="inviteId" disabled/>
-              <label for="notesFilter" class="form-label">Einladung</label>
+              <input id="inviteInput" class="form-control" type="text" :value="inviteId" disabled/>
+              <label for="inviteInput" class="form-label">{{ lang.invite }}</label>
             </div>
             <div class="form-floating">
-              <input class="form-control" type="text" :value="inviteExpires" disabled/>
-              <label for="notesFilter" class="form-label">Gültig bis</label>
+              <input id="expiresInput" class="form-control" type="text" :value="inviteExpires" disabled/>
+              <label for="expiresInput" class="form-label">{{ lang.validUntil }}</label>
             </div>
           </div>
           <div class="mt-3">
-            <button class="btn btn-primary" @click="createInvite">Einladung erstellen</button>
+            <button class="btn btn-primary" @click="createInvite">{{ lang.createInvite }}</button>
           </div>
         </div>
       </div>

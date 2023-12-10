@@ -96,7 +96,6 @@ const fetchTransactions = async () => {
 };
 
 const requestDeposit = () => {
-  // TODO: not a fan at all of this
   const modal = Modal.getOrCreateInstance('#depositModal');
   modal.show();
 };
@@ -109,7 +108,6 @@ const hideDeposit = () => {
 };
 
 const requestWithdrawal = () => {
-  // TODO: not a fan at all of this
   const modal = Modal.getOrCreateInstance('#withdrawModal');
   modal.show();
 };
@@ -162,7 +160,6 @@ const setNotes = (note: string) => {
   notesFilter.value = note;
   if (noteTimoutId) {
     clearTimeout(noteTimoutId);
-    console.log('cleared timeout');
   }
 
   noteTimoutId = setTimeout(async () => {

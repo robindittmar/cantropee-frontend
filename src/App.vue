@@ -13,6 +13,7 @@ import LoginView from "@/views/LoginView.vue";
 import {toast, toasts} from "@/core/toaster";
 import ChartView from "@/views/ChartView.vue";
 import {req} from "@/core/requests";
+import {lang, languages} from "@/core/languages";
 
 enum View {
   Home,
@@ -29,6 +30,7 @@ const setView = (view: View) => {
 
 let initialLoadDone = ref(false);
 let user: Ref<User> = ref(defaultUser());
+let langCode = 'de-DE';
 let categories: Ref<Category[]> = ref([{id: 0, name: ''}]);
 
 
@@ -70,12 +72,17 @@ const updateSettings = async (settings: UserSettings) => {
     intermediate.settings = settings;
     user.value = intermediate;
 
-    toast('Einstellungen gespeichert!');
+    toast(lang.value.settingsSaved);
   }
 }
 
 onMounted(async () => {
   selectedView.value = parseInt(localStorage.getItem('view') ?? View.Home.toString());
+  let storedLang = localStorage.getItem('lang');
+  if (storedLang) {
+    langCode = storedLang;
+  }
+  lang.value = languages[langCode];
 
   await initialLoad();
 });

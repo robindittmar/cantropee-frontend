@@ -2,6 +2,7 @@
 import {watch, ref} from "vue";
 import {moneyToString} from "@/core/convert";
 import type {Balance} from "@/core/balance";
+import {lang} from "@/core/languages";
 
 const props = defineProps<{
   balance: Balance,
@@ -54,12 +55,12 @@ watch(() => props.showPending, () => {
       <div class="row">
         <div class="col">
           <button type="button" class="btn btn-success w-100" @click="$emit('request-deposit')">
-            <i class="fa-solid fa-plus"></i>&nbsp;Einzahlen
+            <i class="fa-solid fa-plus"></i>&nbsp;{{ lang.deposit }}
           </button>
         </div>
         <div class="col">
           <button type="button" class="btn btn-danger w-100" @click="$emit('request-withdrawal')">
-            <i class="fa-solid fa-minus"></i>&nbsp;Auszahlen
+            <i class="fa-solid fa-minus"></i>&nbsp;{{ lang.withdraw }}
           </button>
         </div>
       </div>
