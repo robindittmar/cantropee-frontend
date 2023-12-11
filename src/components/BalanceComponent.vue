@@ -6,6 +6,7 @@ import {lang} from "@/core/languages";
 import DepositTransaction from "@/components/DepositTransaction.vue";
 import WithdrawalTransaction from "@/components/WithdrawalTransaction.vue";
 import type {Category} from "@/core/category";
+import {Modal} from "bootstrap";
 
 const props = defineProps<{
   balance: Balance,
@@ -17,7 +18,7 @@ const props = defineProps<{
   title: string,
 }>();
 
-defineEmits(['transaction-booked']);
+const emit = defineEmits(['transaction-booked']);
 
 
 const recalculateBalance = () => {
@@ -40,6 +41,30 @@ watch(() => props.balance, () => {
 watch(() => props.showPending, () => {
   recalculateBalance();
 });
+
+const requestWithdrawal = () => {
+  const modal = Modal.getOrCreateInstance('#withdrawModal');
+  modal.show();
+};
+
+const requestDeposit = () => {
+  const modal = Modal.getOrCreateInstance('#depositModal');
+  modal.show();
+};
+
+const hideDeposit = () => {
+  const modal = Modal.getOrCreateInstance('#depositModal');
+  modal.hide();
+
+  emit('transaction-booked');
+};
+
+const hideWithdrawal = () => {
+  const modal = Modal.getOrCreateInstance('#withdrawModal');
+  modal.hide();
+
+  emit('transaction-booked');
+};
 </script>
 
 <template>
@@ -58,12 +83,12 @@ watch(() => props.showPending, () => {
       </div>
       <div class="row">
         <div class="col">
-          <button type="button" class="btn btn-success w-100" @click="$emit('request-deposit')">
+          <button type="button" class="btn btn-success w-100" @click="requestDeposit">
             <i class="fa-solid fa-plus"></i>&nbsp;{{ lang.deposit }}
           </button>
         </div>
         <div class="col">
-          <button type="button" class="btn btn-danger w-100" @click="$emit('request-withdrawal')">
+          <button type="button" class="btn btn-danger w-100" @click="requestWithdrawal">
             <i class="fa-solid fa-minus"></i>&nbsp;{{ lang.withdraw }}
           </button>
         </div>
@@ -72,9 +97,9 @@ watch(() => props.showPending, () => {
   </div>
 
   <DepositTransaction :categories="categories" :currency="currency"
-                      @submit-deposit="$emit('transaction-booked')"/>
+                      @submit-deposit="hideDeposit"/>
   <WithdrawalTransaction :categories="categories" :currency="currency" :show-taxes="showTaxes"
-                         @submit-withdrawal="$emit('transaction-booked')"/>
+                         @submit-withdrawal="hideWithdrawal"/>
 </template>
 
 <style scoped></style>

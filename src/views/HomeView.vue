@@ -95,30 +95,6 @@ const fetchTransactions = async () => {
   balanceRef.value = balance;
 };
 
-const requestDeposit = () => {
-  const modal = Modal.getOrCreateInstance('#depositModal');
-  modal.show();
-};
-
-const hideDeposit = () => {
-  const modal = Modal.getOrCreateInstance('#depositModal');
-  modal.hide();
-
-  fetchTransactions();
-};
-
-const requestWithdrawal = () => {
-  const modal = Modal.getOrCreateInstance('#withdrawModal');
-  modal.show();
-};
-
-const hideWithdrawal = () => {
-  const modal = Modal.getOrCreateInstance('#withdrawModal');
-  modal.hide();
-
-  fetchTransactions();
-};
-
 const moveEffectiveSpan = (monthOffset: number) => {
   let newFrom = new Date(effectiveSpan.value.from);
   let newTo = new Date(effectiveSpan.value.to);
@@ -188,7 +164,7 @@ onMounted(() => {
                             :show-pending="showPending" :display-values="displayValues"
                             :title="user.currentOrganization?.name ?? 'cantropee'"
                             :show-taxes="user.currentOrganization?.usesTaxes ?? false"
-                            @request-deposit="requestDeposit" @request-withdrawal="requestWithdrawal"/>
+                            @transaction-booked="fetchTransactions"/>
         </div>
       </div>
       <div class="row mt-2">
