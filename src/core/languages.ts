@@ -110,7 +110,7 @@ export const languages: {[languageCode: string]: Translation} = {
         email: 'E-Mail',
         password: 'Password',
         confirmPassword: 'Confirm password',
-        keepLoggedIn: 'Keep logged in',
+        keepLoggedIn: 'Keep me logged in on this device',
         haveAnInvite: 'I have an invite',
         resetPassword: 'Reset password',
         passwordsDoNotMatch: 'The passwords do not match',
