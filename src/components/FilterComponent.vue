@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, ref, watch} from "vue";
 import type {Category} from "@/core/category";
-import {lang} from "@/core/languages";
+import {lang, langCode} from "@/core/languages";
 
 const props = defineProps<{
   effectiveSpan: {
@@ -33,7 +33,7 @@ watch(notesFilter, () => {
 });
 
 const yearMonthString = computed(() => {
-  return props.effectiveSpan.from.toLocaleString('de-DE', {
+  return props.effectiveSpan.from.toLocaleString(langCode.value, {
     month: 'short',
     year: 'numeric',
   });
