@@ -45,7 +45,7 @@ const createInvite = async () => {
     <main>
       <div class="row mt-2">
         <div class="col">
-          <h1>Nutzer Einstellungen</h1>
+          <h1>{{ lang.userSettings }}</h1>
 
           <div class="form-check mt-3">
             <input id="privateModeCheck" type="checkbox" class="form-check-input" v-model="settings.privateMode">
