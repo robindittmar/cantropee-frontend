@@ -258,4 +258,5 @@ export const languages: {[languageCode: string]: Translation} = {
     },
 };
 
+export const langCode: Ref<string> = ref('en-US');
 export const lang: Ref<Translation> = ref(languages['en-US']);

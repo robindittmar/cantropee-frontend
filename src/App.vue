@@ -13,7 +13,8 @@ import LoginView from "@/views/LoginView.vue";
 import {toast, toasts} from "@/core/toaster";
 import ChartView from "@/views/ChartView.vue";
 import {req} from "@/core/requests";
-import {lang, languages} from "@/core/languages";
+import {lang, langCode, languages} from "@/core/languages";
+import ChangeLanguageComponent from "@/components/ChangeLanguageComponent.vue";
 
 enum View {
   Home,
@@ -31,7 +32,6 @@ const setView = (view: View) => {
 let initialLoadDone = ref(false);
 let user: Ref<User> = ref(defaultUser());
 let categories: Ref<Category[]> = ref([{id: 0, name: ''}]);
-let langCode = ref('en-US');
 let availLangCodes = ['en-US', 'de-DE'];
 
 
@@ -106,16 +106,7 @@ onMounted(async () => {
     <template v-if="authorized">
       <div class="d-flex justify-content-end pt-2 pe-2">
         <h6 class="me-2 mt-2">{{ user.email }}</h6>
-        <div class="button-group me-2 text-center">
-          <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            {{ langCode.substring(0, 2) }}
-          </button>
-          <ul class="dropdown-menu">
-            <li v-for="language in availLangCodes" :key="language">
-              <a class="dropdown-item" @click="selectLanguage(language)">{{ language.substring(0, 2) }}</a>
-            </li>
-          </ul>
-        </div>
+        <ChangeLanguageComponent :lang-code="langCode" @set-language="selectLanguage"/>
         <a class="btn btn-outline-danger me-2" @click="logout">
           <i class="fa-solid fa-arrow-right-from-bracket"></i>
         </a>
@@ -163,6 +154,9 @@ onMounted(async () => {
       </div>
     </template>
     <template v-else>
+      <div class="d-flex justify-content-end pt-2 pe-2">
+        <ChangeLanguageComponent :lang-code="langCode" @set-language="selectLanguage"/>
+      </div>
       <LoginView @authenticated="initialLoad"/>
     </template>
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
