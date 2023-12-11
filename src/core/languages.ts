@@ -54,6 +54,9 @@ export interface Translation {
     inviteIsInvalid: string;
     inviteSuccess: string;
 
+    copyToClipboardSuccess: string;
+    copyToClipboardFailure: string;
+
     validUntil: string;
     deposit: string;
     depositTitle: string;
@@ -146,6 +149,8 @@ export const languages: {[languageCode: string]: Translation} = {
         inviteIsValid: 'The invite is valid',
         inviteIsInvalid: 'The invite is not valid',
         inviteSuccess: 'Success! You may now login',
+        copyToClipboardSuccess: 'Copied to clipboard',
+        copyToClipboardFailure: 'Failed to copy to clipboard',
         validUntil: 'Valid until',
         deposit: 'Deposit',
         depositTitle: 'Deposit',
@@ -228,6 +233,8 @@ export const languages: {[languageCode: string]: Translation} = {
         inviteIsValid: 'Die Einladung ist gültig',
         inviteIsInvalid: 'Die Einladung ist ungültig',
         inviteSuccess: 'Erfolgreich! Du kannst dich nun Anmelden',
+        copyToClipboardSuccess: 'In Zwischenablage kopiert',
+        copyToClipboardFailure: 'Konnte nicht in Zwischenablage kopiert werden',
         validUntil: 'Gültig bis',
         deposit: 'Einzahlen',
         depositTitle: 'Einzahlung',

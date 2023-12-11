@@ -4,6 +4,7 @@ import type {User} from "@/core/user";
 import type {Category} from "@/core/category";
 import {req} from "@/core/requests";
 import {availableLangCodes, availableLocaleCodes, lang} from "@/core/languages";
+import {toast, ToastColor} from "@/core/toaster";
 
 const props = defineProps<{
   user: User;
@@ -20,18 +21,37 @@ watch(() => props.user, () => {
 let settings = ref(props.user.settings);
 let organizations = ref(props.user.organizations);
 
-let inviteId = ref('');
-let inviteExpires = ref('');
+let creatingInvite = ref(false);
+let inviteUrl = ref('');
 
 const createInvite = async () => {
+  creatingInvite.value = true;
+
   let result = await req('/api/invite', {
     method: 'POST',
   });
 
   if (result.ok) {
     let resp = await result.json();
-    inviteId.value = resp.id;
-    inviteExpires.value = resp.expiresAt.toLocaleString();
+    inviteUrl.value = `https://cantropee.dittmar.dev?invite=${resp.id}`;
+
+    setTimeout(() => {
+      creatingInvite.value = false;
+    }, 3000);
+
+    await copyInviteToClipboard();
+  } else {
+    creatingInvite.value = false;
+  }
+};
+
+const copyInviteToClipboard = async () => {
+  const url = inviteUrl.value;
+  try {
+    await navigator.clipboard.writeText(url);
+    toast(lang.value.copyToClipboardSuccess);
+  } catch (err) {
+    toast(lang.value.copyToClipboardFailure, ToastColor.Danger);
   }
 };
 </script>
@@ -89,16 +109,15 @@ const createInvite = async () => {
 
           <div class="input-group mt-3">
             <div class="form-floating">
-              <input id="inviteInput" class="form-control" type="text" :value="inviteId" disabled/>
+              <input id="inviteInput" class="form-control" type="text" :value="inviteUrl" disabled/>
               <label for="inviteInput" class="form-label">{{ lang.invite }}</label>
             </div>
-            <div class="form-floating">
-              <input id="expiresInput" class="form-control" type="text" :value="inviteExpires" disabled/>
-              <label for="expiresInput" class="form-label">{{ lang.validUntil }}</label>
-            </div>
+            <button class="btn btn-secondary" @click="copyInviteToClipboard" :disabled="inviteUrl.length === 0">
+              <i class="fa-solid fa-copy"></i>
+            </button>
           </div>
           <div class="mt-3">
-            <button class="btn btn-primary" @click="createInvite">{{ lang.createInvite }}</button>
+            <button class="btn btn-primary" @click="createInvite" :disabled="creatingInvite">{{ lang.createInvite }}</button>
           </div>
         </div>
       </div>
