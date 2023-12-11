@@ -29,6 +29,7 @@ const setView = (view: View) => {
   localStorage.setItem('view', view.toString());
 };
 
+let invite: string | null = null;
 let initialLoadDone = ref(false);
 let user: Ref<User> = ref(defaultUser());
 let categories: Ref<Category[]> = ref([{id: 0, name: ''}]);
@@ -78,8 +79,6 @@ const updateSettings = async (settings: UserSettings) => {
 }
 
 const selectLanguage = (code: string) => {
-  console.log(code);
-  console.log(availLangCodes);
   if (!availLangCodes.includes(code)) {
     return;
   }
@@ -97,7 +96,12 @@ onMounted(async () => {
   }
   selectLanguage(langCode.value);
 
-  await initialLoad();
+  invite = new URL(location.href).searchParams.get('invite');
+  if (!invite) {
+    await initialLoad();
+  } else {
+    initialLoadDone.value = true;
+  }
 });
 </script>
 
@@ -157,7 +161,7 @@ onMounted(async () => {
       <div class="d-flex justify-content-end pt-2 pe-2">
         <ChangeLanguageComponent :lang-code="langCode" @set-language="selectLanguage"/>
       </div>
-      <LoginView @authenticated="initialLoad"/>
+      <LoginView :invite="invite" @authenticated="initialLoad"/>
     </template>
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
       <ToastComponent v-for="toast of toasts" :key="toast.id" :toast="toast"/>

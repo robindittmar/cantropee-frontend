@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {toast, ToastColor} from "@/core/toaster";
 import {req} from "@/core/requests";
 import {lang} from "@/core/languages";
 
+const props = defineProps<{
+  invite: string | null,
+}>();
 const emit = defineEmits(['submit', 'cancel']);
 
 let validInvite = ref(false);
@@ -69,6 +72,13 @@ const createOrganization = async () => {
     toast(lang.value.anErrorHasOccured, ToastColor.Danger);
   }
 };
+
+onMounted(() => {
+  if (props.invite) {
+    inviteId.value = props.invite;
+    validateInvite();
+  }
+});
 </script>
 
 <template>

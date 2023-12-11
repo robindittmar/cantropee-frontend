@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {req} from "@/core/requests";
 import {lang} from "@/core/languages";
 import CreateOrganization from "@/components/CreateOrganization.vue";
 
-// const props = defineProps<{}>();
+const props = defineProps<{
+  invite: string | null,
+}>();
 const emit = defineEmits(['authenticated']);
 
 enum LoginView {
@@ -70,6 +72,12 @@ const updatePassword = async () => {
 const setViewLogin = () => {
   view.value = LoginView.Login;
 };
+
+onMounted(() => {
+  if (props.invite) {
+    view.value = LoginView.UseInvite;
+  }
+})
 </script>
 
 <template>
@@ -125,7 +133,7 @@ const setViewLogin = () => {
             </div>
           </template>
           <template v-else-if="view === LoginView.UseInvite">
-            <CreateOrganization @submit="setViewLogin" @cancel="setViewLogin"/>
+            <CreateOrganization :invite="invite" @submit="setViewLogin" @cancel="setViewLogin"/>
           </template>
         </div>
       </div>

@@ -3,9 +3,13 @@ import {watch, ref} from "vue";
 import {moneyToString} from "@/core/convert";
 import type {Balance} from "@/core/balance";
 import {lang} from "@/core/languages";
+import DepositTransaction from "@/components/DepositTransaction.vue";
+import WithdrawalTransaction from "@/components/WithdrawalTransaction.vue";
+import type {Category} from "@/core/category";
 
 const props = defineProps<{
   balance: Balance,
+  categories: Category[],
   currency: string,
   showPending: boolean,
   displayValues: boolean,
@@ -13,7 +17,7 @@ const props = defineProps<{
   title: string,
 }>();
 
-defineEmits(['request-deposit', 'request-withdrawal']);
+defineEmits(['transaction-booked']);
 
 
 const recalculateBalance = () => {
@@ -66,6 +70,11 @@ watch(() => props.showPending, () => {
       </div>
     </div>
   </div>
+
+  <DepositTransaction :categories="categories" :currency="currency"
+                      @submit-deposit="$emit('transaction-booked')"/>
+  <WithdrawalTransaction :categories="categories" :currency="currency" :show-taxes="showTaxes"
+                         @submit-withdrawal="$emit('transaction-booked')"/>
 </template>
 
 <style scoped></style>

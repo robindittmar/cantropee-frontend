@@ -184,6 +184,7 @@ onMounted(() => {
       <div class="row mt-2">
         <div class="col">
           <BalanceComponent :balance="balanceRef" :currency="user.currentOrganization?.currency ?? 'EUR'"
+                            :categories="categories"
                             :show-pending="showPending" :display-values="displayValues"
                             :title="user.currentOrganization?.name ?? 'cantropee'"
                             :show-taxes="user.currentOrganization?.usesTaxes ?? false"
@@ -215,12 +216,6 @@ onMounted(() => {
       </div>
     </main>
   </div>
-
-  <DepositTransaction :categories="categories" :currency="user.currentOrganization?.currency ?? 'EUR'"
-                      @submit-deposit="hideDeposit"/>
-  <WithdrawalTransaction :categories="categories" :currency="user.currentOrganization?.currency ?? 'EUR'"
-                         @submit-withdrawal="hideWithdrawal"
-                         :show-taxes="user.currentOrganization?.usesTaxes ?? false"/>
 </template>
 
 <style scoped></style>
