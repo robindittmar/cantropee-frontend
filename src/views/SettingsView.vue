@@ -33,7 +33,7 @@ const createInvite = async () => {
 
   if (result.ok) {
     let resp = await result.json();
-    inviteUrl.value = `https://cantropee.dittmar.dev?invite=${resp.id}`;
+    inviteUrl.value = `https://cantropee.dittmar.dev/?invite=${resp.id}`;
 
     setTimeout(() => {
       creatingInvite.value = false;
