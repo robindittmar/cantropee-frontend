@@ -1,5 +1,6 @@
 import {authorized} from "@/core/user";
 import {toast, ToastColor} from "@/core/toaster";
+import {lang} from "@/core/languages";
 
 
 export async function req(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
@@ -11,7 +12,7 @@ export async function req(input: RequestInfo | URL, init?: RequestInit): Promise
         if (result.status === 401) {
             authorized.value = false;
         } else if (result.status === 403) {
-            toast('Rechte unzureichend', ToastColor.Warning);
+            toast(lang.value.insufficientPermission, ToastColor.Warning);
         } else {
             toast(err.message, ToastColor.Danger);
         }

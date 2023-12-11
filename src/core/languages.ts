@@ -25,6 +25,7 @@ export interface Translation {
     confirm: string;
     confirmDelete: string;
     bookAction: string;
+    insufficientPermission: string;
 
     name: string;
     readPriv: string;
@@ -123,6 +124,7 @@ export const languages: {[languageCode: string]: Translation} = {
         confirm: 'Confirm',
         confirmDelete: 'Confirm delete (I am really sure!)',
         bookAction: 'Book',
+        insufficientPermission: 'Insufficient permissions',
         name: 'Name',
         readPriv: 'Read',
         writePriv: 'Write',
@@ -205,6 +207,7 @@ export const languages: {[languageCode: string]: Translation} = {
         confirmDelete: 'Löschen bestätigen (Ich bin mir sicher!)',
         anErrorHasOccured: 'Ein Fehler ist aufgetreten',
         bookAction: 'Buchen',
+        insufficientPermission: 'Rechte unzureichend',
         name: 'Name',
         readPriv: 'Lesen',
         writePriv: 'Schreiben',
