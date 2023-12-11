@@ -2,6 +2,7 @@
 import type {Ref} from "vue";
 import {onMounted, ref} from "vue";
 import {req} from "@/core/requests";
+import {lang} from "@/core/languages";
 import type {User} from "@/core/user";
 
 const props = defineProps<{
@@ -38,8 +39,8 @@ onMounted(() => {
           <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">E-Mail</th>
-            <th scope="col">Rolle</th>
+            <th scope="col">{{ lang.email }}</th>
+            <th scope="col">{{ lang.role }}</th>
           </tr>
           </thead>
           <tbody class="table-group-divider">
@@ -76,7 +77,7 @@ onMounted(() => {
     </div>
     <div class="d-flex justify-content-center pt-2 pb-2">
       <button class="btn btn-success" disabled>
-        <i class="fa-solid fa-plus"></i>&nbsp;Neu
+        <i class="fa-solid fa-plus"></i>&nbsp;{{ lang.new }}
       </button>
     </div>
   </div>

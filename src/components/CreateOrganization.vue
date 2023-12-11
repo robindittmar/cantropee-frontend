@@ -2,6 +2,7 @@
 import {ref} from "vue";
 import {toast, ToastColor} from "@/core/toaster";
 import {req} from "@/core/requests";
+import {lang} from "@/core/languages";
 
 const emit = defineEmits(['submit', 'cancel']);
 
@@ -29,18 +30,18 @@ const validateInvite = async () => {
     let { valid } = await resp.json();
     if (valid) {
       validInvite.value = true;
-      toast('Die Einladung ist gültig!', ToastColor.Success);
+      toast(lang.value.inviteIsValid, ToastColor.Success);
     } else {
-      toast('Die Einladung ist ungültig', ToastColor.Danger);
+      toast(lang.value.inviteIsInvalid, ToastColor.Danger);
     }
   } else {
-    toast('Es ist ein Fehler aufgetreten', ToastColor.Danger);
+    toast(lang.value.anErrorHasOccured, ToastColor.Danger);
   }
 };
 
 const createOrganization = async () => {
   if (userPassword.value !== userPasswordConfirm.value) {
-    toast('Passwörter stimmen nicht überein', ToastColor.Danger);
+    toast(lang.value.passwordsDoNotMatch, ToastColor.Danger);
     return;
   }
 
@@ -59,13 +60,13 @@ const createOrganization = async () => {
   });
 
   if (resp.ok) {
-    toast('Erfolgreich! Du kannst dich nun Anmelden', ToastColor.Info);
+    toast(lang.value.inviteSuccess, ToastColor.Info);
 
     setTimeout(() => {
       emit('submit');
     }, 3000);
   } else {
-    toast('Ein Fehler ist aufgetreten', ToastColor.Danger);
+    toast(lang.value.anErrorHasOccured, ToastColor.Danger);
   }
 };
 </script>
@@ -74,48 +75,48 @@ const createOrganization = async () => {
   <div class="ms-3 me-3 mb-3">
     <template v-if="!validInvite">
       <div class="mb-3">
-        <label for="inviteId" class="form-label">Einladung</label>
+        <label for="inviteId" class="form-label">{{ lang.invite }}</label>
         <input id="inviteId" class="form-control" v-model="inviteId"/>
       </div>
 
       <div class="mb-3">
-        <button @click="validateInvite" :disabled="inviteId.length === 0" class="btn btn-primary w-100">Prüfen</button>
+        <button @click="validateInvite" :disabled="inviteId.length === 0" class="btn btn-primary w-100">{{ lang.check }}</button>
       </div>
       <div class="mb-3">
-        <button @click="$emit('cancel')" class="btn btn-secondary w-100">Abbrechen</button>
+        <button @click="$emit('cancel')" class="btn btn-secondary w-100">{{ lang.cancel }}</button>
       </div>
     </template>
     <template v-else>
       <div class="mb-3">
-        <label for="orgName" class="form-label">Name des Kontos</label>
+        <label for="orgName" class="form-label">{{ lang.nameOfOrg }}</label>
         <input id="orgName" class="form-control" v-model="organizationName"/>
       </div>
 
       <div class="form-check mb-3">
         <input id="useTax" class="form-check-input" type="checkbox" v-model="useTaxes"/>
-        <label for="useTax" class="form-check-label">Steuern erfassen</label>
+        <label for="useTax" class="form-check-label">{{ lang.trackTaxes }}</label>
       </div>
 
       <div class="mb-3">
-        <label for="userEmail" class="form-label">E-Mail</label>
+        <label for="userEmail" class="form-label">{{ lang.email }}</label>
         <input id="userEmail" class="form-control" v-model="userEmail"/>
       </div>
 
       <div class="mb-3">
-        <label for="userPassword" class="form-label">Passwort</label>
+        <label for="userPassword" class="form-label">{{ lang.password }}</label>
         <input id="userPassword" class="form-control" type="password" v-model="userPassword"/>
       </div>
 
       <div class="mb-3">
-        <label for="userPasswordConfirm" class="form-label">Passwort bestätigen</label>
+        <label for="userPasswordConfirm" class="form-label">{{ lang.confirmPassword }}</label>
         <input id="userPasswordConfirm" class="form-control" type="password" v-model="userPasswordConfirm"/>
       </div>
 
       <div class="mb-3">
-        <button @click="createOrganization" class="btn btn-primary w-100">Erstellen</button>
+        <button @click="createOrganization" class="btn btn-primary w-100">{{ lang.create }}</button>
       </div>
       <div class="mb-3">
-        <button @click="$emit('cancel')" class="btn btn-secondary w-100">Abbrechen</button>
+        <button @click="$emit('cancel')" class="btn btn-secondary w-100">{{ lang.cancel }}</button>
       </div>
     </template>
   </div>

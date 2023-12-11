@@ -3,9 +3,11 @@ import {onMounted, ref} from "vue";
 import {convertLocalDateForInput} from "@/core/convert";
 import type {Category} from "@/core/category";
 import {req} from "@/core/requests";
+import {lang} from "@/core/languages";
 
 const props = defineProps<{
   categories: Category[],
+  currency: string;
 }>();
 
 const emit = defineEmits(['submit-deposit']);
@@ -79,15 +81,15 @@ onMounted(() => {
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="depositModalLabel">Einzahlen</h1>
+          <h1 class="modal-title fs-5" id="depositModalLabel">{{ lang.deposit }}</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div>
             <div class="mb-3">
-              <label for="depositGroupValue" class="form-label">Betrag</label>
+              <label for="depositGroupValue" class="form-label">{{ lang.value }}</label>
               <div id="depositGroupValue" class="input-group mb-3">
-                <span class="input-group-text" id="depositValueAddon">EUR</span>
+                <span class="input-group-text" id="depositValueAddon">{{ currency }}</span>
                 <input id="depositValue" class="form-control"
                        aria-describedby="depositValueAddon" type="number" step=".01"
                        :value="t.value"
@@ -95,7 +97,7 @@ onMounted(() => {
               </div>
             </div>
             <div class="mb-3">
-              <label for="depositCategory" class="form-label">Kategorie</label>
+              <label for="depositCategory" class="form-label">{{ lang.category }}</label>
               <select id="depositCategory" class="form-select" v-model="t.selectedCategory">
                 <option v-for="category in categories" :key="category.id" :value="category.name"
                         :selected="category.id === 1">
@@ -104,11 +106,11 @@ onMounted(() => {
               </select>
             </div>
             <div class="mb-3">
-              <label for="depositNote" class="form-label">Notiz</label>
+              <label for="depositNote" class="form-label">{{ lang.note }}</label>
               <input id="depositNote" class="form-control" type="text" maxlength="128" v-model="t.note"/>
             </div>
             <div class="mb-3">
-              <label for="depositDateTime" class="form-label">Buchungsdatum</label>
+              <label for="depositDateTime" class="form-label">{{ lang.bookingDate }}</label>
               <input id="depositDateTime" class="form-control" type="datetime-local"
                      :value="t.effectiveTimestamp && convertLocalDateForInput(t.effectiveTimestamp)"
                      @input="t.effectiveTimestamp = new Date(($event.target as HTMLInputElement)?.value)"/>
@@ -118,10 +120,10 @@ onMounted(() => {
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" @click="t = newTransaction()"
                   data-bs-dismiss="modal">
-            Abbrechen
+            {{ lang.cancel }}
           </button>
           <button type="button" class="btn btn-primary" :disabled="submitting || t.value <= 0" @click="submitDeposit">
-            Buchen
+            {{ lang.bookAction }}
           </button>
         </div>
       </div>

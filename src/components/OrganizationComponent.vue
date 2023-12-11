@@ -5,6 +5,7 @@ import type {User} from "@/core/user";
 import type {Category} from "@/core/category";
 import RecurringTransactionsComponent from "@/components/RecurringTransactionsComponent.vue";
 import {req} from "@/core/requests";
+import {lang} from "@/core/languages";
 import UsersComponent from "@/components/UsersComponent.vue";
 import CategoriesComponent from "@/components/CategoriesComponent.vue";
 import RolesComponent from "@/components/RolesComponent.vue";
@@ -51,7 +52,7 @@ watch(selectedOrg, async () => {
           </div>
         </div>
       </div>
-      <h4 class="text-center mt-5">Daueraufträge</h4>
+      <h4 class="text-center mt-5">{{ lang.recurringPayments }}</h4>
       <div class="card">
         <RecurringTransactionsComponent :display-values="!user.settings.privateMode"
                                         :currency="user.currentOrganization?.currency ?? 'EUR'"
@@ -59,15 +60,15 @@ watch(selectedOrg, async () => {
                                         :categories="categories"/>
       </div>
       <template v-if="user.currentOrganization?.privileges?.includes('admin')">
-        <h4 class="text-center mt-5">Kategorien</h4>
+        <h4 class="text-center mt-5">{{ lang.categories }}</h4>
         <div class="card">
           <CategoriesComponent :categories="categories" @update-categories="$emit('update-categories')"/>
         </div>
-        <h4 class="text-center mt-5">Benutzer</h4>
+        <h4 class="text-center mt-5">{{ lang.users }}</h4>
         <div class="card">
           <UsersComponent :user="user"/>
         </div>
-        <h4 class="text-center mt-5">Rollen</h4>
+        <h4 class="text-center mt-5">{{ lang.roles }}</h4>
         <div class="card">
           <RolesComponent :user="user"/>
         </div>

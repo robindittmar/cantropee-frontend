@@ -216,8 +216,10 @@ onMounted(() => {
     </main>
   </div>
 
-  <DepositTransaction :categories="categories" @submit-deposit="hideDeposit"/>
-  <WithdrawalTransaction :categories="categories" @submit-withdrawal="hideWithdrawal"
+  <DepositTransaction :categories="categories" :currency="user.currentOrganization?.currency ?? 'EUR'"
+                      @submit-deposit="hideDeposit"/>
+  <WithdrawalTransaction :categories="categories" :currency="user.currentOrganization?.currency ?? 'EUR'"
+                         @submit-withdrawal="hideWithdrawal"
                          :show-taxes="user.currentOrganization?.usesTaxes ?? false"/>
 </template>
 

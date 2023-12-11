@@ -30,7 +30,7 @@ const setView = (view: View) => {
 
 let initialLoadDone = ref(false);
 let user: Ref<User> = ref(defaultUser());
-let langCode = 'de-DE';
+let langCode = 'en-US';
 let categories: Ref<Category[]> = ref([{id: 0, name: ''}]);
 
 

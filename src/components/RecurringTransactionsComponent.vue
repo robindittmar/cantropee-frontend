@@ -8,6 +8,7 @@ import RecurringTransactionModal from "@/components/RecurringTransactionModal.vu
 import DetailRecurringTransaction from "@/components/DetailRecurringTransaction.vue";
 import {Modal} from "bootstrap";
 import {req} from "@/core/requests";
+import {lang} from "@/core/languages";
 
 const props = defineProps<{
   currency: string,
@@ -115,8 +116,8 @@ onMounted(() => {
           <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Nächste Ausführung</th>
-            <th scope="col">Betrag</th>
+            <th scope="col">{{ lang.nextExecution }}</th>
+            <th scope="col">{{ lang.value }}</th>
           </tr>
           </thead>
           <tbody class="table-group-divider">
@@ -162,9 +163,9 @@ onMounted(() => {
     </div>
     <div class="d-flex justify-content-center pt-2 pb-2">
       <button class="btn btn-success" @click="showModal">
-        <i class="fa-solid fa-plus"></i>&nbsp;Neu
+        <i class="fa-solid fa-plus"></i>&nbsp;{{ lang.new }}
       </button>
-      <RecurringTransactionModal :categories="categories" :show-taxes="showTaxes"
+      <RecurringTransactionModal :categories="categories" :show-taxes="showTaxes" :currency="currency"
                                  @submit-recurring-transaction="hideModal"/>
     </div>
   </div>

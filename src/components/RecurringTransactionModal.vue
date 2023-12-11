@@ -6,10 +6,12 @@ import type {Category} from "@/core/category";
 import {req} from "@/core/requests";
 import {ExecutionPolicy} from "@/core/recurring-transaction";
 import {toast, ToastColor} from "@/core/toaster";
+import {lang} from "@/core/languages";
 
 const props = defineProps<{
   categories: Category[],
   showTaxes: boolean,
+  currency: string;
 }>();
 
 const emit = defineEmits(['submit-recurring-transaction']);
@@ -136,11 +138,11 @@ const submitRecurring = async () => {
   const current = r.value;
 
   if (isNaN(current.firstExecution.getTime())) {
-    toast('"Erste Ausführung" ist kein gültiges Datum', ToastColor.Warning);
+    toast(lang.value.firstExecutionIsInvalidDate, ToastColor.Warning);
     return;
   }
   if (current.hasLastExecution && isNaN(current.lastExecution.getTime())) {
-    toast('"Letzte Ausführung" ist kein gültiges Datum', ToastColor.Warning);
+    toast(lang.value.lastExecutionIsInvalidDate, ToastColor.Warning);
     return;
   }
 
@@ -172,7 +174,6 @@ const submitRecurring = async () => {
   submitting.value = false;
 
   if (!res.ok) {
-    console.warn('call to /api/recurring not ok');
     console.warn(res);
   }
 
@@ -195,20 +196,20 @@ onMounted(() => {
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="recurringModalLabel">Dauerauftrag</h1>
+          <h1 class="modal-title fs-5" id="recurringModalLabel">{{ lang.recurringPayment }}</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div>
             <div class="mb-3">
-              <label for="executionPolicy" class="form-label">Strategie</label>
+              <label for="executionPolicy" class="form-label">{{ lang.recurringExecutionStrategy }}</label>
               <select id="executionPolicy" class="form-select" v-model="r.executionPolicy">
-                <option :value="ExecutionPolicy.StartOfMonth">Anfang des Monats</option>
-                <option :value="ExecutionPolicy.EndOfMonth">Ende des Monats</option>
+                <option :value="ExecutionPolicy.StartOfMonth">{{ lang.startOfMonth }}</option>
+                <option :value="ExecutionPolicy.EndOfMonth">{{ lang.endOfMonth }}</option>
               </select>
             </div>
             <div class="mb-3">
-              <label for="recurringFirstExecution" class="form-label">Erste Ausführung</label>
+              <label for="recurringFirstExecution" class="form-label">{{ lang.firstExecution }}</label>
               <input id="recurringFirstExecution" class="form-control" type="datetime-local"
                      :value="r.firstExecution && convertLocalDateForInput(r.firstExecution)"
                      @input="setFirstExecution(new Date(($event.target as HTMLInputElement)?.value))"/>
@@ -216,32 +217,32 @@ onMounted(() => {
             <div class="form-check mb-3">
               <input id="recurringLastExecutionEnabled" class="form-check-input" type="checkbox"
                      v-model="r.hasLastExecution" />
-              <label for="recurringLastExecutionEnabled" class="form-check-label">Letzte Ausführung</label>
+              <label for="recurringLastExecutionEnabled" class="form-check-label">{{ lang.lastExecution }}</label>
             </div>
             <div v-if="r.hasLastExecution" class="mb-3">
-              <label for="recurringLastExecution" class="form-label">Letzte Ausführung</label>
+              <label for="recurringLastExecution" class="form-label">{{ lang.lastExecution }}</label>
               <input id="recurringLastExecution" class="form-control" type="datetime-local"
                      :value="r.lastExecution && convertLocalDateForInput(r.lastExecution)"
                      @input="setLastExecution(new Date(($event.target as HTMLInputElement)?.value))"/>
             </div>
             <div class="mb-3">
-              <label for="recurringTimezone" class="form-label">Zeitzone</label>
+              <label for="recurringTimezone" class="form-label">{{ lang.timezone }}</label>
               <input id="recurringTimezone" class="form-control" type="text" maxlength="128" v-model="r.timezone" disabled/>
             </div>
             <div class="mb-3">
               <button v-if="r.isDeposit" @click="r.isDeposit = false"
                       class="btn btn-success w-100">
-                Einzahlung
+                {{ lang.depositTitle }}
               </button>
               <button v-else @click="r.isDeposit = true"
                       class="btn btn-danger w-100">
-                Auszahlung
+                {{ lang.withdrawalTitle }}
               </button>
             </div>
             <div class="mb-3">
-              <label for="recurringGroupValue" class="form-label">Betrag</label>
+              <label for="recurringGroupValue" class="form-label">{{ lang.value }}</label>
               <div id="recurringGroupValue" class="input-group mb-3">
-                <span class="input-group-text" id="recurringValueAddon">EUR</span>
+                <span class="input-group-text" id="recurringValueAddon">{{ currency }}</span>
                 <input id="recurringValue" class="form-control"
                        aria-describedby="recurringValueAddon" type="number" step=".01"
                        :value="r.value"
@@ -250,34 +251,34 @@ onMounted(() => {
             </div>
             <template v-if="!r.isDeposit && showTaxes">
               <div class="mb-3">
-                <label for="recurringGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
+                <label for="recurringGroupValue19" class="form-label">{{ lang.value19 }} | {{ lang.vat19 }}</label>
                 <div id="recurringGroupValue19" class="input-group mb-3">
-                  <span class="input-group-text" id="recurringValue19addon">EUR</span>
+                  <span class="input-group-text" id="recurringValue19addon">{{ currency }}</span>
                   <input id="recurringValue19" class="form-control"
                          aria-describedby="recurringValue19addon" type="number" step=".01"
                          :value="r.value19"
                          @input="setValue19"/>
-                  <span class="input-group-text" id="recurringVat19addon">EUR</span>
+                  <span class="input-group-text" id="recurringVat19addon">{{ currency }}</span>
                   <input id="recurringVat19" class="form-control" aria-describedby="recurringVat19addon"
                          type="text" :value="r.vat19" disabled/>
                 </div>
               </div>
               <div class="mb-3">
-                <label for="recurringGroupValue7" class="form-label">7% Anteil | 7% Steuern</label>
+                <label for="recurringGroupValue7" class="form-label">{{ lang.value7 }} | {{ lang.vat7 }}</label>
                 <div id="recurringGroupValue7" class="input-group mb-3">
-                  <span class="input-group-text" id="recurringValue7addon">EUR</span>
+                  <span class="input-group-text" id="recurringValue7addon">{{ currency }}</span>
                   <input id="recurringValue7" class="form-control"
                          aria-describedby="recurringValue7addon" type="number" step=".01"
                          :value="r.value7"
                          @input="setValue7"/>
-                  <span class="input-group-text" id="recurringVat7addon">EUR</span>
+                  <span class="input-group-text" id="recurringVat7addon">{{ currency }}</span>
                   <input id="recurringVat7" class="form-control" aria-describedby="recurringVat7addon"
                          type="text" :value="r.vat7" disabled/>
                 </div>
               </div>
             </template>
             <div class="mb-3">
-              <label for="recurringCategory" class="form-label">Kategorie</label>
+              <label for="recurringCategory" class="form-label">{{ lang.category }}</label>
               <select id="recurringCategory" class="form-select" v-model="r.selectedCategory">
                 <option v-for="category in categories" :key="category.id" :value="category.name">
                   {{ category.name }}
@@ -285,7 +286,7 @@ onMounted(() => {
               </select>
             </div>
             <div class="mb-3">
-              <label for="recurringNote" class="form-label">Notiz</label>
+              <label for="recurringNote" class="form-label">{{ lang.note }}</label>
               <input id="recurringNote" class="form-control" type="text" maxlength="128" v-model="r.note"/>
             </div>
           </div>
@@ -293,10 +294,10 @@ onMounted(() => {
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" @click="r = newRecurringTransaction()"
                   data-bs-dismiss="modal">
-            Abbrechen
+            {{ lang.cancel }}
           </button>
           <button type="button" class="btn btn-primary" :disabled="submitting || r.value <= 0" @click="submitRecurring">
-            Hinzufügen
+            {{ lang.save }}
           </button>
         </div>
       </div>

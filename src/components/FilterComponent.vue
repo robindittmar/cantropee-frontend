@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {computed, ref, watch} from "vue";
 import type {Category} from "@/core/category";
+import {lang} from "@/core/languages";
 
 const props = defineProps<{
   effectiveSpan: {
@@ -49,7 +50,7 @@ const previewAvailable = computed(() => {
       <div class="input-group">
         <div class="form-floating">
           <input id="notesFilter" class="form-control" type="text" v-model="notesFilter"/>
-          <label for="notesFilter" class="form-label">Suchen</label>
+          <label for="notesFilter" class="form-label">{{ lang.search }}</label>
         </div>
         <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#transactionsFilterCollapse">
           <i class="fa-solid fa-filter"></i>
@@ -62,24 +63,24 @@ const previewAvailable = computed(() => {
       <div class="collapse mb-3" id="transactionsFilterCollapse" aria-hidden="true">
         <div class="form-floating mt-3">
           <select id="transactionsCategory" class="form-select" v-model="selectedCategory">
-            <option :value="0" selected>Alle</option>
+            <option :value="0" selected>{{ lang.all }}</option>
             <option v-for="category in categories" :key="category.id" :value="category.id">
               {{ category.name }}
             </option>
           </select>
-          <label for="transactionsCategory" class="form-label">Kategorie</label>
+          <label for="transactionsCategory" class="form-label">{{ lang.category }}</label>
         </div>
         <div class="mt-3">
           <input id="showPendingCheckbox" class="btn-check" type="checkbox" :checked="showPending" @click="$emit('toggle-show-pending')" :disabled="!previewAvailable"/>
-          <label for="showPendingCheckbox" class="btn w-100" :class="{'btn-outline-primary': previewAvailable}">Vorschau</label>
+          <label for="showPendingCheckbox" class="btn w-100" :class="{'btn-outline-primary': previewAvailable}">{{ lang.preview }}</label>
         </div>
         <div class="mt-3">
           <button id="sortingOrd" class="btn btn-secondary w-100" @click="$emit('toggle-sorting-order')">
             <template v-if="sortingOrder === 'asc'">
-              <i class="fa-solid fa-arrow-up"></i>&nbsp;Aufsteigend
+              <i class="fa-solid fa-arrow-up"></i>&nbsp;{{ lang.ascending }}
             </template>
             <template v-else>
-              <i class="fa-solid fa-arrow-down"></i>&nbsp;Absteigend
+              <i class="fa-solid fa-arrow-down"></i>&nbsp;{{ lang.descending }}
             </template>
           </button>
         </div>

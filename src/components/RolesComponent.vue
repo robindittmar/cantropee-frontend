@@ -3,6 +3,7 @@ import type {Ref} from "vue";
 import {onMounted, ref} from "vue";
 import type {Role} from "@/core/role";
 import {req} from "@/core/requests";
+import {lang} from "@/core/languages";
 import {toast, ToastColor} from "@/core/toaster";
 
 const emit = defineEmits(['update-roles']);
@@ -69,7 +70,7 @@ const fetchRoles = async () => {
 const startNewRole = () => {
   newRole.value = {
     id: '',
-    name: 'Unbenannt',
+    name: lang.value.unnamed,
     read: false,
     write: false,
     admin: false,
@@ -161,10 +162,10 @@ onMounted(() => {
           <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Lesen</th>
-            <th scope="col">Schreiben</th>
-            <th scope="col">Admin</th>
+            <th scope="col">{{ lang.name }}</th>
+            <th scope="col">{{ lang.readPriv }}</th>
+            <th scope="col">{{ lang.writePriv }}</th>
+            <th scope="col">{{ lang.adminPriv }}</th>
           </tr>
           </thead>
           <tbody class="table-group-divider">
@@ -231,7 +232,7 @@ onMounted(() => {
     </div>
     <div class="d-flex justify-content-center pt-2 pb-2">
       <button class="btn btn-success" @click="newRole = nullSimplifiedRole()">
-        <i class="fa-solid fa-plus"></i>&nbsp;Neu
+        <i class="fa-solid fa-plus"></i>&nbsp;{{ lang.new }}
       </button>
     </div>
   </div>

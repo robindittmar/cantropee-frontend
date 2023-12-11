@@ -4,9 +4,11 @@ import {convertLocalDateForInput} from "@/core/convert";
 import {deriveVat} from "@/core/tax-helper";
 import type {Category} from "@/core/category";
 import {req} from "@/core/requests";
+import {lang} from "@/core/languages";
 
 const props = defineProps<{
   categories: Category[],
+  currency: string,
   showTaxes: boolean,
 }>();
 
@@ -134,15 +136,15 @@ onMounted(() => {
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="withdrawModalLabel">Auszahlen</h1>
+          <h1 class="modal-title fs-5" id="withdrawModalLabel">{{ lang.withdraw }}</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div>
             <div class="mb-3">
-              <label for="withdrawGroupValue" class="form-label">Betrag</label>
+              <label for="withdrawGroupValue" class="form-label">{{ lang.value }}</label>
               <div id="withdrawGroupValue" class="input-group mb-3">
-                <span class="input-group-text" id="withdrawValueAddon">EUR</span>
+                <span class="input-group-text" id="withdrawValueAddon">{{ currency }}</span>
                 <input id="withdrawValue" class="form-control"
                        aria-describedby="withdrawValueAddon" type="number" step=".01"
                        :value="t.value"
@@ -151,34 +153,34 @@ onMounted(() => {
             </div>
             <template v-if="showTaxes">
               <div class="mb-3">
-                <label for="withdrawGroupValue19" class="form-label">19% Anteil | 19% Steuern</label>
+                <label for="withdrawGroupValue19" class="form-label">{{ lang.value19 }} | {{ lang.vat19 }}</label>
                 <div id="withdrawGroupValue19" class="input-group mb-3">
-                  <span class="input-group-text" id="withdrawValue19addon">EUR</span>
+                  <span class="input-group-text" id="withdrawValue19addon">{{ currency }}</span>
                   <input id="withdrawValue19" class="form-control"
                          aria-describedby="withdrawValue19addon" type="number" step=".01"
                          :value="t.value19"
                          @input="setValue19"/>
-                  <span class="input-group-text" id="withdrawVat19addon">EUR</span>
+                  <span class="input-group-text" id="withdrawVat19addon">{{ currency }}</span>
                   <input id="withdrawVat19" class="form-control" aria-describedby="withdrawVat19addon"
                          type="text" :value="t.vat19" disabled/>
                 </div>
               </div>
               <div class="mb-3">
-                <label for="withdrawGroupValue7" class="form-label">7% Anteil | 7% Steuern</label>
+                <label for="withdrawGroupValue7" class="form-label">{{ lang.value7 }} | {{ lang.vat7 }}</label>
                 <div id="withdrawGroupValue7" class="input-group mb-3">
-                  <span class="input-group-text" id="withdrawValue7addon">EUR</span>
+                  <span class="input-group-text" id="withdrawValue7addon">{{ currency }}</span>
                   <input id="withdrawValue7" class="form-control"
                          aria-describedby="withdrawValue7addon" type="number" step=".01"
                          :value="t.value7"
                          @input="setValue7"/>
-                  <span class="input-group-text" id="withdrawVat7addon">EUR</span>
+                  <span class="input-group-text" id="withdrawVat7addon">{{ currency }}</span>
                   <input id="withdrawVat7" class="form-control" aria-describedby="withdrawVat7addon"
                          type="text" :value="t.vat7" disabled/>
                 </div>
               </div>
             </template>
             <div class="mb-3">
-              <label for="withdrawCategory" class="form-label">Kategorie</label>
+              <label for="withdrawCategory" class="form-label">{{ lang.category }}</label>
               <select id="withdrawCategory" class="form-select" v-model="t.selectedCategory">
                 <option v-for="category in categories" :key="category.id" :value="category.name">
                   {{ category.name }}
@@ -186,11 +188,11 @@ onMounted(() => {
               </select>
             </div>
             <div class="mb-3">
-              <label for="withdrawNote" class="form-label">Notiz</label>
+              <label for="withdrawNote" class="form-label">{{ lang.note }}</label>
               <input id="withdrawNote" class="form-control" type="text" maxlength="128" v-model="t.note"/>
             </div>
             <div class="mb-3">
-              <label for="withdrawDateTime" class="form-label">Buchungsdatum</label>
+              <label for="withdrawDateTime" class="form-label">{{ lang.bookingDate }}</label>
               <input id="withdrawDateTime" class="form-control" type="datetime-local"
                      :value="t.effectiveTimestamp && convertLocalDateForInput(t.effectiveTimestamp)"
                      @input="t.effectiveTimestamp = new Date(($event.target as HTMLInputElement)?.value)"/>
@@ -200,10 +202,10 @@ onMounted(() => {
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" @click="t = newTransaction()"
                   data-bs-dismiss="modal">
-            Abbrechen
+            {{ lang.cancel }}
           </button>
           <button type="button" class="btn btn-primary" :disabled="submitting || t.value <= 0" @click="submitWithdrawal">
-            Buchen
+            {{ lang.bookAction }}
           </button>
         </div>
       </div>

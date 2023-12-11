@@ -3,6 +3,7 @@ import type {TransactionDiff} from "@/core/transaction";
 import {dateToString, valueToString} from "@/core/convert";
 import {onMounted, onBeforeUnmount} from "vue";
 import {Modal} from "bootstrap";
+import {lang} from "@/core/languages";
 
 const props = defineProps<{
   history: TransactionDiff[],
@@ -45,7 +46,7 @@ onBeforeUnmount(() => {
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="diffModalLabel">Historie</h1>
+          <h1 class="modal-title fs-5" id="diffModalLabel">{{ lang.history }}</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -53,18 +54,18 @@ onBeforeUnmount(() => {
             <table class="table">
               <thead>
               <tr>
-                <th scope="col">Erstelldatum</th>
-                <th scope="col">Buchungsdatum</th>
-                <th scope="col">Typ</th>
-                <th scope="col">Betrag</th>
+                <th scope="col">{{ lang.creationDate }}</th>
+                <th scope="col">{{ lang.bookingDate }}</th>
+                <th scope="col">{{ lang.transactionType }}</th>
+                <th scope="col">{{ lang.value }}</th>
                 <template v-if="showTaxes">
-                  <th scope="col">Betrag 19%</th>
-                  <th scope="col">MwSt 19%</th>
-                  <th scope="col">Betrag 7%</th>
-                  <th scope="col">MwSt 7%</th>
+                  <th scope="col">{{ lang.value19 }}</th>
+                  <th scope="col">{{ lang.vat19 }}</th>
+                  <th scope="col">{{ lang.value7 }}</th>
+                  <th scope="col">{{ lang.vat7 }}</th>
                 </template>
-                <th scope="col">Kategorie</th>
-                <th scope="col">Notiz</th>
+                <th scope="col">{{ lang.category }}</th>
+                <th scope="col">{{ lang.note }}</th>
               </tr>
               </thead>
               <tbody class="table-group-divider">
@@ -77,7 +78,7 @@ onBeforeUnmount(() => {
                     {{ diff.effectiveTimestamp && dateToString(diff.effectiveTimestamp) }}
                   </td>
                   <td :class="{'text-success': !!diff.isDeposit, 'text-danger': !diff.isDeposit}">
-                    {{ diff.isDeposit === undefined ? undefined : (diff.isDeposit ? 'Einzahlung' : 'Auszahlung') }}
+                    {{ diff.isDeposit === undefined ? undefined : (diff.isDeposit ? lang.depositTitle : lang.withdrawalTitle) }}
                   </td>
                   <td :class="{'text-info': idx === 0, 'text-warning': idx !== 0}">
                     {{ diffValueToString(diff.value) }}
