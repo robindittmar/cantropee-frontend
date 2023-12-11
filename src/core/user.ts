@@ -14,6 +14,8 @@ export interface User {
 export interface UserSettings {
     defaultOrganization: string;
     canCreateInvite: boolean;
+    language: string;
+    locale: string;
     privateMode: boolean;
     defaultPreviewPending: boolean;
     defaultSortingOrderAsc: boolean;
@@ -29,6 +31,8 @@ export function defaultUser(): User {
         settings: {
             defaultOrganization: '',
             canCreateInvite: false,
+            language: 'en-us',
+            locale: 'en-us',
             privateMode: true,
             defaultPreviewPending: false,
             defaultSortingOrderAsc: false,

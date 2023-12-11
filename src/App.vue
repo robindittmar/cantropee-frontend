@@ -13,7 +13,7 @@ import LoginView from "@/views/LoginView.vue";
 import {toast, toasts} from "@/core/toaster";
 import ChartView from "@/views/ChartView.vue";
 import {req} from "@/core/requests";
-import {lang, langCode, languages} from "@/core/languages";
+import {availableLangCodes, availableLocaleCodes, lang, langCode, languages, localeCode} from "@/core/languages";
 import ChangeLanguageComponent from "@/components/ChangeLanguageComponent.vue";
 
 enum View {
@@ -33,7 +33,6 @@ let invite: string | null = null;
 let initialLoadDone = ref(false);
 let user: Ref<User> = ref(defaultUser());
 let categories: Ref<Category[]> = ref([{id: 0, name: ''}]);
-let availLangCodes = ['en-US', 'de-DE'];
 
 
 const changeOrganization = (orgId: string) => {
@@ -44,6 +43,9 @@ const initialLoad = async () => {
   try {
     user.value = await fetchUser();
     categories.value = await fetchCategories();
+
+    selectLanguage(user.value.settings.language);
+    selectLocale(user.value.settings.locale);
     authorized.value = true;
   } catch {
     authorized.value = false;
@@ -74,18 +76,35 @@ const updateSettings = async (settings: UserSettings) => {
     intermediate.settings = settings;
     user.value = intermediate;
 
+    selectLanguage(settings.language);
+    selectLocale(settings.locale);
+
     toast(lang.value.settingsSaved);
   }
 }
 
 const selectLanguage = (code: string) => {
-  if (!availLangCodes.includes(code)) {
+  if (!availableLangCodes.includes(code)) {
+    return;
+  }
+  if (langCode.value === code) {
     return;
   }
 
   langCode.value = code;
   lang.value = languages[code];
   localStorage.setItem('lang', code);
+};
+
+const selectLocale = (code: string) => {
+  if (!availableLocaleCodes.includes(code)) {
+    return;
+  }
+  if (localeCode.value === code) {
+    return;
+  }
+
+  localeCode.value = code;
 };
 
 onMounted(async () => {

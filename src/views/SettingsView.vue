@@ -3,7 +3,7 @@ import {ref, watch} from "vue";
 import type {User} from "@/core/user";
 import type {Category} from "@/core/category";
 import {req} from "@/core/requests";
-import {lang} from "@/core/languages";
+import {availableLangCodes, availableLocaleCodes, lang} from "@/core/languages";
 
 const props = defineProps<{
   user: User;
@@ -46,6 +46,24 @@ const createInvite = async () => {
       <div class="row mt-2">
         <div class="col">
           <h1>{{ lang.userSettings }}</h1>
+
+          <div class="input-group mt-3">
+            <span class="input-group-text">{{ lang.languageSetting }}</span>
+            <select id="languageSelect" class="form-select" v-model="settings.language">
+              <option v-for="langCode in availableLangCodes" :key="langCode" :value="langCode">
+                {{ langCode }}
+              </option>
+            </select>
+          </div>
+
+          <div class="input-group mt-3">
+            <span class="input-group-text">{{ lang.localeSetting }}</span>
+            <select id="languageSelect" class="form-select" v-model="settings.locale">
+              <option v-for="localeCode in availableLocaleCodes" :key="localeCode" :value="localeCode">
+                {{ localeCode }}
+              </option>
+            </select>
+          </div>
 
           <div class="form-check mt-3">
             <input id="privateModeCheck" type="checkbox" class="form-check-input" v-model="settings.privateMode">

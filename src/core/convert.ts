@@ -1,4 +1,4 @@
-import {langCode} from "@/core/languages";
+import {localeCode} from "@/core/languages";
 
 export const valueToString = (value: number) => {
     return (value / 100).toLocaleString(undefined, {
@@ -19,7 +19,7 @@ export const dateToString = (dt: Date) => {
     if (dt === undefined)
         return '';
 
-    return dt.toLocaleString(langCode.value, {
+    return dt.toLocaleString(localeCode.value, {
         weekday: 'short',
         day: '2-digit',
         month: '2-digit',
