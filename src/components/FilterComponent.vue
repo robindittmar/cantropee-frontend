@@ -85,11 +85,11 @@ const previewAvailable = computed(() => {
           </button>
         </div>
         <div class="input-group mt-3">
-          <button class="btn btn-secondary" @click="$emit('prev-month')">
+          <button class="btn btn-secondary" @click="$emit('prev-month')" disabled>
             <i class="fa-solid fa-arrow-left"></i>
           </button>
           <input id="currentMonthString" class="form-control text-center" :value="yearMonthString" type="text" disabled />
-          <button class="btn btn-secondary" @click="$emit('next-month')">
+          <button class="btn btn-secondary" @click="$emit('next-month')" disabled>
             <i class="fa-solid fa-arrow-right"></i>
           </button>
         </div>

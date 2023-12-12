@@ -70,7 +70,8 @@ const fetchTransactions = async () => {
     abortFetch.abort();
   }
 
-  let uri = `/api/transactions?from=${dateToURI(effectiveSpan.value.from)}&to=${dateToURI(effectiveSpan.value.to)}&pending=${showPending.value}&start=${transactionsRef.value.start}&count=${navigationStep}&order=${sortingOrder.value}`;
+  // let uri = `/api/transactions?from=${dateToURI(effectiveSpan.value.from)}&to=${dateToURI(effectiveSpan.value.to)}&pending=${showPending.value}&start=${transactionsRef.value.start}&count=${navigationStep}&order=${sortingOrder.value}`;
+  let uri = `/api/transactions?pending=${showPending.value}&start=${transactionsRef.value.start}&count=${navigationStep}&order=${sortingOrder.value}`;
   if (selectedCategory.value > 0) {
     uri += `&category=${selectedCategory.value}`;
   }
