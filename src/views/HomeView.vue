@@ -133,12 +133,14 @@ const toggleShowPending = () => {
 };
 
 const setCategory = (categoryId: number) => {
+  transactionsRef.value.start = 0;
   selectedCategory.value = categoryId;
   fetchTransactions();
 };
 
 let noteTimoutId: number | null = null;
 const setNotes = (note: string) => {
+  transactionsRef.value.start = 0;
   notesFilter.value = note;
   if (noteTimoutId) {
     clearTimeout(noteTimoutId);
