@@ -206,13 +206,13 @@ onMounted(() => {
       <nav aria-label="Pagination">
         <ul class="pagination justify-content-center">
           <li class="page-item" :class="{'disabled': !prevPageAvail}">
-            <a class="page-link" @click="prevPage">&laquo;</a>
+            <button class="page-link" @click="prevPage">&laquo;</button>
           </li>
           <li v-for="i in pagesAvailable" :key="i">
-            <a class="page-link" :class="{'active': currentPage === i}" @click="$emit('transactions-select-page', i)">{{ i }}</a>
+            <button class="page-link" :class="{'active': currentPage === i}" @click="$emit('transactions-select-page', i)">{{ i }}</button>
           </li>
           <li class="page-item" :class="{'disabled': !nextPageAvail}">
-            <a class="page-link" @click="nextPage">&raquo;</a>
+            <button class="page-link" @click="nextPage">&raquo;</button>
           </li>
         </ul>
       </nav>
