@@ -14,9 +14,15 @@ const props = defineProps<{
   showTaxes: boolean,
   categories: Category[],
   transactions: Paginated<Transaction>,
+  transactionsPerPage: number,
 }>();
 
-const emit = defineEmits(['updated-transaction', 'transactions-next-page', 'transactions-prev-page']);
+const emit = defineEmits([
+  'updated-transaction',
+  'transactions-next-page',
+  'transactions-prev-page',
+  'transactions-select-page'
+]);
 
 let showNotes = ref(false);
 let showCategories = ref(false);
@@ -28,8 +34,19 @@ let selectedTransaction: Ref<string | null> = ref(null);
 let animating = false;
 let openCollapse: Element | null;
 
+let prevPageAvail = ref(false);
+let nextPageAvail = ref(false);
+let pagesAvailable = ref(0);
+let currentPage = ref(0);
+
+
 watch(() => props.transactions, () => {
   selectedTransaction.value = null;
+
+  prevPageAvail.value = props.transactions.start !== 0;
+  nextPageAvail.value = props.transactions.start + props.transactions.count < props.transactions.total;
+  pagesAvailable.value = Math.round(props.transactions.total / props.transactionsPerPage);
+  currentPage.value = Math.round(props.transactions.start / props.transactionsPerPage) + 1;
 });
 
 const updatedTransaction = (transactionId: string) => {
@@ -186,28 +203,19 @@ onMounted(() => {
     </div>
 
     <template v-if="transactions.total > transactions.count">
-    <div class="row ms-1 align-items-center">
-      <div class="col">
-        <div class="input-group mb-3 pe-3">
-          <input id="tableStart" class="form-control"
-                 :value="transactions.start + 1 + ' - ' + (transactions.start + transactions.count)"
-                 aria-describedby="startEndDivider" type="text" disabled/>
-          <span class="input-group-text" id="startEndDivider">/</span>
-          <input id="tableEnd" class="form-control"
-                 :value="transactions.total"
-                 aria-describedby="startEndDivider"
-                 type="text" disabled/>
-          <button @click="prevPage" :disabled="transactions.start === 0" class="btn btn-secondary">
-            <i class="fa-solid fa-arrow-left"></i>
-          </button>
-          <button @click="nextPage"
-                  :disabled="transactions.start + transactions.count >= transactions.total"
-                  class="btn btn-secondary">
-            <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </div>
-      </div>
-    </div>
+      <nav aria-label="Pagination">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" :class="{'disabled': !prevPageAvail}">
+            <a class="page-link" @click="prevPage">&laquo;</a>
+          </li>
+          <li v-for="i in pagesAvailable" :key="i">
+            <a class="page-link" :class="{'active': currentPage === i}" @click="$emit('transactions-select-page', i)">{{ i }}</a>
+          </li>
+          <li class="page-item" :class="{'disabled': !nextPageAvail}">
+            <a class="page-link" @click="nextPage">&raquo;</a>
+          </li>
+        </ul>
+      </nav>
     </template>
   </div>
 </template>

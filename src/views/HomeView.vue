@@ -122,6 +122,11 @@ const prevPage = () => {
   fetchTransactions();
 };
 
+const selectPage = (page: number) => {
+  transactionsRef.value.start = (page - 1) * navigationStep;
+  fetchTransactions();
+};
+
 const toggleShowPending = () => {
   showPending.value = !showPending.value;
   fetchTransactions();
@@ -186,9 +191,11 @@ onMounted(() => {
                                  :display-values="displayValues" :categories="categories"
                                  :selected-category="selectedCategory"
                                  :show-taxes="user.currentOrganization?.usesTaxes ?? false"
+                                 :transactions-per-page="navigationStep"
                                  @updated-transaction="fetchTransactions"
                                  @transactions-next-page="nextPage"
-                                 @transactions-prev-page="prevPage"/>
+                                 @transactions-prev-page="prevPage"
+                                 @transactions-select-page="selectPage"/>
         </div>
       </div>
     </main>
