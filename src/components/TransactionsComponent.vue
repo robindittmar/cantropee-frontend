@@ -45,7 +45,7 @@ watch(() => props.transactions, () => {
 
   prevPageAvail.value = props.transactions.start !== 0;
   nextPageAvail.value = props.transactions.start + props.transactions.count < props.transactions.total;
-  pagesAvailable.value = Math.round((props.transactions.total / props.transactionsPerPage) + 0.5);
+  pagesAvailable.value = Math.round((props.transactions.total / props.transactionsPerPage) + 0.495);
   currentPage.value = Math.round(props.transactions.start / props.transactionsPerPage) + 1;
 });
 
