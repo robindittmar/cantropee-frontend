@@ -58,10 +58,10 @@ const previewAvailable = computed(() => {
       </div>
     </div>
   </div>
-  <div class="row mt-1">
+  <div class="row mt-3">
     <div class="col">
       <div class="collapse mb-3" id="transactionsFilterCollapse" aria-hidden="true">
-        <div class="form-floating mt-3">
+        <div class="form-floating">
           <select id="transactionsCategory" class="form-select" v-model="selectedCategory">
             <option :value="0" selected>{{ lang.all }}</option>
             <option v-for="category in categories" :key="category.id" :value="category.id">
