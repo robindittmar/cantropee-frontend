@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {toast, ToastColor} from "@/core/toaster";
 import {req} from "@/core/requests";
 import {lang} from "@/core/languages";
@@ -18,6 +18,14 @@ let useTaxes = ref(false);
 let userEmail = ref('');
 let userPassword = ref('');
 let userPasswordConfirm = ref('');
+
+const inputValidForCreation = computed(() => {
+  return userEmail.value.length > 0 &&
+      userPassword.value.length > 0 &&
+      userPasswordConfirm.value.length > 0 &&
+      organizationName.value.length > 0 &&
+      currency.value.length > 0;
+});
 
 const validateInvite = async () => {
   const resp = await req('/api/invite/validate', {
@@ -43,7 +51,20 @@ const validateInvite = async () => {
   }
 };
 
+const validateEmail = (email: string) => {
+  return String(email)
+      .toLowerCase()
+      .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+};
+
 const useInvite = async () => {
+  if (!validateEmail(userEmail.value)) {
+    toast(lang.value.emailIsInvalid, ToastColor.Danger);
+    return;
+  }
+
   if (userPassword.value !== userPasswordConfirm.value) {
     toast(lang.value.passwordsDoNotMatch, ToastColor.Danger);
     return;
@@ -102,7 +123,7 @@ onMounted(() => {
     </template>
     <template v-else>
       <form @submit.prevent="useInvite">
-        <div class="mb-3">
+        <div class="mb-5">
           <h1>{{ lang.welcomeText }}</h1>
           <div class="card text-bg-primary mt-3">
             <div class="card-header">
@@ -117,9 +138,26 @@ onMounted(() => {
           </div>
         </div>
 
-        <hr/>
+        <hr class="mb-3"/>
 
-        <h1 class="mb-3">{{ lang.registerAccountTitle }}</h1>
+        <h2 class="mb-3">{{ lang.user }}</h2>
+        <div class="mb-3">
+          <label for="userEmail" class="form-label">{{ lang.email }}</label>
+          <input id="userEmail" class="form-control" v-model="userEmail"/>
+        </div>
+
+        <div class="mb-3">
+          <label for="userPassword" class="form-label">{{ lang.password }}</label>
+          <input id="userPassword" class="form-control" type="password" v-model="userPassword"/>
+        </div>
+
+        <div class="mb-3">
+          <label for="userPasswordConfirm" class="form-label">{{ lang.confirmPassword }}</label>
+          <input id="userPasswordConfirm" class="form-control" type="password" v-model="userPasswordConfirm"/>
+        </div>
+        <hr class="mb-3"/>
+
+        <h2 class="mb-3">{{ lang.organization }}</h2>
         <div class="mb-3">
           <label for="orgName" class="form-label">{{ lang.nameOfOrg }}</label>
           <input id="orgName" class="form-control" v-model="organizationName"/>
@@ -136,22 +174,7 @@ onMounted(() => {
         </div>
 
         <div class="mb-3">
-          <label for="userEmail" class="form-label">{{ lang.email }}</label>
-          <input id="userEmail" class="form-control" v-model="userEmail"/>
-        </div>
-
-        <div class="mb-3">
-          <label for="userPassword" class="form-label">{{ lang.password }}</label>
-          <input id="userPassword" class="form-control" type="password" v-model="userPassword"/>
-        </div>
-
-        <div class="mb-3">
-          <label for="userPasswordConfirm" class="form-label">{{ lang.confirmPassword }}</label>
-          <input id="userPasswordConfirm" class="form-control" type="password" v-model="userPasswordConfirm"/>
-        </div>
-
-        <div class="mb-3">
-          <input type="submit" class="btn btn-primary w-100" :value="lang.create"/>
+          <input type="submit" class="btn btn-primary w-100" :value="lang.create" :disabled="!inputValidForCreation"/>
         </div>
         <div class="mb-3">
           <button @click="$emit('cancel')" class="btn btn-secondary w-100">{{ lang.cancel }}</button>

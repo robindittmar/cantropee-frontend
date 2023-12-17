@@ -7,7 +7,9 @@ export interface Translation {
     explainGeneralPurpose: string;
     explainOrganizations: string;
     registerAccountTitle: string;
+    organization: string;
     organizations: string;
+    user: string;
 
     settingsSaved: string;
     login: string;
@@ -17,6 +19,7 @@ export interface Translation {
     keepLoggedIn: string;
     haveAnInvite: string;
     resetPassword: string;
+    emailIsInvalid: string;
     passwordsDoNotMatch: string;
     timezone: string;
 
@@ -126,7 +129,9 @@ export const languages: {[languageCode: string]: Translation} = {
         explainGeneralPurpose: 'Cantropee is an application to track money flow and visualize your spendings, giving helpful insights.',
         explainOrganizations: 'An "organization" is like your usual bank account. Each transaction is attached to an organization. Once logged in you may create as many organizations as you like and also add family/friends to them, so you can collaboratively track spendings.',
         registerAccountTitle: 'Register your account',
+        organization: 'Organization',
         organizations: 'Organizations',
+        user: 'User account',
         settingsSaved: 'Settings saved',
         login: 'Login',
         email: 'E-Mail',
@@ -135,6 +140,7 @@ export const languages: {[languageCode: string]: Translation} = {
         keepLoggedIn: 'Keep me logged in',
         haveAnInvite: 'I have an invite',
         resetPassword: 'Reset password',
+        emailIsInvalid: 'The email you provided is invalid',
         passwordsDoNotMatch: 'The passwords do not match',
         timezone: 'Timezone',
         all: 'All',
@@ -224,7 +230,9 @@ export const languages: {[languageCode: string]: Translation} = {
         explainGeneralPurpose: 'Cantropee ist eine Anwendung um Ein-/ und Ausgaben zu visualisieren, um einfache Rückblicke und hilfreiche Prognosen zu ermöglichen.',
         explainOrganizations: 'Eine "Organisation" ist wie ein gewöhnliches Bank-Konto. Jede Transaktion ist mit einem Konto verknüpft. Du kannst wenn du angemeldet bist beliebig viele Organisationen erstellen und auch Famile oder Freunde zu diesen hinzufügen, um gemeinsam den Überblick zu behalten.',
         registerAccountTitle: 'Registriere jetzt deinen Account',
+        organization: 'Organisation',
         organizations: 'Organisationen',
+        user: 'Nutzer Konto',
         settingsSaved: 'Einstellungen gespeichert',
         login: 'Anmelden',
         email: 'E-Mail',
@@ -233,6 +241,7 @@ export const languages: {[languageCode: string]: Translation} = {
         keepLoggedIn: 'Angemeldet bleiben',
         haveAnInvite: 'Ich habe eine Einladung',
         resetPassword: 'Password zurücksetzen',
+        emailIsInvalid: 'Die eingegebene E-Mail Adresse ist nicht gültig',
         passwordsDoNotMatch: 'Die Passwörter stimmen nicht überein',
         timezone: 'Zeitzone',
         all: 'Alle',
