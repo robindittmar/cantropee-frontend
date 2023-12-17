@@ -93,6 +93,9 @@ export interface Translation {
     users: string;
     role: string;
     roles: string;
+    roleCreatedSuccess: string;
+    roleUpdatedSuccess: string;
+    roleDeletedSuccess: string;
 
     category: string;
     categories: string;
@@ -187,6 +190,9 @@ export const languages: {[languageCode: string]: Translation} = {
         users: 'Users',
         role: 'Role',
         roles: 'Roles',
+        roleCreatedSuccess: 'Role created successfully',
+        roleUpdatedSuccess: 'Role saved successfully',
+        roleDeletedSuccess: 'Role deleted successfully',
         category: 'Category',
         categories: 'Categories',
         categoryCreatedSuccess: 'Category created successfully',
@@ -276,6 +282,9 @@ export const languages: {[languageCode: string]: Translation} = {
         users: 'Benutzer',
         role: 'Rolle',
         roles: 'Rollen',
+        roleCreatedSuccess: 'Rolle erfolgreich erstellt',
+        roleUpdatedSuccess: 'Rolle erfolgreich gespeichert',
+        roleDeletedSuccess: 'Rolle erfolgreich gelöscht',
         category: 'Kategorie',
         categories: 'Kategorien',
         categoryCreatedSuccess: 'Kategorie erfolgreich erstellt',

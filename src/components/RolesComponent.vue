@@ -99,7 +99,7 @@ const insertRole = async (role: SimplifiedRole) => {
   if (result.ok) {
     await fetchRoles();
     emit('update-roles');
-    toast('Rolle erfolgreich erstellt', ToastColor.Success);
+    toast(lang.value.roleCreatedSuccess, ToastColor.Success);
 
     newRole.value = undefined;
   }
@@ -123,7 +123,7 @@ const updateRole = async (role: SimplifiedRole) => {
   if (result.ok) {
     await fetchRoles();
     emit('update-roles');
-    toast('Rolle erfolgreich gespeichert', ToastColor.Success);
+    toast(lang.value.roleUpdatedSuccess, ToastColor.Success);
     selectedRole.value = '';
   }
 };
@@ -144,7 +144,7 @@ const deleteRole = async (role: SimplifiedRole) => {
   if (result.ok) {
     await fetchRoles();
     emit('update-roles');
-    toast('Rolle erfolgreich gelöscht', ToastColor.Success);
+    toast(lang.value.roleDeletedSuccess, ToastColor.Success);
     selectedRole.value = '';
   }
 };
