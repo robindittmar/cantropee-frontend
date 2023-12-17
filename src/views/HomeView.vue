@@ -31,7 +31,7 @@ let displayValues = ref(!props.user.settings.privateMode);
 let selectedCategory = ref(0);
 let notesFilter = ref('');
 let sortingOrder = ref(props.user.settings.defaultSortingOrderAsc ? 'asc' : 'desc');
-let restrictTimespan = ref(false);
+let restrictTimespan = ref(props.user.currentOrganization?.usesTaxes ?? false);
 
 watch(() => props.user, () => {
   showPending.value = props.user.settings.defaultPreviewPending;
