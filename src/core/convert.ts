@@ -1,7 +1,7 @@
 import {localeCode} from "@/core/languages";
 
 export const valueToString = (value: number) => {
-    return (value / 100).toLocaleString(undefined, {
+    return (value / 100).toLocaleString(localeCode.value, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
     });
