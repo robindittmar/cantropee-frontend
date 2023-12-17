@@ -178,8 +178,8 @@ onMounted(() => {
               <td :class="{'positive-value': transaction.isPositive && displayValues, 'negative-value': !transaction.isPositive && displayValues}">
                 {{ displayValues ? moneyToString(transaction.value, currency) : '***' }}
               </td>
-              <td v-if="showVat19">{{ displayValues ? moneyToString(transaction.vat19, currency) : '***' }}</td>
-              <td v-if="showVat7">{{ displayValues ? moneyToString(transaction.vat7, currency) : '***' }}</td>
+              <td v-if="showVat19" :class="{'positive-value': transaction.isPositive && displayValues, 'negative-value': !transaction.isPositive && displayValues}">{{ displayValues ? moneyToString(transaction.vat19, currency) : '***' }}</td>
+              <td v-if="showVat7" :class="{'positive-value': transaction.isPositive && displayValues, 'negative-value': !transaction.isPositive && displayValues}">{{ displayValues ? moneyToString(transaction.vat7, currency) : '***' }}</td>
               <td v-if="showNotes">{{ transaction.note ? transformNote(transaction.note) : '' }}</td>
               <td v-if="showCategories">{{ transaction.category }}</td>
             </template>
