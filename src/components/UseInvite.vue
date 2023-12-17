@@ -13,6 +13,7 @@ let validInvite = ref(false);
 
 let inviteId = ref('');
 let organizationName = ref('');
+let currency = ref('EUR');
 let useTaxes = ref(false);
 let userEmail = ref('');
 let userPassword = ref('');
@@ -56,6 +57,7 @@ const useInvite = async () => {
     body: JSON.stringify({
       inviteId: inviteId.value,
       organization: organizationName.value,
+      currency: currency.value,
       useTaxes: useTaxes.value,
       email: userEmail.value,
       password: userPassword.value,
@@ -103,6 +105,11 @@ onMounted(() => {
         <div class="mb-3">
           <label for="orgName" class="form-label">{{ lang.nameOfOrg }}</label>
           <input id="orgName" class="form-control" v-model="organizationName"/>
+        </div>
+
+        <div class="mb-3">
+          <label for="orgName" class="form-label">{{ lang.currency }}</label>
+          <input id="orgName" class="form-control" v-model="currency" disabled/>
         </div>
 
         <div class="form-check mb-3">
