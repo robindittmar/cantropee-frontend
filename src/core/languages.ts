@@ -10,6 +10,7 @@ export interface Translation {
     organization: string;
     organizations: string;
     user: string;
+    joinCantropee: string;
 
     settingsSaved: string;
     login: string;
@@ -132,6 +133,7 @@ export const languages: {[languageCode: string]: Translation} = {
         organization: 'Organization',
         organizations: 'Organizations',
         user: 'User account',
+        joinCantropee: 'Join',
         settingsSaved: 'Settings saved',
         login: 'Login',
         email: 'E-Mail',
@@ -233,6 +235,7 @@ export const languages: {[languageCode: string]: Translation} = {
         organization: 'Organisation',
         organizations: 'Organisationen',
         user: 'Nutzer Konto',
+        joinCantropee: 'Beitreten',
         settingsSaved: 'Einstellungen gespeichert',
         login: 'Anmelden',
         email: 'E-Mail',

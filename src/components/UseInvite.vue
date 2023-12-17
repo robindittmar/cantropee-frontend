@@ -87,10 +87,7 @@ const useInvite = async () => {
 
   if (resp.ok) {
     toast(lang.value.inviteSuccess, ToastColor.Info);
-
-    setTimeout(() => {
-      emit('submit');
-    }, 3000);
+    emit('submit');
   } else {
     toast(lang.value.anErrorHasOccured, ToastColor.Danger);
   }
@@ -138,7 +135,7 @@ onMounted(() => {
           </div>
         </div>
 
-        <hr class="mb-3"/>
+        <hr class="mb-4"/>
 
         <h2 class="mb-3">{{ lang.user }}</h2>
         <div class="mb-3">
@@ -155,7 +152,8 @@ onMounted(() => {
           <label for="userPasswordConfirm" class="form-label">{{ lang.confirmPassword }}</label>
           <input id="userPasswordConfirm" class="form-control" type="password" v-model="userPasswordConfirm"/>
         </div>
-        <hr class="mb-3"/>
+
+        <hr class="mt-4 mb-4"/>
 
         <h2 class="mb-3">{{ lang.organization }}</h2>
         <div class="mb-3">
@@ -173,8 +171,8 @@ onMounted(() => {
           <label for="useTax" class="form-check-label">{{ lang.trackTaxes }}</label>
         </div>
 
-        <div class="mb-3">
-          <input type="submit" class="btn btn-primary w-100" :value="lang.create" :disabled="!inputValidForCreation"/>
+        <div class="mt-4 mb-3">
+          <input type="submit" class="btn btn-primary w-100" :value="lang.joinCantropee" :disabled="!inputValidForCreation"/>
         </div>
         <div class="mb-3">
           <button @click="$emit('cancel')" class="btn btn-secondary w-100">{{ lang.cancel }}</button>
