@@ -133,8 +133,8 @@ onMounted(async () => {
         <h6 class="me-2 mt-2">{{ user.email }}</h6>
         <ChangeLanguageComponent :lang-code="langCode" @set-language="selectLanguage"/>
         <div class="me-2">
-          <input id="showPendingCheckbox" class="btn-check" type="checkbox" v-model="privateMode"/>
-          <label for="showPendingCheckbox" class="btn btn-outline-primary w-100"><i class="fa-solid fa-eye-slash"></i></label>
+          <input id="privateModeCheckbox" class="btn-check" type="checkbox" v-model="privateMode"/>
+          <label for="privateModeCheckbox" class="btn btn-outline-primary w-100"><i class="fa-solid fa-eye-slash"></i></label>
         </div>
         <a class="btn btn-outline-danger me-2" @click="logout">
           <i class="fa-solid fa-arrow-right-from-bracket"></i>
