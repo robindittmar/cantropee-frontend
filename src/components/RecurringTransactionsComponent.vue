@@ -122,28 +122,39 @@ onMounted(() => {
           </thead>
           <tbody class="table-group-divider">
           <template v-if="initialLoadDone">
-          <template v-for="(recurring, i) in recurringTransactions" :key="recurring.id">
-              <tr @click="selectRecurringTransaction(recurring.id)">
-                <td :class="{'text-muted': !recurring.active}">{{ i + 1 }}</td>
-                <td :class="{'text-muted': !recurring.active}">{{ dateToString(recurring.nextExecution) }}</td>
-                <td :class="{'text-muted': !recurring.active, 'positive-value': recurring.isPositive && displayValues && recurring.active, 'negative-value': !recurring.isPositive && displayValues && recurring.active}">
-                  {{ displayValues ? moneyToString(recurring.value, currency) : '***' }}
-                </td>
-              </tr>
-              <Transition
-                  :css="false"
-                  @enter="waitForExpand"
-                  @leave="waitForCollapse">
-                <tr v-if="recurring.id === selectedRecurringTransaction" class="no-hover">
-                  <td colspan="3">
-                    <DetailRecurringTransaction :recurring-transaction="recurring" :currency="currency"
-                                                :display-values="displayValues" :show-taxes="showTaxes"
-                                                :categories="categories"
-                                                @updated-recurring-transaction="fetchRecurringTransactions"
-                                                @deleted-recurring-transaction="fetchRecurringTransactions"/>
+            <template v-if="recurringTransactions.length > 0">
+              <template v-for="(recurring, i) in recurringTransactions" :key="recurring.id">
+                <tr @click="selectRecurringTransaction(recurring.id)">
+                  <td :class="{'text-muted': !recurring.active}">{{ i + 1 }}</td>
+                  <td :class="{'text-muted': !recurring.active}">{{ dateToString(recurring.nextExecution) }}</td>
+                  <td :class="{'text-muted': !recurring.active, 'positive-value': recurring.isPositive && displayValues && recurring.active, 'negative-value': !recurring.isPositive && displayValues && recurring.active}">
+                    {{ displayValues ? moneyToString(recurring.value, currency) : '***' }}
                   </td>
                 </tr>
-              </Transition>
+                <Transition
+                    :css="false"
+                    @enter="waitForExpand"
+                    @leave="waitForCollapse">
+                  <tr v-if="recurring.id === selectedRecurringTransaction" class="no-hover">
+                    <td colspan="3">
+                      <DetailRecurringTransaction :recurring-transaction="recurring" :currency="currency"
+                                                  :display-values="displayValues" :show-taxes="showTaxes"
+                                                  :categories="categories"
+                                                  @updated-recurring-transaction="fetchRecurringTransactions"
+                                                  @deleted-recurring-transaction="fetchRecurringTransactions"/>
+                    </td>
+                  </tr>
+                </Transition>
+              </template>
+            </template>
+            <template v-else>
+              <tr>
+                <td colspan="3">
+                  <div class="d-flex justify-content-center">
+                    <img id="brand-image" alt="No Content" src="/public/img/no-content.png" class="rounded mx-auto d-block" />
+                  </div>
+                </td>
+              </tr>
             </template>
           </template>
           <template v-else>
