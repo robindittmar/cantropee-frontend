@@ -103,6 +103,25 @@ onMounted(() => {
     <template v-else>
       <form @submit.prevent="useInvite">
         <div class="mb-3">
+          <h1>{{ lang.welcomeText }}</h1>
+          <div class="card text-bg-primary mt-3">
+            <div class="card-header">
+              <button class="btn w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#helpCollapse"><i class="fa-solid fa-book"></i>&nbsp;{{ lang.expandHelp }}</button>
+            </div>
+            <div id="helpCollapse" class="card-body collapse">
+              <h6>{{ lang.explainGeneralPurpose }}</h6>
+
+              <hr>
+              <h6>{{ lang.organizations }}</h6>
+              <p>{{ lang.explainOrganizations }}</p>
+            </div>
+          </div>
+        </div>
+
+        <hr/>
+
+        <h1>{{ lang.registerAccountTitle }}</h1>
+        <div class="mb-3">
           <label for="orgName" class="form-label">{{ lang.nameOfOrg }}</label>
           <input id="orgName" class="form-control" v-model="organizationName"/>
         </div>

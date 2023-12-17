@@ -2,6 +2,13 @@ import type {Ref} from "vue";
 import {ref} from "vue";
 
 export interface Translation {
+    welcomeText: string;
+    expandHelp: string;
+    explainGeneralPurpose: string;
+    explainOrganizations: string;
+    registerAccountTitle: string;
+    organizations: string;
+
     settingsSaved: string;
     login: string;
     email: string;
@@ -114,6 +121,12 @@ export interface Translation {
 
 export const languages: {[languageCode: string]: Translation} = {
     'en-us': {
+        welcomeText: 'Welcome to Cantropee!',
+        expandHelp: 'Explain to me what Cantropee is!',
+        explainGeneralPurpose: 'Cantropee is an application to track money flow and visualize your spending\'s, giving helpful insights.',
+        explainOrganizations: 'An "organization" is like your usual bank account. Each transaction is attached to an organization. Once logged in you may create as many organizations as you like and also add family/friends to them, so you can collaboratively track spendings.',
+        registerAccountTitle: 'Register your account',
+        organizations: 'Organizations',
         settingsSaved: 'Settings saved',
         login: 'Login',
         email: 'E-Mail',
@@ -206,6 +219,12 @@ export const languages: {[languageCode: string]: Translation} = {
         currency: 'Currency',
     },
     'de-de': {
+        welcomeText: 'Willkommen bei Cantropee!',
+        expandHelp: 'Erklär mir was Cantropee ist!',
+        explainGeneralPurpose: 'Cantropee ist eine Anwendung um Ein-/ und Ausgaben zu visualisieren, um einfache Rückblicke und hilfreiche Prognosen zu ermöglichen.',
+        explainOrganizations: 'Eine "Organisation" ist wie ein gewöhnliches Bank-Konto. Jede Transaktion ist mit einem Konto verknüpft. Du kannst wenn du angemeldet bist beliebig viele Organisationen erstellen und auch Famile oder Freunde zu diesen hinzufügen, um gemeinsam den Überblick zu behalten.',
+        registerAccountTitle: 'Registriere jetzt deinen Account',
+        organizations: 'Organisationen',
         settingsSaved: 'Einstellungen gespeichert',
         login: 'Anmelden',
         email: 'E-Mail',
