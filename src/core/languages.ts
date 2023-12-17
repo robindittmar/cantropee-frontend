@@ -228,7 +228,7 @@ export const languages: {[languageCode: string]: Translation} = {
         welcomeText: 'Willkommen bei Cantropee!',
         expandHelp: 'Erklär mir was Cantropee ist!',
         explainGeneralPurpose: 'Cantropee ist eine Anwendung um Ein-/ und Ausgaben zu visualisieren, um einfache Rückblicke und hilfreiche Prognosen zu ermöglichen.',
-        explainOrganizations: 'Eine "Organisation" ist wie ein gewöhnliches Bank-Konto, außer dass es keinen echten Gegenwert repräsentiert. Jede Buchung/Transaktion nur in der Anwendung sichtbar und beeinflusst kein echtes Geld. Du kannst wenn du angemeldet bist beliebig viele Organisationen erstellen und auch Famile oder Freunde zu diesen hinzufügen, um gemeinsam den Überblick zu behalten.',
+        explainOrganizations: 'Eine "Organisation" ist wie ein gewöhnliches Bank-Konto, außer dass es keinen echten Gegenwert repräsentiert. Jede Buchung/Transaktion ist nur in der Anwendung sichtbar und beeinflusst kein echtes Geld. Du kannst wenn du angemeldet bist beliebig viele Organisationen erstellen und auch Famile oder Freunde zu diesen hinzufügen, um gemeinsam den Überblick zu behalten.',
         registerAccountTitle: 'Registriere jetzt deinen Account',
         organization: 'Organisation',
         organizations: 'Organisationen',
