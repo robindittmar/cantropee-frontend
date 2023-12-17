@@ -12,6 +12,7 @@ import CreateOrganization from "@/components/CreateOrganization.vue";
 
 const props = defineProps<{
   user: User;
+  displayValues: boolean;
   categories: Category[];
 }>();
 
@@ -92,7 +93,7 @@ const selectOrg = (orgId: string) => {
                   </li>
                 </ul>
                 <template v-if="view === OrgView.RecurringPayments">
-                  <RecurringTransactionsComponent :display-values="!user.settings.privateMode"
+                  <RecurringTransactionsComponent :display-values="displayValues"
                                                   :currency="user.currentOrganization?.currency ?? 'EUR'"
                                                   :show-taxes="user.currentOrganization?.usesTaxes ?? false"
                                                   :categories="categories"/>

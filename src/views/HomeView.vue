@@ -17,6 +17,7 @@ import type {Balance} from "@/core/balance";
 
 const props = defineProps<{
   user: User;
+  displayValues: boolean;
   categories: Category[];
 }>();
 
@@ -27,7 +28,6 @@ let effectiveSpan = ref({
 });
 
 let showPending = ref(props.user.settings.defaultPreviewPending);
-let displayValues = ref(!props.user.settings.privateMode);
 let selectedCategory = ref(0);
 let notesFilter = ref('');
 let sortingOrder = ref(props.user.settings.defaultSortingOrderAsc ? 'asc' : 'desc');
@@ -35,7 +35,6 @@ let restrictTimespan = ref(props.user.currentOrganization?.usesTaxes ?? false);
 
 watch(() => props.user, () => {
   showPending.value = props.user.settings.defaultPreviewPending;
-  displayValues.value = !props.user.settings.privateMode;
   sortingOrder.value = props.user.settings.defaultSortingOrderAsc ? 'asc' : 'desc';
   restrictTimespan.value = props.user.currentOrganization?.usesTaxes ?? false;
 });

@@ -32,6 +32,7 @@ const setView = (view: View) => {
 let invite: string | null = null;
 let initialLoadDone = ref(false);
 let user: Ref<User> = ref(defaultUser());
+let privateMode: Ref<boolean> = ref(true);
 let categories: Ref<Category[]> = ref([{id: 0, name: ''}]);
 
 
@@ -44,6 +45,7 @@ const initialLoad = async () => {
     user.value = await fetchUser();
     categories.value = await fetchCategories();
 
+    privateMode.value = user.value.settings.privateMode;
     selectLanguage(user.value.settings.language);
     selectLocale(user.value.settings.locale);
     authorized.value = true;
@@ -130,18 +132,22 @@ onMounted(async () => {
       <div class="d-flex justify-content-end pt-2 pe-2">
         <h6 class="me-2 mt-2">{{ user.email }}</h6>
         <ChangeLanguageComponent :lang-code="langCode" @set-language="selectLanguage"/>
+        <div class="me-2">
+          <input id="showPendingCheckbox" class="btn-check" type="checkbox" v-model="privateMode"/>
+          <label for="showPendingCheckbox" class="btn btn-outline-primary w-100"><i class="fa-solid fa-eye-slash"></i></label>
+        </div>
         <a class="btn btn-outline-danger me-2" @click="logout">
           <i class="fa-solid fa-arrow-right-from-bracket"></i>
         </a>
       </div>
 
       <HomeView v-if="selectedView === View.Home"
-                :user="user" :categories="categories"/>
+                :user="user" :display-values="!privateMode" :categories="categories"/>
 
       <ChartView v-if="selectedView === View.Chart"/>
 
       <OrganizationView v-if="selectedView === View.Organization"
-                        :user="user" :categories="categories"
+                        :user="user" :display-values="!privateMode" :categories="categories"
                         @change-organization="changeOrganization"
                         @update-categories="reloadCategories"/>
 
