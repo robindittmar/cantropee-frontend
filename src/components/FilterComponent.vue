@@ -11,6 +11,7 @@ const props = defineProps<{
   showPending: boolean,
   sortingOrder: string,
   categories: Category[],
+  showMonthPicker: boolean,
 }>();
 
 const emit = defineEmits([
@@ -84,12 +85,12 @@ const previewAvailable = computed(() => {
             </template>
           </button>
         </div>
-        <div class="input-group mt-3">
-          <button class="btn btn-secondary" @click="$emit('prev-month')" disabled>
+        <div v-if="showMonthPicker" class="input-group mt-3">
+          <button class="btn btn-secondary" @click="$emit('prev-month')">
             <i class="fa-solid fa-arrow-left"></i>
           </button>
           <input id="currentMonthString" class="form-control text-center" :value="yearMonthString" type="text" disabled />
-          <button class="btn btn-secondary" @click="$emit('next-month')" disabled>
+          <button class="btn btn-secondary" @click="$emit('next-month')">
             <i class="fa-solid fa-arrow-right"></i>
           </button>
         </div>

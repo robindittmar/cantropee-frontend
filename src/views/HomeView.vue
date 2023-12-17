@@ -31,11 +31,13 @@ let displayValues = ref(!props.user.settings.privateMode);
 let selectedCategory = ref(0);
 let notesFilter = ref('');
 let sortingOrder = ref(props.user.settings.defaultSortingOrderAsc ? 'asc' : 'desc');
+let restrictTimespan = ref(false);
 
 watch(() => props.user, () => {
   showPending.value = props.user.settings.defaultPreviewPending;
   displayValues.value = !props.user.settings.privateMode;
   sortingOrder.value = props.user.settings.defaultSortingOrderAsc ? 'asc' : 'desc';
+  restrictTimespan.value = props.user.currentOrganization?.usesTaxes ?? false;
 });
 
 
@@ -70,8 +72,12 @@ const fetchTransactions = async () => {
     abortFetch.abort();
   }
 
-  // let uri = `/api/transactions?from=${dateToURI(effectiveSpan.value.from)}&to=${dateToURI(effectiveSpan.value.to)}&pending=${showPending.value}&start=${transactionsRef.value.start}&count=${navigationStep}&order=${sortingOrder.value}`;
-  let uri = `/api/transactions?pending=${showPending.value}&start=${transactionsRef.value.start}&count=${navigationStep}&order=${sortingOrder.value}`;
+  let uri: string;
+  if (restrictTimespan.value) {
+    uri = `/api/transactions?from=${dateToURI(effectiveSpan.value.from)}&to=${dateToURI(effectiveSpan.value.to)}&pending=${showPending.value}&start=${transactionsRef.value.start}&count=${navigationStep}&order=${sortingOrder.value}`;
+  } else {
+    uri = `/api/transactions?pending=${showPending.value}&start=${transactionsRef.value.start}&count=${navigationStep}&order=${sortingOrder.value}`;
+  }
   if (selectedCategory.value > 0) {
     uri += `&category=${selectedCategory.value}`;
   }
@@ -181,6 +187,7 @@ onMounted(() => {
                            :show-pending="showPending" @toggle-show-pending="toggleShowPending"
                            :categories="categories" @set-category="setCategory"
                            :sorting-order="sortingOrder" @toggle-sorting-order="toggleSortingOrder"
+                           :show-month-picker="restrictTimespan"
                            @set-notes="setNotes"/>
         </div>
       </div>
