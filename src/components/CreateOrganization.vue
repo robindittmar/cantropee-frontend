@@ -1,134 +1,101 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
-import {toast, ToastColor} from "@/core/toaster";
-import {req} from "@/core/requests";
+import {onBeforeUnmount, onMounted, ref} from "vue";
+import {Modal} from "bootstrap";
 import {lang} from "@/core/languages";
+import {req} from "@/core/requests";
 
-const props = defineProps<{
-  invite: string | null,
-}>();
-const emit = defineEmits(['submit', 'cancel']);
+// const props = defineProps<{}>();
+const emit = defineEmits(['organization-created', 'modal-closed']);
 
-let validInvite = ref(false);
-
-let inviteId = ref('');
+let submitting = ref(false);
 let organizationName = ref('');
+let currency = ref('EUR');
 let useTaxes = ref(false);
-let userEmail = ref('');
-let userPassword = ref('');
-let userPasswordConfirm = ref('');
 
-const validateInvite = async () => {
-  const resp = await req('/api/invite/validate', {
+
+const createOrganization = async () => {
+  submitting.value = true;
+
+  console.log('CREATING ORG');
+
+  const payload = {
+    name: organizationName.value,
+    currency: currency.value,
+    useTaxes: useTaxes.value,
+    previewRecurringCount: 3,
+  };
+
+  const res = await req('/api/organization', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      inviteId: inviteId.value,
-    }),
+    body: JSON.stringify(payload),
   });
 
-  if (resp.ok) {
-    let { valid } = await resp.json();
-    if (valid) {
-      validInvite.value = true;
-      toast(lang.value.inviteIsValid, ToastColor.Success);
-    } else {
-      toast(lang.value.inviteIsInvalid, ToastColor.Danger);
-    }
-  } else {
-    toast(lang.value.anErrorHasOccured, ToastColor.Danger);
+  submitting.value = false;
+
+  if (res.ok) {
+    let {organizationId} = await res.json();
+    emit('organization-created', organizationId);
   }
 };
 
-const createOrganization = async () => {
-  if (userPassword.value !== userPasswordConfirm.value) {
-    toast(lang.value.passwordsDoNotMatch, ToastColor.Danger);
-    return;
-  }
-
-  const resp = await req('/api/invite/use', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      inviteId: inviteId.value,
-      organization: organizationName.value,
-      useTaxes: useTaxes.value,
-      email: userEmail.value,
-      password: userPassword.value,
-    }),
-  });
-
-  if (resp.ok) {
-    toast(lang.value.inviteSuccess, ToastColor.Info);
-
-    setTimeout(() => {
-      emit('submit');
-    }, 3000);
-  } else {
-    toast(lang.value.anErrorHasOccured, ToastColor.Danger);
-  }
+const closeModal = () => {
+  const modal = Modal.getOrCreateInstance('#createOrgModal');
+  modal.hide();
 };
 
 onMounted(() => {
-  if (props.invite) {
-    inviteId.value = props.invite;
-    validateInvite();
-  }
+  const modal = Modal.getOrCreateInstance('#createOrgModal');
+  modal.show();
+
+  const modalElem = document.querySelector('#createOrgModal');
+  modalElem?.addEventListener('hidden.bs.modal', () => {
+    emit('modal-closed');
+  });
+});
+
+onBeforeUnmount(() => {
+  closeModal();
 });
 </script>
 
 <template>
-  <div class="ms-3 me-3 mb-3">
-    <template v-if="!validInvite">
-      <div class="mb-3">
-        <label for="inviteId" class="form-label">{{ lang.invite }}</label>
-        <input id="inviteId" class="form-control" v-model="inviteId"/>
-      </div>
+  <div class="modal fade" id="createOrgModal" tabindex="-1" aria-labelledby="createOrgModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="createOrgModalLabel">{{ lang.newOrganizationTitle }}</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="createOrganization">
+            <div class="mb-3">
+              <label for="orgName" class="form-label">{{ lang.nameOfOrg }}</label>
+              <input id="orgName" class="form-control" v-model="organizationName"/>
+            </div>
 
-      <div class="mb-3">
-        <button @click="validateInvite" :disabled="inviteId.length === 0" class="btn btn-primary w-100">{{ lang.check }}</button>
-      </div>
-      <div class="mb-3">
-        <button @click="$emit('cancel')" class="btn btn-secondary w-100">{{ lang.cancel }}</button>
-      </div>
-    </template>
-    <template v-else>
-      <div class="mb-3">
-        <label for="orgName" class="form-label">{{ lang.nameOfOrg }}</label>
-        <input id="orgName" class="form-control" v-model="organizationName"/>
-      </div>
+            <div class="mb-3">
+              <label for="orgName" class="form-label">{{ lang.currency }}</label>
+              <input id="orgName" class="form-control" v-model="currency" disabled/>
+            </div>
 
-      <div class="form-check mb-3">
-        <input id="useTax" class="form-check-input" type="checkbox" v-model="useTaxes"/>
-        <label for="useTax" class="form-check-label">{{ lang.trackTaxes }}</label>
-      </div>
+            <div class="form-check mb-3">
+              <input id="useTax" class="form-check-input" type="checkbox" v-model="useTaxes"/>
+              <label for="useTax" class="form-check-label">{{ lang.trackTaxes }}</label>
+            </div>
 
-      <div class="mb-3">
-        <label for="userEmail" class="form-label">{{ lang.email }}</label>
-        <input id="userEmail" class="form-control" v-model="userEmail"/>
+            <div class="mb-3">
+              <input type="submit" class="btn btn-primary w-100" :disabled="submitting || organizationName.length === 0" :value="lang.create"/>
+            </div>
+            <div class="mb-3">
+              <button @click="closeModal" class="btn btn-secondary w-100">{{ lang.cancel }}</button>
+            </div>
+          </form>
+        </div>
       </div>
-
-      <div class="mb-3">
-        <label for="userPassword" class="form-label">{{ lang.password }}</label>
-        <input id="userPassword" class="form-control" type="password" v-model="userPassword"/>
-      </div>
-
-      <div class="mb-3">
-        <label for="userPasswordConfirm" class="form-label">{{ lang.confirmPassword }}</label>
-        <input id="userPasswordConfirm" class="form-control" type="password" v-model="userPasswordConfirm"/>
-      </div>
-
-      <div class="mb-3">
-        <button @click="createOrganization" class="btn btn-primary w-100">{{ lang.create }}</button>
-      </div>
-      <div class="mb-3">
-        <button @click="$emit('cancel')" class="btn btn-secondary w-100">{{ lang.cancel }}</button>
-      </div>
-    </template>
+    </div>
   </div>
 </template>
 

@@ -2,7 +2,7 @@
 import {onMounted, ref} from "vue";
 import {req} from "@/core/requests";
 import {lang} from "@/core/languages";
-import CreateOrganization from "@/components/CreateOrganization.vue";
+import UseInvite from "@/components/UseInvite.vue";
 
 const props = defineProps<{
   invite: string | null,
@@ -105,13 +105,13 @@ onMounted(() => {
                 <div class="mb-3">
                   <input type="submit" class="btn btn-primary" :value="lang.login"/>
                 </div>
-                <hr/>
-                <div class="mb-3">
-                  <button class="btn btn-secondary" @click="view = LoginView.UseInvite">
-                    <i class="fa-solid fa-envelope-open"></i>&nbsp;{{ lang.haveAnInvite }}
-                  </button>
-                </div>
               </form>
+              <hr/>
+              <div class="mb-3">
+                <button class="btn btn-secondary" @click="view = LoginView.UseInvite">
+                  <i class="fa-solid fa-envelope-open"></i>&nbsp;{{ lang.haveAnInvite }}
+                </button>
+              </div>
             </div>
           </template>
           <template v-else-if="view === LoginView.ResetPassword">
@@ -133,7 +133,7 @@ onMounted(() => {
             </div>
           </template>
           <template v-else-if="view === LoginView.UseInvite">
-            <CreateOrganization :invite="invite" @submit="setViewLogin" @cancel="setViewLogin"/>
+            <UseInvite :invite="invite" @submit="setViewLogin" @cancel="setViewLogin"/>
           </template>
         </div>
       </div>

@@ -8,6 +8,7 @@ import {lang} from "@/core/languages";
 import UsersComponent from "@/components/UsersComponent.vue";
 import CategoriesComponent from "@/components/CategoriesComponent.vue";
 import RolesComponent from "@/components/RolesComponent.vue";
+import CreateOrganization from "@/components/CreateOrganization.vue";
 
 const props = defineProps<{
   user: User;
@@ -24,6 +25,7 @@ enum OrgView {
 }
 
 let view: Ref<OrgView> = ref(OrgView.RecurringPayments);
+let createNewOrgModal = ref(false);
 
 let hasAdmin = computed(() => {
   return props.user.currentOrganization?.privileges?.includes('admin');
@@ -45,6 +47,10 @@ watch(selectedOrg, async () => {
     emit('change-organization', orgId);
   }
 });
+
+const selectOrg = (orgId: string) => {
+  selectedOrg.value = orgId;
+};
 </script>
 
 <template>
@@ -61,8 +67,10 @@ watch(selectedOrg, async () => {
                   </button>
                   <ul class="dropdown-menu">
                     <li v-for="org in user.organizations" :key="org.id">
-                      <a class="dropdown-item" @click="selectedOrg = org.id">{{ org.name }}</a>
+                      <button class="dropdown-item" @click="selectOrg(org.id)">{{ org.name }}</button>
                     </li>
+                    <li><hr class="dropdown-divider"/></li>
+                    <li><button class="dropdown-item" @click="createNewOrgModal = true">{{ lang.addNewOrganization }}...</button></li>
                   </ul>
                 </div>
               </div>
@@ -105,6 +113,10 @@ watch(selectedOrg, async () => {
       </div>
     </div>
   </div>
+
+  <CreateOrganization v-if="createNewOrgModal"
+                      @organization-created="selectOrg"
+                      @modal-closed="createNewOrgModal = false"/>
 </template>
 
 <style scoped>

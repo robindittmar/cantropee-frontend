@@ -101,6 +101,10 @@ export interface Translation {
 
     nameOfOrg: string;
     trackTaxes: string;
+
+    addNewOrganization: string;
+    newOrganizationTitle: string;
+    currency: string;
 }
 
 export const languages: {[languageCode: string]: Translation} = {
@@ -187,6 +191,9 @@ export const languages: {[languageCode: string]: Translation} = {
         categoryDeletedSuccess: 'Category deleted successfully',
         nameOfOrg: 'Organization name',
         trackTaxes: 'Track taxes for transactions',
+        addNewOrganization: 'Add new',
+        newOrganizationTitle: 'New Organization',
+        currency: 'Currency',
     },
     'de-de': {
         settingsSaved: 'Einstellungen gespeichert',
@@ -271,6 +278,9 @@ export const languages: {[languageCode: string]: Translation} = {
         categoryDeletedSuccess: 'Kategorie erfolgreich gelöscht',
         nameOfOrg: 'Name des Kontos',
         trackTaxes: 'Steuern bei Transaktionen erfassen',
+        addNewOrganization: 'Hinzufügen',
+        newOrganizationTitle: 'Neue Organisation',
+        currency: 'Währung',
     },
 };
 
