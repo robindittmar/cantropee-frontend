@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {Ref} from "vue";
-import {onMounted, ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import {dateToString, moneyToString} from "@/core/convert";
 import type {Category} from "@/core/category";
 import type {RecurringTransaction} from "@/core/recurring-transaction";
@@ -21,9 +21,18 @@ const emit = defineEmits(['updated-recurring-transaction']);
 
 const initialLoadDone = ref(false);
 let recurringTransactions: Ref<RecurringTransaction[]> = ref([]);
+
+let showNextExecution = ref(false);
+let showCategories = ref(false);
+let showVat19 = ref(false);
+let showVat7 = ref(false);
+let columnCount = ref(3);
+
 let selectedRecurringTransaction: Ref<string | null> = ref(null);
 let animating = false;
 let openCollapse: Element | null;
+
+
 
 const fetchRecurringTransactions = async () => {
   const res = await req('/api/recurring');
@@ -58,6 +67,13 @@ const selectRecurringTransaction = (transactionId: string) => {
   }
 
   selectedRecurringTransaction.value = current;
+};
+
+const transformNote = (note: string): string => {
+  if (note.length >= 32) {
+    return note.substring(0, 29) + '...';
+  }
+  return note;
 };
 
 const waitForExpand = (el: any, done: any) => {
@@ -103,8 +119,35 @@ const hideModal = () => {
   fetchRecurringTransactions();
 };
 
+const updateWindowSize = () => {
+  showNextExecution.value = window.innerWidth >= 768;
+  showCategories.value = window.innerWidth >= 992;
+  showVat19.value = props.showTaxes && window.innerWidth >= 1200;
+  showVat7.value = props.showTaxes && window.innerWidth >= 1400;
+
+  if (showNextExecution.value) {
+    columnCount.value += 1;
+  }
+  if (showCategories.value) {
+    columnCount.value += 1;
+  }
+  if (showVat19.value) {
+    columnCount.value += 1;
+  }
+  if (showVat7.value) {
+    columnCount.value += 1;
+  }
+};
+
 onMounted(() => {
   fetchRecurringTransactions();
+
+  updateWindowSize();
+  window.addEventListener('resize', updateWindowSize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateWindowSize);
 });
 </script>
 
@@ -116,8 +159,13 @@ onMounted(() => {
           <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">{{ lang.nextExecution }}</th>
+            <th scope="col">{{ lang.note }}</th>
             <th scope="col">{{ lang.value }}</th>
+            <th v-if="showVat19" scope="col">{{ lang.vat19 }}</th>
+            <th v-if="showVat7" scope="col">{{ lang.vat7 }}</th>
+            <th v-if="showNextExecution" scope="col">{{ lang.nextExecution }}</th>
+            <th v-if="showCategories" scope="col">{{ lang.category }}</th>
+
           </tr>
           </thead>
           <tbody class="table-group-divider">
@@ -126,17 +174,21 @@ onMounted(() => {
               <template v-for="(recurring, i) in recurringTransactions" :key="recurring.id">
                 <tr @click="selectRecurringTransaction(recurring.id)">
                   <td :class="{'text-muted': !recurring.active}">{{ i + 1 }}</td>
-                  <td :class="{'text-muted': !recurring.active}">{{ dateToString(recurring.nextExecution) }}</td>
+                  <td :class="{'text-muted': !recurring.active}">{{ recurring.note ? transformNote(recurring.note) : '' }}</td>
                   <td :class="{'text-muted': !recurring.active, 'positive-value': recurring.isPositive && displayValues && recurring.active, 'negative-value': !recurring.isPositive && displayValues && recurring.active}">
                     {{ displayValues ? moneyToString(recurring.value, currency) : '***' }}
                   </td>
+                  <td v-if="showVat19" :class="{'text-muted': !recurring.active, 'positive-value': recurring.isPositive && displayValues && recurring.active, 'negative-value': !recurring.isPositive && displayValues && recurring.active}">{{ displayValues ? moneyToString(recurring.vat19 ?? 0, currency) : '***' }}</td>
+                  <td v-if="showVat7" :class="{'text-muted': !recurring.active, 'positive-value': recurring.isPositive && displayValues && recurring.active, 'negative-value': !recurring.isPositive && displayValues && recurring.active}">{{ displayValues ? moneyToString(recurring.vat7 ?? 0, currency) : '***' }}</td>
+                  <td v-if="showNextExecution" :class="{'text-muted': !recurring.active}">{{ dateToString(recurring.nextExecution) }}</td>
+                  <td v-if="showCategories" :class="{'text-muted': !recurring.active}">{{ recurring.category }}</td>
                 </tr>
                 <Transition
                     :css="false"
                     @enter="waitForExpand"
                     @leave="waitForCollapse">
                   <tr v-if="recurring.id === selectedRecurringTransaction" class="no-hover">
-                    <td colspan="3">
+                    <td :colspan="columnCount">
                       <DetailRecurringTransaction :recurring-transaction="recurring" :currency="currency"
                                                   :display-values="displayValues" :show-taxes="showTaxes"
                                                   :categories="categories"
@@ -149,7 +201,7 @@ onMounted(() => {
             </template>
             <template v-else>
               <tr>
-                <td colspan="3">
+                <td :colspan="columnCount">
                   <div class="d-flex justify-content-center">
 <!--                    <i class="fa-solid fa-ghost"></i>-->
                     <img id="brand-image" alt="No Content" src="/public/img/no-content.png" class="rounded mx-auto d-block" />
@@ -160,7 +212,7 @@ onMounted(() => {
           </template>
           <template v-else>
             <tr>
-              <td colspan="3">
+              <td :colspan="columnCount">
                 <div class="d-flex justify-content-center mt-4">
                   <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>

@@ -22,7 +22,7 @@ const createOrganization = async () => {
     name: organizationName.value,
     currency: currency.value,
     useTaxes: useTaxes.value,
-    previewRecurringCount: 3,
+    previewRecurringCount: 1,
   };
 
   const res = await req('/api/organization', {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref, watch} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import type {Ref} from "vue";
 import {dateToString, moneyToString} from "@/core/convert";
 import type {Transaction} from "@/core/transaction";
@@ -139,6 +139,9 @@ onMounted(() => {
   updateWindowSize();
   window.addEventListener('resize', updateWindowSize);
 });
+onUnmounted(() => {
+  window.removeEventListener('resize', updateWindowSize);
+})
 </script>
 
 <template>
