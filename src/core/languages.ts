@@ -329,6 +329,6 @@ export const languages: {[languageCode: string]: Translation} = {
 
 export const availableLangCodes = ['en-us', 'de-de'];
 export const availableLocaleCodes = ['en-us', 'en-ca', 'de-de'];
-export const langCode: Ref<string> = ref(availableLangCodes[0]);
+export const langCode: Ref<string> = ref(localStorage.getItem('lang') ?? availableLangCodes[0]);
 export const localeCode: Ref<string> = ref(availableLocaleCodes[0]);
 export const lang: Ref<Translation> = ref(languages[langCode.value]);
