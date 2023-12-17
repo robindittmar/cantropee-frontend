@@ -322,7 +322,7 @@ export const languages: {[languageCode: string]: Translation} = {
         categoryUpdatedSuccess: 'Kategorie erfolgreich gespeichert',
         categoryDeletedSuccess: 'Kategorie erfolgreich gelöscht',
         nameOfOrg: 'Name des Kontos',
-        trackTaxes: 'MwSt bei Transaktionen erfassen',
+        trackTaxes: 'MwSt an Transaktionen erfassen',
         addNewOrganization: 'Hinzufügen',
         addUserToOrganization: 'Nutzer hinzufügen',
         newOrganizationTitle: 'Neue Organisation',
