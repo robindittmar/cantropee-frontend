@@ -15,6 +15,7 @@ export interface Translation {
 
     all: string;
     search: string;
+    add: string;
     new: string;
     edit: string;
     save: string;
@@ -121,6 +122,7 @@ export const languages: {[languageCode: string]: Translation} = {
         timezone: 'Timezone',
         all: 'All',
         search: 'Search',
+        add: 'Add',
         new: 'New',
         edit: 'Edit',
         save: 'Save',
@@ -208,6 +210,7 @@ export const languages: {[languageCode: string]: Translation} = {
         timezone: 'Zeitzone',
         all: 'Alle',
         search: 'Suchen',
+        add: 'Hinzufügen',
         new: 'Neu',
         edit: 'Bearbeiten',
         save: 'Speichern',

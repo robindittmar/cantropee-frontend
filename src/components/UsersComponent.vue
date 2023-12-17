@@ -4,6 +4,7 @@ import {onMounted, ref} from "vue";
 import {req} from "@/core/requests";
 import {lang} from "@/core/languages";
 import type {User} from "@/core/user";
+import AddUserModal from "@/components/AddUserModal.vue";
 
 const props = defineProps<{
   user: User;
@@ -16,6 +17,7 @@ interface OrgUser {
 }
 
 const initialLoadDone = ref(false);
+const addingUser = ref(false);
 const users: Ref<OrgUser[]> = ref([]);
 
 const fetchUsers = async () => {
@@ -76,11 +78,13 @@ onMounted(() => {
       </div>
     </div>
     <div class="d-flex justify-content-center pt-2 pb-2">
-      <button class="btn btn-success" disabled>
-        <i class="fa-solid fa-plus"></i>&nbsp;{{ lang.new }}
+      <button class="btn btn-success" @click="addingUser = true">
+        <i class="fa-solid fa-plus"></i>&nbsp;{{ lang.add }}
       </button>
     </div>
   </div>
+
+  <AddUserModal v-if="addingUser" @user-added="fetchUsers" @modal-closed="addingUser = false"/>
 </template>
 
 <style scoped>
