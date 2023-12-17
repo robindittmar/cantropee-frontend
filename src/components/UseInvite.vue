@@ -124,7 +124,7 @@ onMounted(() => {
     <template v-else>
       <form @submit.prevent="useInvite">
         <div class="mb-5">
-          <h1>{{ lang.welcomeText }}</h1>
+          <h1 class="text-center">{{ lang.welcomeText }}</h1>
           <div class="card text-bg-primary mt-3">
             <div class="card-header">
               <button class="btn w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#helpCollapse"><i class="fa-solid fa-book"></i>&nbsp;{{ lang.expandHelp }}</button>
