@@ -126,7 +126,7 @@ export const languages: {[languageCode: string]: Translation} = {
     'en-us': {
         welcomeText: 'Welcome to Cantropee!',
         expandHelp: 'Explain to me what Cantropee is!',
-        explainGeneralPurpose: 'Cantropee is an application to track money flow and visualize your spendings, giving helpful insights.',
+        explainGeneralPurpose: 'Cantropee is an application to track money flow and visualize your spendings, providing helpful insights.',
         explainOrganizations: 'An "organization" is like your usual bank account, except it does not contain any actual money. All transactions are only visible within the application and do not affect real money. Once logged in you may create as many organizations as you like and also add family/friends to them, so you can collaboratively track spendings.',
         registerAccountTitle: 'Register your account',
         organization: 'Organization',
