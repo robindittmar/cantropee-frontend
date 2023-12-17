@@ -104,6 +104,7 @@ export interface Translation {
     trackTaxes: string;
 
     addNewOrganization: string;
+    addUserToOrganization: string;
     newOrganizationTitle: string;
     currency: string;
 }
@@ -194,6 +195,7 @@ export const languages: {[languageCode: string]: Translation} = {
         nameOfOrg: 'Organization name',
         trackTaxes: 'Track taxes for transactions',
         addNewOrganization: 'Add new',
+        addUserToOrganization: 'Add user',
         newOrganizationTitle: 'New Organization',
         currency: 'Currency',
     },
@@ -282,6 +284,7 @@ export const languages: {[languageCode: string]: Translation} = {
         nameOfOrg: 'Name des Kontos',
         trackTaxes: 'Steuern bei Transaktionen erfassen',
         addNewOrganization: 'Hinzufügen',
+        addUserToOrganization: 'Nutzer hinzufügen',
         newOrganizationTitle: 'Neue Organisation',
         currency: 'Währung',
     },
