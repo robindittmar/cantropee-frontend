@@ -151,6 +151,7 @@ onMounted(() => {
               <tr>
                 <td colspan="3">
                   <div class="d-flex justify-content-center">
+<!--                    <i class="fa-solid fa-ghost"></i>-->
                     <img id="brand-image" alt="No Content" src="/public/img/no-content.png" class="rounded mx-auto d-block" />
                   </div>
                 </td>
