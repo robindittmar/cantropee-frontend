@@ -110,7 +110,6 @@ onMounted(() => {
             </div>
             <div id="helpCollapse" class="card-body collapse">
               <h6>{{ lang.explainGeneralPurpose }}</h6>
-
               <hr>
               <h6>{{ lang.organizations }}</h6>
               <p>{{ lang.explainOrganizations }}</p>
@@ -120,7 +119,7 @@ onMounted(() => {
 
         <hr/>
 
-        <h1>{{ lang.registerAccountTitle }}</h1>
+        <h1 class="mb-3">{{ lang.registerAccountTitle }}</h1>
         <div class="mb-3">
           <label for="orgName" class="form-label">{{ lang.nameOfOrg }}</label>
           <input id="orgName" class="form-control" v-model="organizationName"/>
