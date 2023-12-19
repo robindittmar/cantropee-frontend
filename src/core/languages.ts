@@ -24,6 +24,7 @@ export interface Translation {
     keepLoggedIn: string;
     haveAnInvite: string;
     resetPassword: string;
+    passwordChangedSuccess: string;
     emailIsInvalid: string;
     passwordsDoNotMatch: string;
     timezone: string;
@@ -150,6 +151,7 @@ export const languages: {[languageCode: string]: Translation} = {
         keepLoggedIn: 'Keep me logged in',
         haveAnInvite: 'I have an invite',
         resetPassword: 'Reset password',
+        passwordChangedSuccess: 'Password changed successfully',
         emailIsInvalid: 'The email you provided is invalid',
         passwordsDoNotMatch: 'The passwords do not match',
         timezone: 'Timezone',
@@ -255,7 +257,8 @@ export const languages: {[languageCode: string]: Translation} = {
         confirmPassword: 'Passwort bestätigen',
         keepLoggedIn: 'Angemeldet bleiben',
         haveAnInvite: 'Ich habe eine Einladung',
-        resetPassword: 'Password zurücksetzen',
+        resetPassword: 'Passwort zurücksetzen',
+        passwordChangedSuccess: 'Passwort erfolgreich geändert',
         emailIsInvalid: 'Die eingegebene E-Mail Adresse ist nicht gültig',
         passwordsDoNotMatch: 'Die Passwörter stimmen nicht überein',
         timezone: 'Zeitzone',

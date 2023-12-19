@@ -5,6 +5,8 @@ import type {Category} from "@/core/category";
 import {req} from "@/core/requests";
 import {availableLangCodes, availableLocaleCodes, lang} from "@/core/languages";
 import {toast, ToastColor} from "@/core/toaster";
+import ChangePasswordForm from "@/components/ChangePasswordForm.vue";
+import {Collapse} from "bootstrap";
 
 const props = defineProps<{
   user: User;
@@ -23,6 +25,13 @@ let organizations = ref(props.user.organizations);
 
 let creatingInvite = ref(false);
 let inviteUrl = ref('');
+
+const closeResetPassword = () => {
+  const collapse = Collapse.getOrCreateInstance('#resetPasswordCollapse');
+  collapse.hide();
+
+  toast(lang.value.passwordChangedSuccess);
+};
 
 const createInvite = async () => {
   creatingInvite.value = true;
@@ -103,8 +112,20 @@ const copyInviteToClipboard = async () => {
           <button class="btn btn-primary mt-3" @click="$emit('update-user-settings', settings)">{{ lang.save }}</button>
         </div>
       </div>
+      <div class="row">
+        <div class="col">
+          <hr/>
+          <div>
+            <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#resetPasswordCollapse">{{ lang.resetPassword }}</button>
+            <div id="resetPasswordCollapse" class="collapse pt-3">
+              <ChangePasswordForm @password-changed="closeResetPassword"/>
+            </div>
+          </div>
+        </div>
+      </div>
       <div v-if="user.settings.canCreateInvite" class="row mt-2">
         <div class="col">
+          <hr/>
           <h1>{{ lang.invite }}</h1>
 
           <div class="input-group mt-3">
