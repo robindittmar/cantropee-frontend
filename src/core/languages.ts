@@ -130,9 +130,9 @@ export interface Translation {
 export const languages: {[languageCode: string]: Translation} = {
     'en-us': {
         welcomeText: 'Welcome to Cantropee!',
-        expandHelp: 'Explain to me what Cantropee is!',
+        expandHelp: 'Learn more...',
         explainGeneralPurpose: 'Cantropee is an application to track money flow and visualize your spendings, providing helpful insights.',
-        explainOrganizations: 'An "organization" is like your usual bank account, except it does not contain any actual money. All transactions are only visible within the application and do not affect your earnings or any of your bank accounts. You will need to create an organization on sign-up, and after you are logged in you may create as many organizations as you like. Additionally you may add family and friends to your organizations, so you can collaboratively track spendings.',
+        explainOrganizations: 'An "organization" in Cantropee is like your usual bank account, except it does not contain any actual money. All transactions are only visible within the application and do not affect your earnings or any of your bank accounts. You will need to create an organization on sign-up, and after you are logged in you may create as many organizations as you like. Additionally you may add family and friends to your organizations, so you can collaboratively track spendings.',
         registerAccount: 'Register now',
         passwordTooShort: 'The password must be at least 6 characters long',
         organization: 'Organization',
@@ -236,9 +236,9 @@ export const languages: {[languageCode: string]: Translation} = {
     },
     'de-de': {
         welcomeText: 'Willkommen bei Cantropee!',
-        expandHelp: 'Erklär mir was Cantropee ist!',
+        expandHelp: 'Mehr erfahren...',
         explainGeneralPurpose: 'Cantropee ist eine Anwendung welche Einnahmen und Ausgaben visualisiert, um einfache Rückblicke und hilfreiche Prognosen zu ermöglichen.',
-        explainOrganizations: 'Eine "Organisation" ist wie ein gewöhnliches Bankkonto, außer dass es keinen echten Gegenwert repräsentiert. Jede Buchung/Transaktion ist nur in Cantropee sichtbar und beeinflusst keines deiner Bankkonten. Bei der Anmeldung musst du direkt eine Organisation erstellen, und sobald du angemeldet bist kannst du beliebig viele zusätzliche Organisationen anlegen. Außerdem kannst du auch Famile und Freunde zu deinen Organisationen hinzufügen, um gemeinsam den Überblick zu behalten.',
+        explainOrganizations: 'Eine "Organisation" in Cantropee ist wie ein gewöhnliches Bankkonto, außer dass es keinen echten Gegenwert repräsentiert. Jede Buchung/Transaktion ist nur in Cantropee sichtbar und beeinflusst keines deiner Bankkonten. Bei der Anmeldung musst du direkt eine Organisation erstellen, und sobald du angemeldet bist kannst du beliebig viele zusätzliche Organisationen anlegen. Außerdem kannst du auch Famile und Freunde zu deinen Organisationen hinzufügen, um gemeinsam den Überblick zu behalten.',
         registerAccount: 'Registrieren',
         passwordTooShort: 'Das Passwort muss mindestens 6 Zeichen lang sein',
         organization: 'Organisation',

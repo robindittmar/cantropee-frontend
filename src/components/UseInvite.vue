@@ -26,22 +26,30 @@ let useTaxes: Ref<boolean> = ref(false);
 let userEmail: Ref<string> = ref('');
 let userPassword: Ref<string> = ref('');
 let userPasswordConfirm: Ref<string> = ref('');
-// let userPasswordCritique: Ref<string | null> = ref(null);
 
-const userPasswordCritique = computed(() => {
+const userDataCritique = computed(() => {
+  let email = userEmail.value;
   let pw = userPassword.value;
-  if (pw.length === 0) {
-    return null;
-  } else {
+  let pwConfirm = userPasswordConfirm.value;
+
+  if (email.length > 0 && !validateEmail(email)) {
+    return lang.value.emailIsInvalid;
+  }
+
+  if (pw.length > 0) {
     if (pw.length < 6) {
       return lang.value.passwordTooShort;
     }
 
-    let pwConfirm = userPasswordConfirm.value;
     if (pwConfirm.length > 0 && pwConfirm !== pw) {
       return lang.value.passwordsDoNotMatch;
     }
   }
+
+  return null;
+});
+
+const orgDataCritique = computed(() => {
   return null;
 });
 
@@ -161,15 +169,17 @@ onMounted(() => {
         <form @submit.prevent="currentStage = RegisterStages.EnterUserDetails">
           <div class="mt-3">
             <h1 class="text-center">{{ lang.welcomeText }}</h1>
-            <div class="card mt-3">
+            <div class="card border-primary-subtle mt-3 mb-2">
               <div class="card-header">
-                <button class="btn w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#helpCollapse"><i class="fa-solid fa-circle-info"></i>&nbsp;{{ lang.explainGeneralPurpose }}</button>
+                <span><i class="fa-solid fa-circle-info"></i>&nbsp;{{ lang.explainGeneralPurpose }}&nbsp;</span>
+                <a href="" data-bs-toggle="collapse" data-bs-target="#helpCollapse">{{ lang.expandHelp }}</a>
               </div>
               <div id="helpCollapse" class="card-body collapse">
                 <h6>{{ lang.organizations }}</h6>
                 <p>{{ lang.explainOrganizations }}</p>
               </div>
             </div>
+            <hr/>
 
             <div class="mt-4 mb-3">
               <input type="submit" class="btn btn-primary w-100" :value="lang.registerAccount"/>
@@ -198,9 +208,9 @@ onMounted(() => {
             <input id="userPasswordConfirm" class="form-control" type="password" v-model="userPasswordConfirm"/>
           </div>
 
-          <div v-if="userPasswordCritique" class="card text-bg-danger mb-3">
+          <div v-if="userDataCritique" class="card border-danger bg-body-secondary mb-3">
             <div class="card-body">
-              <h6 class="w-100">{{ userPasswordCritique }}</h6>
+              {{ userDataCritique }}
             </div>
           </div>
 
@@ -228,6 +238,12 @@ onMounted(() => {
           <div class="form-check mb-3">
             <input id="useTax" class="form-check-input" type="checkbox" v-model="useTaxes"/>
             <label for="useTax" class="form-check-label">{{ lang.trackTaxes }}</label>
+          </div>
+
+          <div v-if="orgDataCritique" class="card border-danger bg-body-secondary mb-3">
+            <div class="card-body">
+              {{ orgDataCritique }}
+            </div>
           </div>
 
           <div class="mt-4 mb-3">
