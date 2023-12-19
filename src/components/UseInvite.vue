@@ -164,7 +164,7 @@ onMounted(() => {
       </template>
       <template v-else-if="currentStage === RegisterStages.EnterUserDetails">
         <form @submit.prevent="currentStage = RegisterStages.EnterOrganizationDetails">
-          <h2 class="mb-3">{{ lang.user }}</h2>
+          <h2 class="mt-3 mb-3">{{ lang.user }}</h2>
           <div class="mb-3">
             <label for="userEmail" class="form-label">{{ lang.email }}</label>
             <input id="userEmail" class="form-control" v-model="userEmail"/>
@@ -190,7 +190,7 @@ onMounted(() => {
       </template>
       <template v-else-if="currentStage === RegisterStages.EnterOrganizationDetails">
         <form @submit.prevent="currentStage = RegisterStages.ConfirmRegistration">
-          <h2 class="mb-3">{{ lang.organization }}</h2>
+          <h2 class="mt-3 mb-3">{{ lang.organization }}</h2>
           <div class="mb-3">
             <label for="orgName" class="form-label">{{ lang.nameOfOrg }}</label>
             <input id="orgName" class="form-control" v-model="organizationName"/>
@@ -216,7 +216,7 @@ onMounted(() => {
       </template>
       <template v-else-if="currentStage === RegisterStages.ConfirmRegistration">
         <form @submit.prevent="useInvite">
-          <h2 class="mb-3">{{ lang.confirmValuesRegistration }}</h2>
+          <h2 class="mt-3 mb-3">{{ lang.confirmValuesRegistration }}</h2>
           <div class="form-floating mb-3">
             <input id="userEmail" class="form-control" v-model="userEmail" disabled/>
             <label for="userEmail" class="form-label">{{ lang.email }}</label>
@@ -236,7 +236,7 @@ onMounted(() => {
             <input id="useTax" class="form-check-input" type="checkbox" v-model="useTaxes" disabled/>
             <label for="useTax" class="form-check-label">{{ lang.trackTaxes }}</label>
           </div>
-          <hr class="mt-5 mb-4"/>
+          <hr class="mt-4 mb-4"/>
 
           <div class="mt-4 mb-3">
             <input type="submit" class="btn btn-primary w-100" :value="lang.joinCantropee" :disabled="!inputValidForCreation"/>
