@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {type Ref, computed, onMounted, ref} from "vue";
+import {type Ref, computed, onMounted, ref, watch} from "vue";
 import {toast, ToastColor} from "@/core/toaster";
 import {req} from "@/core/requests";
 import {lang} from "@/core/languages";
@@ -19,13 +19,31 @@ enum RegisterStages {
 let validInvite = ref(false);
 let currentStage: Ref<RegisterStages> = ref(RegisterStages.ExplainCantropee);
 
-let inviteId = ref('');
-let organizationName = ref('');
-let currency = ref('EUR');
-let useTaxes = ref(false);
-let userEmail = ref('');
-let userPassword = ref('');
-let userPasswordConfirm = ref('');
+let inviteId: Ref<string> = ref('');
+let organizationName: Ref<string> = ref('');
+let currency: Ref<string> = ref('EUR');
+let useTaxes: Ref<boolean> = ref(false);
+let userEmail: Ref<string> = ref('');
+let userPassword: Ref<string> = ref('');
+let userPasswordConfirm: Ref<string> = ref('');
+// let userPasswordCritique: Ref<string | null> = ref(null);
+
+const userPasswordCritique = computed(() => {
+  let pw = userPassword.value;
+  if (pw.length === 0) {
+    return null;
+  } else {
+    if (pw.length < 6) {
+      return lang.value.passwordTooShort;
+    }
+
+    let pwConfirm = userPasswordConfirm.value;
+    if (pwConfirm.length > 0 && pwConfirm !== pw) {
+      return lang.value.passwordsDoNotMatch;
+    }
+  }
+  return null;
+});
 
 const userDetailsValid = computed(() => {
   return userEmail.value.length > 0 &&
@@ -178,6 +196,12 @@ onMounted(() => {
           <div class="mb-3">
             <label for="userPasswordConfirm" class="form-label">{{ lang.confirmPassword }}</label>
             <input id="userPasswordConfirm" class="form-control" type="password" v-model="userPasswordConfirm"/>
+          </div>
+
+          <div v-if="userPasswordCritique" class="card text-bg-danger mb-3">
+            <div class="card-body">
+              <h6 class="w-100">{{ userPasswordCritique }}</h6>
+            </div>
           </div>
 
           <div class="mt-4 mb-3">
