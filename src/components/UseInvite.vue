@@ -279,7 +279,7 @@ onMounted(() => {
           <hr class="mt-4 mb-4"/>
 
           <div class="mt-4 mb-3">
-            <input type="submit" class="btn btn-primary w-100" :value="lang.joinCantropee" :disabled="!inputValidForCreation"/>
+            <input type="submit" class="btn btn-primary w-100" :value="lang.completeRegistration" :disabled="!inputValidForCreation"/>
           </div>
           <div class="mb-3">
             <button @click="currentStage = RegisterStages.EnterOrganizationDetails" class="btn btn-secondary w-100">{{ lang.previousStep }}</button>

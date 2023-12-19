@@ -14,7 +14,7 @@ export interface Translation {
     nextStep: string;
     previousStep: string;
     confirmValuesRegistration: string;
-    joinCantropee: string;
+    completeRegistration: string;
 
     settingsSaved: string;
     login: string;
@@ -141,7 +141,7 @@ export const languages: {[languageCode: string]: Translation} = {
         nextStep: 'Next',
         previousStep: 'Back',
         confirmValuesRegistration: 'Confirm your registration',
-        joinCantropee: 'Join now',
+        completeRegistration: 'Complete registration',
         settingsSaved: 'Settings saved',
         login: 'Login',
         email: 'E-Mail',
@@ -247,7 +247,7 @@ export const languages: {[languageCode: string]: Translation} = {
         nextStep: 'Weiter',
         previousStep: 'Zurück',
         confirmValuesRegistration: 'Bestätige deine Registrierung',
-        joinCantropee: 'Jetzt beitreten',
+        completeRegistration: 'Registrierung abschließen',
         settingsSaved: 'Einstellungen gespeichert',
         login: 'Anmelden',
         email: 'E-Mail',
