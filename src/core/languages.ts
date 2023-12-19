@@ -6,10 +6,13 @@ export interface Translation {
     expandHelp: string;
     explainGeneralPurpose: string;
     explainOrganizations: string;
-    registerAccountTitle: string;
+    registerAccount: string;
     organization: string;
     organizations: string;
     user: string;
+    nextStep: string;
+    previousStep: string;
+    confirmValuesRegistration: string;
     joinCantropee: string;
 
     settingsSaved: string;
@@ -129,11 +132,14 @@ export const languages: {[languageCode: string]: Translation} = {
         expandHelp: 'Explain to me what Cantropee is!',
         explainGeneralPurpose: 'Cantropee is an application to track money flow and visualize your spendings, providing helpful insights.',
         explainOrganizations: 'An "organization" is like your usual bank account, except it does not contain any actual money. All transactions are only visible within the application and do not affect your earnings or any of your bank accounts. You will need to create an organization on sign-up, and after you are logged in you may create as many organizations as you like. Additionally you may add family and friends to your organizations, so you can collaboratively track spendings.',
-        registerAccountTitle: 'Register your account',
+        registerAccount: 'Register now',
         organization: 'Organization',
         organizations: 'Organizations',
         user: 'User account',
-        joinCantropee: 'Join',
+        nextStep: 'Next',
+        previousStep: 'Back',
+        confirmValuesRegistration: 'Confirm your registration',
+        joinCantropee: 'Join now',
         settingsSaved: 'Settings saved',
         login: 'Login',
         email: 'E-Mail',
@@ -231,11 +237,14 @@ export const languages: {[languageCode: string]: Translation} = {
         expandHelp: 'Erklär mir was Cantropee ist!',
         explainGeneralPurpose: 'Cantropee ist eine Anwendung welche Einnahmen und Ausgaben visualisiert, um einfache Rückblicke und hilfreiche Prognosen zu ermöglichen.',
         explainOrganizations: 'Eine "Organisation" ist wie ein gewöhnliches Bankkonto, außer dass es keinen echten Gegenwert repräsentiert. Jede Buchung/Transaktion ist nur in Cantropee sichtbar und beeinflusst keines deiner Bankkonten. Bei der Anmeldung musst du direkt eine Organisation erstellen, und sobald du angemeldet bist kannst du beliebig viele zusätzliche Organisationen anlegen. Außerdem kannst du auch Famile und Freunde zu deinen Organisationen hinzufügen, um gemeinsam den Überblick zu behalten.',
-        registerAccountTitle: 'Registriere jetzt deinen Account',
+        registerAccount: 'Registrieren',
         organization: 'Organisation',
         organizations: 'Organisationen',
         user: 'Nutzer Konto',
-        joinCantropee: 'Beitreten',
+        nextStep: 'Weiter',
+        previousStep: 'Zurück',
+        confirmValuesRegistration: 'Bestätige deine Registrierung',
+        joinCantropee: 'Jetzt beitreten',
         settingsSaved: 'Einstellungen gespeichert',
         login: 'Anmelden',
         email: 'E-Mail',

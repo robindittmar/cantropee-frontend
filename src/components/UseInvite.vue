@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
+import {type Ref, computed, onMounted, ref} from "vue";
 import {toast, ToastColor} from "@/core/toaster";
 import {req} from "@/core/requests";
 import {lang} from "@/core/languages";
@@ -9,7 +9,15 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['submit', 'cancel']);
 
+enum RegisterStages {
+  ExplainCantropee,
+  EnterUserDetails,
+  EnterOrganizationDetails,
+  ConfirmRegistration,
+}
+
 let validInvite = ref(false);
+let currentStage: Ref<RegisterStages> = ref(RegisterStages.ExplainCantropee);
 
 let inviteId = ref('');
 let organizationName = ref('');
@@ -18,6 +26,18 @@ let useTaxes = ref(false);
 let userEmail = ref('');
 let userPassword = ref('');
 let userPasswordConfirm = ref('');
+
+const userDetailsValid = computed(() => {
+  return userEmail.value.length > 0 &&
+      validateEmail(userEmail.value) &&
+      userPassword.value.length > 5 &&
+      userPasswordConfirm.value === userPassword.value;
+});
+
+const orgDetailsValid = computed(() => {
+  return organizationName.value.length > 0 &&
+      currency.value.length > 0;
+});
 
 const inputValidForCreation = computed(() => {
   return userEmail.value.length > 0 &&
@@ -119,65 +139,113 @@ onMounted(() => {
       </form>
     </template>
     <template v-else>
-      <form @submit.prevent="useInvite">
-        <div class="mb-5">
-          <h1 class="text-center">{{ lang.welcomeText }}</h1>
-          <div class="card text-bg-primary mt-3">
-            <div class="card-header">
-              <button class="btn w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#helpCollapse"><i class="fa-solid fa-book"></i>&nbsp;{{ lang.expandHelp }}</button>
+      <template v-if="currentStage === RegisterStages.ExplainCantropee">
+        <form @submit.prevent="currentStage = RegisterStages.EnterUserDetails">
+          <div class="mt-3">
+            <h1 class="text-center">{{ lang.welcomeText }}</h1>
+            <div class="card mt-3">
+              <div class="card-header">
+                <button class="btn w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#helpCollapse"><i class="fa-solid fa-circle-info"></i>&nbsp;{{ lang.explainGeneralPurpose }}</button>
+              </div>
+              <div id="helpCollapse" class="card-body collapse">
+                <h6>{{ lang.organizations }}</h6>
+                <p>{{ lang.explainOrganizations }}</p>
+              </div>
             </div>
-            <div id="helpCollapse" class="card-body collapse">
-              <h6>{{ lang.explainGeneralPurpose }}</h6>
-              <hr>
-              <h6>{{ lang.organizations }}</h6>
-              <p>{{ lang.explainOrganizations }}</p>
+
+            <div class="mt-4 mb-3">
+              <input type="submit" class="btn btn-primary w-100" :value="lang.registerAccount"/>
+            </div>
+            <div class="mb-3">
+              <button @click="$emit('cancel')" class="btn btn-secondary w-100">{{ lang.cancel }}</button>
             </div>
           </div>
-        </div>
+        </form>
+      </template>
+      <template v-else-if="currentStage === RegisterStages.EnterUserDetails">
+        <form @submit.prevent="currentStage = RegisterStages.EnterOrganizationDetails">
+          <h2 class="mb-3">{{ lang.user }}</h2>
+          <div class="mb-3">
+            <label for="userEmail" class="form-label">{{ lang.email }}</label>
+            <input id="userEmail" class="form-control" v-model="userEmail"/>
+          </div>
 
-        <hr class="mb-4"/>
+          <div class="mb-3">
+            <label for="userPassword" class="form-label">{{ lang.password }}</label>
+            <input id="userPassword" class="form-control" type="password" v-model="userPassword"/>
+          </div>
 
-        <h2 class="mb-3">{{ lang.user }}</h2>
-        <div class="mb-3">
-          <label for="userEmail" class="form-label">{{ lang.email }}</label>
-          <input id="userEmail" class="form-control" v-model="userEmail"/>
-        </div>
+          <div class="mb-3">
+            <label for="userPasswordConfirm" class="form-label">{{ lang.confirmPassword }}</label>
+            <input id="userPasswordConfirm" class="form-control" type="password" v-model="userPasswordConfirm"/>
+          </div>
 
-        <div class="mb-3">
-          <label for="userPassword" class="form-label">{{ lang.password }}</label>
-          <input id="userPassword" class="form-control" type="password" v-model="userPassword"/>
-        </div>
+          <div class="mt-4 mb-3">
+            <input type="submit" class="btn btn-primary w-100" :value="lang.nextStep" :disabled="!userDetailsValid"/>
+          </div>
+          <div class="mb-3">
+            <button @click="currentStage = RegisterStages.ExplainCantropee" class="btn btn-secondary w-100">{{ lang.previousStep }}</button>
+          </div>
+        </form>
+      </template>
+      <template v-else-if="currentStage === RegisterStages.EnterOrganizationDetails">
+        <form @submit.prevent="currentStage = RegisterStages.ConfirmRegistration">
+          <h2 class="mb-3">{{ lang.organization }}</h2>
+          <div class="mb-3">
+            <label for="orgName" class="form-label">{{ lang.nameOfOrg }}</label>
+            <input id="orgName" class="form-control" v-model="organizationName"/>
+          </div>
 
-        <div class="mb-3">
-          <label for="userPasswordConfirm" class="form-label">{{ lang.confirmPassword }}</label>
-          <input id="userPasswordConfirm" class="form-control" type="password" v-model="userPasswordConfirm"/>
-        </div>
+          <div class="mb-3">
+            <label for="orgName" class="form-label">{{ lang.currency }}</label>
+            <input id="orgName" class="form-control" v-model="currency" disabled/>
+          </div>
 
-        <hr class="mt-4 mb-4"/>
+          <div class="form-check mb-3">
+            <input id="useTax" class="form-check-input" type="checkbox" v-model="useTaxes"/>
+            <label for="useTax" class="form-check-label">{{ lang.trackTaxes }}</label>
+          </div>
 
-        <h2 class="mb-3">{{ lang.organization }}</h2>
-        <div class="mb-3">
-          <label for="orgName" class="form-label">{{ lang.nameOfOrg }}</label>
-          <input id="orgName" class="form-control" v-model="organizationName"/>
-        </div>
+          <div class="mt-4 mb-3">
+            <input type="submit" class="btn btn-primary w-100" :value="lang.nextStep" :disabled="!orgDetailsValid"/>
+          </div>
+          <div class="mb-3">
+            <button @click="currentStage = RegisterStages.EnterUserDetails" class="btn btn-secondary w-100">{{ lang.previousStep }}</button>
+          </div>
+        </form>
+      </template>
+      <template v-else-if="currentStage === RegisterStages.ConfirmRegistration">
+        <form @submit.prevent="useInvite">
+          <h2 class="mb-3">{{ lang.confirmValuesRegistration }}</h2>
+          <div class="form-floating mb-3">
+            <input id="userEmail" class="form-control" v-model="userEmail" disabled/>
+            <label for="userEmail" class="form-label">{{ lang.email }}</label>
+          </div>
 
-        <div class="mb-3">
-          <label for="orgName" class="form-label">{{ lang.currency }}</label>
-          <input id="orgName" class="form-control" v-model="currency" disabled/>
-        </div>
+          <div class="form-floating mb-3">
+            <input id="orgName" class="form-control" v-model="organizationName" disabled/>
+            <label for="orgName" class="form-label">{{ lang.nameOfOrg }}</label>
+          </div>
 
-        <div class="form-check mb-3">
-          <input id="useTax" class="form-check-input" type="checkbox" v-model="useTaxes"/>
-          <label for="useTax" class="form-check-label">{{ lang.trackTaxes }}</label>
-        </div>
+          <div class="form-floating mb-3">
+            <input id="orgName" class="form-control" v-model="currency" disabled/>
+            <label for="orgName" class="form-label">{{ lang.currency }}</label>
+          </div>
 
-        <div class="mt-4 mb-3">
-          <input type="submit" class="btn btn-primary w-100" :value="lang.joinCantropee" :disabled="!inputValidForCreation"/>
-        </div>
-        <div class="mb-3">
-          <button @click="$emit('cancel')" class="btn btn-secondary w-100">{{ lang.cancel }}</button>
-        </div>
-      </form>
+          <div class="form-check mb-3">
+            <input id="useTax" class="form-check-input" type="checkbox" v-model="useTaxes" disabled/>
+            <label for="useTax" class="form-check-label">{{ lang.trackTaxes }}</label>
+          </div>
+          <hr class="mt-5 mb-4"/>
+
+          <div class="mt-4 mb-3">
+            <input type="submit" class="btn btn-primary w-100" :value="lang.joinCantropee" :disabled="!inputValidForCreation"/>
+          </div>
+          <div class="mb-3">
+            <button @click="currentStage = RegisterStages.EnterOrganizationDetails" class="btn btn-secondary w-100">{{ lang.previousStep }}</button>
+          </div>
+        </form>
+      </template>
     </template>
   </div>
 </template>
