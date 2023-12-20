@@ -21,8 +21,11 @@ export interface Translation {
     email: string;
     password: string;
     confirmPassword: string;
+    currentPassword: string;
+    newPassword: string;
     keepLoggedIn: string;
     haveAnInvite: string;
+    changePassword: string;
     resetPassword: string;
     passwordChangedSuccess: string;
     emailIsInvalid: string;
@@ -148,8 +151,11 @@ export const languages: {[languageCode: string]: Translation} = {
         email: 'E-Mail',
         password: 'Password',
         confirmPassword: 'Confirm password',
+        currentPassword: 'Current password',
+        newPassword: 'New password',
         keepLoggedIn: 'Keep me logged in',
         haveAnInvite: 'I have an invite',
+        changePassword: 'Change password',
         resetPassword: 'Reset password',
         passwordChangedSuccess: 'Password changed successfully',
         emailIsInvalid: 'The email you provided is invalid',
@@ -255,8 +261,11 @@ export const languages: {[languageCode: string]: Translation} = {
         email: 'E-Mail',
         password: 'Passwort',
         confirmPassword: 'Passwort bestätigen',
+        currentPassword: 'Aktuelles Passwort',
+        newPassword: 'Neues Passwort',
         keepLoggedIn: 'Angemeldet bleiben',
         haveAnInvite: 'Ich habe eine Einladung',
+        changePassword: 'Passwort ändern',
         resetPassword: 'Passwort zurücksetzen',
         passwordChangedSuccess: 'Passwort erfolgreich geändert',
         emailIsInvalid: 'Die eingegebene E-Mail Adresse ist nicht gültig',

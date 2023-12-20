@@ -97,7 +97,7 @@ onMounted(() => {
           <template v-else-if="view === LoginView.ResetPassword">
             <h1 class="ms-3 mt-3">{{ lang.resetPassword }}</h1>
             <div class="card-body">
-              <ChangePasswordForm @password-changed="emit('authenticated')"/>
+              <ChangePasswordForm :require-current-password="false" @password-changed="emit('authenticated')"/>
             </div>
           </template>
           <template v-else-if="view === LoginView.UseInvite">

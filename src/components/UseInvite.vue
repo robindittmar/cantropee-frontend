@@ -3,6 +3,7 @@ import {type Ref, computed, onMounted, ref, watch} from "vue";
 import {toast, ToastColor} from "@/core/toaster";
 import {req} from "@/core/requests";
 import {lang} from "@/core/languages";
+import {validateEmail} from "@/core/validate";
 
 const props = defineProps<{
   invite: string | null,
@@ -56,7 +57,6 @@ const orgDataCritique = computed(() => {
 const userDetailsValid = computed(() => {
   return userEmail.value.length > 0 &&
       validateEmail(userEmail.value) &&
-      userPassword.value.length > 5 &&
       userPasswordConfirm.value === userPassword.value;
 });
 
@@ -95,14 +95,6 @@ const validateInvite = async () => {
   } else {
     toast(lang.value.anErrorHasOccured, ToastColor.Danger);
   }
-};
-
-const validateEmail = (email: string) => {
-  return String(email)
-      .toLowerCase()
-      .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
 };
 
 const useInvite = async () => {

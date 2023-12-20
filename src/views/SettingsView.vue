@@ -30,7 +30,7 @@ const closeResetPassword = () => {
   const collapse = Collapse.getOrCreateInstance('#resetPasswordCollapse');
   collapse.hide();
 
-  toast(lang.value.passwordChangedSuccess);
+  toast(lang.value.passwordChangedSuccess, ToastColor.Success);
 };
 
 const createInvite = async () => {
@@ -114,11 +114,11 @@ const copyInviteToClipboard = async () => {
       </div>
       <div class="row">
         <div class="col">
-          <hr/>
+          <hr class="mb-4"/>
           <div>
             <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#resetPasswordCollapse">{{ lang.resetPassword }}</button>
-            <div id="resetPasswordCollapse" class="collapse pt-3">
-              <ChangePasswordForm @password-changed="closeResetPassword"/>
+            <div id="resetPasswordCollapse" class="collapse pt-4">
+              <ChangePasswordForm :require-current-password="true" @password-changed="closeResetPassword"/>
             </div>
           </div>
         </div>
