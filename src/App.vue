@@ -117,7 +117,10 @@ onMounted(async () => {
   }
   selectLanguage(langCode.value);
 
-  invite = new URL(location.href).searchParams.get('invite');
+  let url = new URL(location.href);
+  invite = url.searchParams.get('invite');
+  url.searchParams.delete('invite');
+  history.replaceState(null, 'Cantropee', url);
   if (!invite) {
     await initialLoad();
   } else {
