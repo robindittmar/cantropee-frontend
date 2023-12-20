@@ -73,6 +73,17 @@ const inputValidForCreation = computed(() => {
       currency.value.length > 0;
 });
 
+const removeInviteFromUrl = () => {
+  let url = new URL(location.href);
+  url.searchParams.delete('invite');
+  history.replaceState(null, 'Cantropee', url);
+};
+
+const cancelInviteProcess = () => {
+  removeInviteFromUrl();
+  emit('cancel');
+};
+
 const validateInvite = async () => {
   const resp = await req('/api/invite/validate', {
     method: 'POST',
@@ -124,9 +135,7 @@ const useInvite = async () => {
   });
 
   if (resp.ok) {
-    let url = new URL(location.href);
-    url.searchParams.delete('invite');
-    window.history.replaceState(null, 'Cantropee', url);
+    removeInviteFromUrl();
 
     toast(lang.value.inviteSuccess, ToastColor.Info);
     emit('submit');
@@ -156,7 +165,7 @@ onMounted(() => {
           <input type="submit" :disabled="inviteId.length === 0" class="btn btn-primary w-100" :value="lang.check"/>
         </div>
         <div class="mb-3">
-          <button @click="$emit('cancel')" class="btn btn-secondary w-100">{{ lang.cancel }}</button>
+          <button @click="cancelInviteProcess" class="btn btn-secondary w-100">{{ lang.cancel }}</button>
         </div>
       </form>
     </template>
