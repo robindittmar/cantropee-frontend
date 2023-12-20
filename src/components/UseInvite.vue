@@ -124,6 +124,10 @@ const useInvite = async () => {
   });
 
   if (resp.ok) {
+    let url = new URL(location.href);
+    url.searchParams.delete('invite');
+    window.history.replaceState(null, 'Cantropee', url);
+
     toast(lang.value.inviteSuccess, ToastColor.Info);
     emit('submit');
   } else {

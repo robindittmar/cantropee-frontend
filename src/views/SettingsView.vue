@@ -42,7 +42,10 @@ const createInvite = async () => {
 
   if (result.ok) {
     let resp = await result.json();
-    inviteUrl.value = `https://cantropee.dittmar.dev/?invite=${resp.id}`;
+    
+    let url = new URL(location.href);
+    url.searchParams.append('invite', resp.id);
+    inviteUrl.value = url.toString();
 
     setTimeout(() => {
       creatingInvite.value = false;
