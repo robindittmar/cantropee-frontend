@@ -8,7 +8,7 @@ import ChangePasswordForm from "@/components/ChangePasswordForm.vue";
 const props = defineProps<{
   invite: string | null,
 }>();
-const emit = defineEmits(['authenticated']);
+const emit = defineEmits(['authenticated', 'invite-consumed']);
 
 enum LoginView {
   Login,
@@ -49,8 +49,9 @@ const login = async () => {
   }
 };
 
-const setViewLogin = () => {
+const inviteConsumed = () => {
   view.value = LoginView.Login;
+  emit('invite-consumed');
 };
 
 onMounted(() => {
@@ -86,12 +87,6 @@ onMounted(() => {
                   <input type="submit" class="btn btn-primary" :value="lang.login"/>
                 </div>
               </form>
-              <hr/>
-              <div class="mb-3">
-                <button class="btn btn-secondary" @click="view = LoginView.UseInvite">
-                  <i class="fa-solid fa-envelope-open"></i>&nbsp;{{ lang.haveAnInvite }}
-                </button>
-              </div>
             </div>
           </template>
           <template v-else-if="view === LoginView.ResetPassword">
@@ -101,7 +96,7 @@ onMounted(() => {
             </div>
           </template>
           <template v-else-if="view === LoginView.UseInvite">
-            <UseInvite :invite="invite" @submit="setViewLogin" @cancel="setViewLogin"/>
+            <UseInvite :invite="invite" @submit="inviteConsumed" @cancel="view = LoginView.Login"/>
           </template>
         </div>
       </div>

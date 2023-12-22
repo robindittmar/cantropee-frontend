@@ -189,7 +189,7 @@ onMounted(async () => {
       <div class="d-flex justify-content-end pt-2 pe-2">
         <ChangeLanguageComponent :lang-code="langCode" @set-language="selectLanguage"/>
       </div>
-      <LoginView :invite="invite" @authenticated="initialLoad"/>
+      <LoginView :invite="invite" @authenticated="initialLoad" @invite-consumed="invite = null"/>
     </template>
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
       <ToastComponent v-for="toast of toasts" :key="toast.id" :toast="toast"/>
