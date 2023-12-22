@@ -2,6 +2,7 @@ import type {Organization} from "./organization";
 import type {Ref} from "vue";
 import {ref} from "vue";
 import {req} from "@/core/requests";
+import {defineStore} from "pinia";
 
 export interface User {
     id: string;
@@ -21,6 +22,12 @@ export interface UserSettings {
     defaultSortingOrderAsc: boolean;
     extra: object | null;
 }
+
+export const useUserStore = defineStore('user', {
+    state: () => {
+        return { authorized: false }
+    },
+});
 
 export const authorized: Ref<boolean> = ref(false);
 
