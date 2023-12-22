@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {type Ref, computed, onMounted, ref, watch} from "vue";
+import {computed, onMounted, type Ref, ref} from "vue";
 import {toast, ToastColor} from "@/core/toaster";
 import {req} from "@/core/requests";
 import {lang} from "@/core/languages";
@@ -97,6 +97,26 @@ const validateInvite = async () => {
   }
 };
 
+const checkEmailAvailable = async () => {
+  const resp = await req('/api/invite/check-mail', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      inviteId: inviteId.value,
+      email: userEmail.value,
+    })
+  });
+
+  const body = await resp.json();
+  if (body.available) {
+    currentStage.value = RegisterStages.EnterOrganizationDetails;
+  } else {
+    toast(lang.value.emailAlreadyTaken, ToastColor.Danger);
+  }
+};
+
 const useInvite = async () => {
   if (!validateEmail(userEmail.value)) {
     toast(lang.value.emailIsInvalid, ToastColor.Danger);
@@ -183,7 +203,7 @@ onMounted(() => {
         </form>
       </template>
       <template v-else-if="currentStage === RegisterStages.EnterUserDetails">
-        <form @submit.prevent="currentStage = RegisterStages.EnterOrganizationDetails">
+        <form @submit.prevent="checkEmailAvailable">
           <h2 class="mt-3 mb-3">{{ lang.user }}</h2>
           <div class="mb-3">
             <label for="userEmail" class="form-label">{{ lang.email }}</label>

@@ -8,6 +8,7 @@ export interface Translation {
     explainOrganizations: string;
     registerAccount: string;
     passwordTooShort: string;
+    emailAlreadyTaken: string;
     organization: string;
     organizations: string;
     user: string;
@@ -139,6 +140,7 @@ export const languages: {[languageCode: string]: Translation} = {
         explainOrganizations: 'An "organization" in Cantropee is like your usual bank account, except it does not contain any actual money. All transactions are only visible within the application and do not affect your earnings or any of your bank accounts. You will need to create an organization on sign-up, and after you are logged in you may create as many organizations as you like. Additionally you may add family and friends to your organizations, so you can collaboratively track spendings.',
         registerAccount: 'Register now',
         passwordTooShort: 'The password must be at least 6 characters long',
+        emailAlreadyTaken: 'This E-mail is already taken',
         organization: 'Organization',
         organizations: 'Organizations',
         user: 'User account',
@@ -249,6 +251,7 @@ export const languages: {[languageCode: string]: Translation} = {
         explainOrganizations: 'Eine "Organisation" in Cantropee ist wie ein gewöhnliches Bankkonto, außer dass es keinen echten Gegenwert repräsentiert. Jede Buchung/Transaktion ist nur in Cantropee sichtbar und beeinflusst keines deiner Bankkonten. Bei der Anmeldung musst du direkt eine Organisation erstellen, und sobald du angemeldet bist kannst du beliebig viele zusätzliche Organisationen anlegen. Außerdem kannst du auch Famile und Freunde zu deinen Organisationen hinzufügen, um gemeinsam den Überblick zu behalten.',
         registerAccount: 'Registrieren',
         passwordTooShort: 'Das Passwort muss mindestens 6 Zeichen lang sein',
+        emailAlreadyTaken: 'Diese E-Mail Adresse wird bereits verwendet',
         organization: 'Organisation',
         organizations: 'Organisationen',
         user: 'Nutzer Konto',
