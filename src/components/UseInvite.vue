@@ -52,17 +52,26 @@ const userDataCritique = computed(() => {
 });
 
 const orgDataCritique = computed(() => {
+  const orgName = organizationName.value;
+
+  if (orgName.length > 0) {
+    if (orgName.length < 3) {
+      return lang.value.organizationNameTooShort;
+    }
+  }
+
   return null;
 });
 
 const userDetailsValid = computed(() => {
   return userEmail.value.length > 0 &&
       validateEmail(userEmail.value) &&
+      userPassword.value.length >= 6 &&
       userPasswordConfirm.value === userPassword.value;
 });
 
 const orgDetailsValid = computed(() => {
-  return organizationName.value.length > 0 &&
+  return organizationName.value.length >= 3 &&
       currency.value.length > 0;
 });
 
@@ -233,6 +242,17 @@ onMounted(() => {
         <template v-else-if="currentStage === RegisterStages.EnterOrganizationDetails">
           <form @submit.prevent="currentStage = RegisterStages.ConfirmRegistration">
             <h2 class="mt-3 mb-3">{{ lang.organization }}</h2>
+
+            <div class="card border-primary-subtle mt-3 mb-4">
+              <div class="card-header">
+                <a href="" data-bs-toggle="collapse" data-bs-target="#orgHelpCollapse">{{ lang.whatIsAnOrganization }}</a>
+              </div>
+              <div id="orgHelpCollapse" class="card-body collapse">
+                <h6>{{ lang.organizations }}</h6>
+                <p>{{ lang.explainOrganizations }}</p>
+              </div>
+            </div>
+
             <div class="mb-3">
               <label for="orgName" class="form-label">{{ lang.nameOfOrg }}</label>
               <input id="orgName" class="form-control" v-model="organizationName"/>
