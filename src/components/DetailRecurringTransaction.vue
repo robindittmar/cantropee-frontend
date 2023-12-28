@@ -40,6 +40,7 @@ const copyRecurringTransaction = () => {
 };
 
 let isDeposit = ref(props.recurringTransaction.value >= 0);
+let firstExecutionInPast = ref(props.recurringTransaction.firstExecution < new Date());
 let editing = ref(false);
 const selectedCategory = ref('');
 let recurringCopy = ref(copyRecurringTransaction());
@@ -215,7 +216,7 @@ onBeforeUnmount(() => {
             <input id="detailFirstExecution" class="form-control" type="datetime-local"
                    :value="recurringCopy.firstExecution && convertLocalDateForInput(recurringCopy.firstExecution)"
                    @input="recurringCopy.firstExecution = new Date(($event.target as HTMLInputElement)?.value)"
-                   disabled/>
+                   :disabled="!editing || firstExecutionInPast"/>
           </div>
           <div class="mb-3">
             <label for="detailNextExecution" class="form-label">{{ lang.nextExecution }}</label>
@@ -229,7 +230,7 @@ onBeforeUnmount(() => {
             <input id="detailLastExecution" class="form-control" type="datetime-local"
                    :value="recurringCopy.lastExecution && convertLocalDateForInput(recurringCopy.lastExecution)"
                    @input="recurringCopy.lastExecution = new Date(($event.target as HTMLInputElement)?.value)"
-                   disabled/>
+                   :disabled="!editing"/>
           </div>
           <div class="mb-3">
             <label for="detailGroupValue" class="form-label">{{ lang.value }}</label>
@@ -318,42 +319,52 @@ onBeforeUnmount(() => {
       </div>
 
       <template v-if="recurringTransaction.active">
-      <div class="row">
-        <div class="col">
-          <button class="btn btn-danger" @click="showConfirmDelete"><i class="fa-solid fa-trash"></i>&nbsp;{{ lang.delete }}...</button>
+        <div class="row">
+          <div class="col">
+            <template v-if="!editing">
+              <button class="btn btn-secondary" @click="editing = true"><i class="fa-solid fa-pen"></i>&nbsp;{{ lang.edit }}...</button>
+            </template>
+            <template v-else>
+              <button class="btn btn-secondary" @click="editing = false"><i class="fa-solid fa-xmark"></i>&nbsp;{{ lang.cancel }}...</button>
+            </template>
+          </div>
         </div>
-      </div>
+        <div class="row mt-2">
+          <div class="col">
+            <button class="btn btn-danger" @click="showConfirmDelete"><i class="fa-solid fa-trash"></i>&nbsp;{{ lang.delete }}...</button>
+          </div>
+        </div>
 
-      <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="confirmDeleteModalLabel">{{ lang.confirm }}</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <div>
-                <div class="form-check mb-3">
-                  <input id="recurringCascadeDelete" class="form-check-input" type="checkbox" v-model="cascadeDelete"/>
-                  <label for="recurringCascadeDelete" class="form-check-label">{{ lang.recurringDeleteTransactionsCascasing }}</label>
-                </div>
-                <div class="form-check mb-3">
-                  <input id="recurringConfirmDelete" class="form-check-input" type="checkbox" v-model="confirmDelete"/>
-                  <label for="recurringConfirmDelete" class="form-check-label">{{ lang.confirmDelete }}</label>
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="confirmDeleteModalLabel">{{ lang.confirm }}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div>
+                  <div class="form-check mb-3">
+                    <input id="recurringCascadeDelete" class="form-check-input" type="checkbox" v-model="cascadeDelete"/>
+                    <label for="recurringCascadeDelete" class="form-check-label">{{ lang.recurringDeleteTransactionsCascasing }}</label>
+                  </div>
+                  <div class="form-check mb-3">
+                    <input id="recurringConfirmDelete" class="form-check-input" type="checkbox" v-model="confirmDelete"/>
+                    <label for="recurringConfirmDelete" class="form-check-label">{{ lang.confirmDelete }}</label>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                {{ lang.cancel }}
-              </button>
-              <button type="button" class="btn btn-danger" :disabled="!confirmDelete" @click="deleteRecurringTransaction">
-                <i class="fa-solid fa-trash"></i>&nbsp;{{ lang.delete }}
-              </button>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                  {{ lang.cancel }}
+                </button>
+                <button type="button" class="btn btn-danger" :disabled="!confirmDelete" @click="deleteRecurringTransaction">
+                  <i class="fa-solid fa-trash"></i>&nbsp;{{ lang.delete }}
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </template>
     </div>
   </div>
