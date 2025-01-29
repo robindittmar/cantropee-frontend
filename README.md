@@ -1,8 +1,11 @@
 # cantropee-frontend
 
 Web frontend for cantropee, utilizing [Vue.js](https://vuejs.org/). This was more of a learning project to dive into
-Vue.js than anything else, and I did not know about `vue-router` at the time. Please don't judge me :D
+Vue.js than anything else.
 
+I did not know about `vue-router` or `pinia` at the time. I started adding pinia before
+abandoning this project for the time being, but did not really get anywhere with it.
+Please don't judge me :D
 
 ## Dependencies
 To create a production build, install
