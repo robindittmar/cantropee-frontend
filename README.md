@@ -1,6 +1,7 @@
 # cantropee-frontend
 
-> Web frontend for cantropee, utilizing [Vue.js](https://vuejs.org/)
+Web frontend for cantropee, utilizing [Vue.js](https://vuejs.org/). This was more of a learning project to dive into
+Vue.js than anything else, and I did not know about `vue-router` at the time. Please don't judge me :D
 
 
 ## Dependencies
