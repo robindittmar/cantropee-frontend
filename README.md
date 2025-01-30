@@ -2,7 +2,7 @@
 
 cantropee is a finance web application for managing multiple virtual accounts.
 
-The `cantropee-frontend` component in this repository is the web frontend, utilizing [Vue.js](https://vuejs.org/).
+This repository contains the `cantropee-frontend` component, which is the web frontend utilizing [Vue.js](https://vuejs.org/).
 
 This was more of a learning project to dive into
 Vue.js than anything else.
