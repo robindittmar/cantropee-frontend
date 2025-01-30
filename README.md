@@ -1,8 +1,11 @@
 # cantropee-frontend
 
-Web frontend for cantropee, utilizing [Vue.js](https://vuejs.org/). This was more of a learning project to dive into
-Vue.js than anything else.
+cantropee is a finance web application for managing multiple virtual accounts.
 
+The `cantropee-frontend` component in this repository is the web frontend, utilizing [Vue.js](https://vuejs.org/).
+
+This was more of a learning project to dive into
+Vue.js than anything else.
 I did not know about `vue-router` or `pinia` at the time. I started adding pinia before
 abandoning this project for the time being, but did not really get anywhere with it.
 Please don't judge me :D
@@ -24,7 +27,7 @@ npm install
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+### Type-Check, Compile and Minify foWr Production
 
 ```sh
 npm run build
